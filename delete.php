@@ -1,19 +1,18 @@
+<?php
+session_start();
+if (empty($_SESSION['usuario_id'])) {
+    header('Location: index.php?r=2');
+} else {
+    $usuario_id = $_SESSION['usuario_id'];
+    $usuario_nome = $_SESSION['usuario_nome'];
+}
+?>
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Stanyslaul</title>
+        <title>Câmara Municipal de Altinópolis</title>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-        <meta name="author" content="siodoni.com.br"/>
-
-        <link rel="stylesheet" type="text/css" href="css/style.css"/>
-        <link rel="stylesheet" type="text/css" href="css/table.css"/>
-        <link rel="stylesheet" type="text/css" href="kendo/styles/kendo.common.css"/>
-        <link rel="stylesheet" type="text/css" href="kendo/styles/kendo.blueopal.css"/>
-
-        <script type="text/javascript" src="js/site.js"></script>
-        <script type="text/javascript" src="kendo/js/jquery.min.js"></script>
-        <script type="text/javascript" src="kendo/js/kendo.web.js"></script>
-        <script type="text/javascript" src="kendo/js/cultures/kendo.culture.pt-BR.js"></script>
+        <meta name="author" content="ABC 3 WebDesign"/>
     </head>
     <body id="admin">
         <form id="insert" action="" method="get">
@@ -51,7 +50,7 @@
             $crud->excluir("".$campoId." = '".$id."'");
             $con->disconnect();
 
-            header("Location: index.php?nomeTabela=".$_REQUEST["nomeTabela"]);
+            header("Location: list.php?nomeTabela=".$_REQUEST["nomeTabela"]);
             ?>
         </form>
     </body>
