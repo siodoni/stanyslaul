@@ -1,18 +1,9 @@
-<?php
-session_start();
-if (empty($_SESSION['usuario_id'])) {
-    header('Location: index.php?r=2');
-} else {
-    $usuario_id = $_SESSION['usuario_id'];
-    $usuario_nome = $_SESSION['usuario_nome'];
-}
-?>
 <!DOCTYPE html>
 <html>
-    <head>        
-        <title>Câmara Municipal de Altinópolis</title>
+    <head>
+        <title>Stanyslaul</title>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-        <meta name="author" content="ABC 3 WebDesign"/>
+        <meta name="author"       content="siodoni.com.br"/>
         <link rel="stylesheet"    type="text/css" href="css/style.css"/>
         <link rel="stylesheet"    type="text/css" href="css/table.css"/>
         <script type="text/javascript" src="js/site.js"></script>
@@ -90,11 +81,7 @@ if (empty($_SESSION['usuario_id'])) {
                 <?php
                 $contador = 0;
                 $colunas = "";
-                // se existe campo de ID com Auto increment
                 $qtdAi = 0;
-                // se exsite campo do tipo "file"
-                $qtdArq = 0;
-                $arquivo = "";
                 while ($campo = mysql_fetch_array($query)) {
 
                     // zerar variáveis
@@ -152,10 +139,7 @@ if (empty($_SESSION['usuario_id'])) {
                     } elseif ($campo['tipo_dado'] == 'longtext') {
                         echo "<td><textarea id=\"editor\" rows=\"10\" cols=\"30\" name=\"conteudo\" style=\"width:100%;height:440px\" ></textarea></td>\n";
                     } elseif (substr($campo['coluna'], 0, 3) == "fi_") {
-                        echo "<td><input type='file' name=" . $campo['coluna'] . "   /></td>\n";
-                        $qtdArq = 1;
-                    } elseif (substr($campo['coluna'], 0, 3) == "pw_") {
-                        echo "<td><input type='password' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . " /></td>\n";
+                        echo "<input name=\"files\" id=\"files\" type=\"file\" />\n";
                     }
                     else {
                         echo "<td><input type='text' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . " /></td>\n";
@@ -168,15 +152,12 @@ if (empty($_SESSION['usuario_id'])) {
                         $colunas .= $campo['coluna'];
                     } else {
                         $colunas .= "," . $campo['coluna'];
-                        if (substr($campo['coluna'], 0, 3) == "fi_") {
-                            $arquivo = isset($_FILES[$campo['coluna']]);
-                        }
                     }
                     $contador += 1;
                 }
                 echo "<tr><td>&nbsp;</td>";
                 echo "<td><input value='Salvar'   type='submit' class='inputForm'/>\n";
-                echo "    <input value='Cancelar' type='button' class='inputForm' onclick='window.location.href=\"list.php?nomeTabela=" . $nomeTabela . "\"'/></td></tr>";
+                echo "    <input value='Cancelar' type='button' class='inputForm' onclick='window.location.href=\"index.php?nomeTabela=" . $nomeTabela . "\"'/></td></tr>";
                 ?>
             </form>
             <script>                    
@@ -192,7 +173,6 @@ if (empty($_SESSION['usuario_id'])) {
 <?php
 
 $valores = "";
-;
 foreach ($_POST as $post) {
     if ($valores == "") {
         if ($qtdAi > 0) {
@@ -206,15 +186,9 @@ foreach ($_POST as $post) {
 };
 
 if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "insert") {  // caso nao seja passado o id via GET cadastra
-    if ($qtdArq > 0) {
-        include 'upload.php';
-        $up = new Upload();
-        $up->inserir($arquivo);
-    }
-    echo $valores;
     $crud = new crud($nomeTabela);
     $crud->inserir($colunas, $valores);
-    header("Location: list.php?nomeTabela=" . $nomeTabela);
+    header("Location: index.php?nomeTabela=" . $nomeTabela);
 }
 
 if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso nao seja passado o id via GET cadastra
@@ -237,7 +211,7 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso 
 
     $crud = new crud($nomeTabela);
     $crud->atualizar($comandoUpdate, $campoId . " = '" . $id . "' ");
-    header("Location: list.php?nomeTabela=" . $nomeTabela);
+    header("Location: index.php?nomeTabela=" . $nomeTabela);
 }
 
 $con->disconnect();
