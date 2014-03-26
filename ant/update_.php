@@ -40,7 +40,8 @@ $query = mysql_query
         . "       a.column_type enum,"
         . "       if (a.extra = 'auto_increment',1,null) auto_increment"
         . "  from information_schema.columns a "
-        . " where a.table_name = '" . $nomeTabela . "' "
+        . " where table_schema = '".$con->getDbName()."' "
+        . "   and a.table_name = '" . $nomeTabela . "' "
         . " order by a.ordinal_position ");
 
 $corpo = "";

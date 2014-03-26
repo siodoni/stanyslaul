@@ -51,24 +51,26 @@
 
         $query = mysql_query
                 ("select a.ordinal_position id_coluna,
-                 a.column_name coluna,
-                 a.is_nullable nulo,
-                 a.data_type tipo_dado,
-                 a.numeric_precision numerico,
-                 if(a.data_type='date',10,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,
-                 if(a.data_type='date',10,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres,
-                 replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum,
-                 a.column_type enum,
-                 if (a.extra = 'auto_increment',1,null) auto_increment,
-                 a.COLUMN_KEY tp_chave,
-                 b.REFERENCED_TABLE_NAME tabela_ref
-            from information_schema.columns a 
-                 left join information_schema.key_column_usage b 
-                 on   a.TABLE_NAME = b.TABLE_NAME 
-                 and  a.COLUMN_NAME = b.COLUMN_NAME
-                 and  b.REFERENCED_TABLE_NAME is not null
-           where a.table_name = '" . $nomeTabela . "' 
-           order by a.ordinal_position");
+                         a.column_name coluna,
+                         a.is_nullable nulo,
+                         a.data_type tipo_dado,
+                         a.numeric_precision numerico,
+                         if(a.data_type='date',10,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,
+                         if(a.data_type='date',10,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres,
+                         replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum,
+                         a.column_type enum,
+                         if (a.extra = 'auto_increment',1,null) auto_increment,
+                         a.column_key tp_chave,
+                         b.REFERENCED_TABLE_NAME tabela_ref
+                    from information_schema.columns a 
+                    left join information_schema.key_column_usage b 
+                      on a.TABLE_SCHEMA           = b.TABLE_SCHEMA
+                     and a.TABLE_NAME             = b.TABLE_NAME 
+                     and a.COLUMN_NAME            = b.COLUMN_NAME
+                     and b.REFERENCED_TABLE_NAME is not null
+                   where a.table_schema = '".$con->getDbName()."'
+                     and a.table_name   = '" . $nomeTabela . "' 
+                   order by a.ordinal_position");
         ?>
         <table id='hor-minimalist-a'>
             <thead>

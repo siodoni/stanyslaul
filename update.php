@@ -1,16 +1,17 @@
 <?php
+/*
 session_start();
 if (empty($_SESSION['usuario_id'])) {
     header('Location: index.php?r=2');
 } else {
     $usuario_id = $_SESSION['usuario_id'];
     $usuario_nome = $_SESSION['usuario_nome'];
-}
+}*/
 ?>
 <!DOCTYPE html>
 <html>
     <head>        
-        <title>Câmara Municipal de Altinópolis</title>
+        <title></title>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
         <meta name="author" content="ABC 3 WebDesign"/>
         <link rel="stylesheet"    type="text/css" href="css/style.css"/>
@@ -28,7 +29,6 @@ if (empty($_SESSION['usuario_id'])) {
         </script>
     </head>
     <body id="admin">
-        <?php include 'menu.php'; ?>
         <?php
         require_once 'lib/Conexao.class.php';
         require_once 'lib/Crud.class.php';
@@ -60,29 +60,31 @@ if (empty($_SESSION['usuario_id'])) {
 
         $query = mysql_query
                 ("select a.ordinal_position id_coluna,
-                 a.column_name coluna,
-                 a.is_nullable nulo,
-                 a.data_type tipo_dado,
-                 a.numeric_precision numerico,
-                 if(a.data_type='date',10,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,
-                 if(a.data_type='date',10,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres,
-                 replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum,
-                 a.column_type enum,
-                 if (a.extra = 'auto_increment',1,null) auto_increment,
-                 a.COLUMN_KEY tp_chave,
-                 b.REFERENCED_TABLE_NAME tabela_ref
-            from information_schema.columns a 
-                 left join information_schema.key_column_usage b 
-                 on   a.TABLE_NAME = b.TABLE_NAME 
-                 and  a.COLUMN_NAME = b.COLUMN_NAME
-                 and  b.REFERENCED_TABLE_NAME is not null
-           where a.table_name = '" . $nomeTabela . "' 
-           order by a.ordinal_position");
+                         a.column_name coluna,
+                         a.is_nullable nulo,
+                         a.data_type tipo_dado,
+                         a.numeric_precision numerico,
+                         if(a.data_type='date',10,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,
+                         if(a.data_type='date',10,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres,
+                         replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum,
+                         a.column_type enum,
+                         if (a.extra = 'auto_increment',1,null) auto_increment,
+                         a.column_key tp_chave,
+                         b.REFERENCED_TABLE_NAME tabela_ref
+                    from information_schema.columns a 
+                    left join information_schema.key_column_usage b 
+                      on a.TABLE_SCHEMA           = b.TABLE_SCHEMA
+                     and a.TABLE_NAME             = b.TABLE_NAME 
+                     and a.COLUMN_NAME            = b.COLUMN_NAME
+                     and b.REFERENCED_TABLE_NAME is not null
+                   where a.table_schema = '".$con->getDbName()."'
+                     and a.table_name   = '" . $nomeTabela . "' 
+                   order by a.ordinal_position");
         ?>
         <table id='hor-minimalist-a'>
             <thead>
                 <tr>
-                    <th colspan="2">Cadastro de <?php echo ucfirst(str_replace("_", " ", substr($nomeTabela, 4))) ?></th>
+                    <th colspan="2">Cadastro de <?php echo ucfirst(str_replace("_", " ", $nomeTabela)) ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -145,8 +147,9 @@ if (empty($_SESSION['usuario_id'])) {
                     } elseif ($campo['tp_chave'] == 'MUL') {
                         $query_ = mysql_query("select * from " . $campo["tabela_ref"]);
                         echo "<td><select name='" . $campo['coluna'] . "' class='inputForm'>";
+                        echo "<option value='' $selected >Escolha...</option>\n";
                         while ($campo_ref = mysql_fetch_row($query_)) {
-                            echo "<option value='" . $campo_ref[0] . "' $selected >" . $campo_ref[1] . "</option>\n";
+                            echo "<option value='" . $campo_ref[0] . "' >" . $campo_ref[1] . "</option>\n";
                         }
                         echo "</select></td>\n";
                     } elseif ($campo['tipo_dado'] == 'longtext') {
@@ -237,7 +240,7 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso 
 
     $crud = new crud($nomeTabela);
     $crud->atualizar($comandoUpdate, $campoId . " = '" . $id . "' ");
-    header("Location: list.php?nomeTabela=" . $nomeTabela);
+    print "<script>location='list.php?nomeTabela=".$nomeTabela."';</script>";
 }
 
 $con->disconnect();

@@ -1,4 +1,5 @@
 <?php
+/*
 session_start();
 if (empty($_SESSION['usuario_id'])) {
     header('Location: index.php?r=2');
@@ -6,11 +7,12 @@ if (empty($_SESSION['usuario_id'])) {
     $usuario_id = $_SESSION['usuario_id'];
     $usuario_nome = $_SESSION['usuario_nome'];
 }
+*/
 ?>
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Câmara Municipal de Altinópolis</title>
+        <title></title>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
         <meta name="author" content="ABC 3 WebDesign"/>
         <link rel="stylesheet" type="text/css" href="css/style.css"/>
@@ -23,8 +25,10 @@ if (empty($_SESSION['usuario_id'])) {
     </head>
     <body id="admin">
         <?php
+	/*
         echo "Seja bem vindo $usuario_nome";
         include 'menu.php';
+	*/
         ?>
         <form id="select" action="" method="get">
             <?php
@@ -45,7 +49,7 @@ if (empty($_SESSION['usuario_id'])) {
             $nomeTabela = $_REQUEST["nomeTabela"];
             $orderBy = " order by 1";
 
-            $query = mysql_query("select column_name, column_key, data_type from information_schema.columns where table_name='" . $nomeTabela . "'");
+            $query = mysql_query("select column_name, column_key, data_type from information_schema.columns where table_schema = '".$con->getDbName()."' and table_name='" . $nomeTabela . "'");
             $sql = null;
 
             $cont = 0;
@@ -104,6 +108,7 @@ if (empty($_SESSION['usuario_id'])) {
             $cont += 1;
             echo("<tfoot><tr><td colspan=$cont><a href='update.php?nomeTabela=" . $nomeTabela . "'><img src='img/ico-add.png' alt='Novo Registro' />&nbsp;Novo&nbsp;</a></td></tr></tfoot>");
             echo("</table>\n");
+            echo("<a href='index.php'>Menu</a>\n");
 
             $con->disconnect();
             ?>

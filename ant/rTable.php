@@ -20,7 +20,8 @@ $query = mysql_query("select column_name,
                                  column_key, 
                                  data_type 
                             from information_schema.columns 
-                           where table_name='" . $nomeTabela . "'
+                           where table_schema = '".$con->getDbName()."' 
+                             and table_name   = '" . $nomeTabela . "'
                              and substr(column_name,1,1) <> '_'");
 $sql = null;
 

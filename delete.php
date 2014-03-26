@@ -1,4 +1,5 @@
 <?php
+/*
 session_start();
 if (empty($_SESSION['usuario_id'])) {
     header('Location: index.php?r=2');
@@ -6,17 +7,18 @@ if (empty($_SESSION['usuario_id'])) {
     $usuario_id = $_SESSION['usuario_id'];
     $usuario_nome = $_SESSION['usuario_nome'];
 }
+*/
 ?>
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Câmara Municipal de Altinópolis</title>
+        <title></title>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
         <meta name="author" content="ABC 3 WebDesign"/>
     </head>
     <body id="admin">
         <form id="insert" action="" method="get">
-            <?php
+            <?php 
             require_once 'lib/Conexao.class.php';
             require_once 'lib/Crud.class.php';
 
@@ -50,7 +52,7 @@ if (empty($_SESSION['usuario_id'])) {
             $crud->excluir("".$campoId." = '".$id."'");
             $con->disconnect();
 
-            header("Location: list.php?nomeTabela=".$_REQUEST["nomeTabela"]);
+            print "<script>location='list.php?nomeTabela=".$_REQUEST["nomeTabela"]."';</script>";
             ?>
         </form>
     </body>
