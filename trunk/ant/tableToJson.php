@@ -19,7 +19,7 @@ class tableToJson {
         if ($con->connect() == false) {
             die('Não conectou');
         }
-        $query = mysql_query("select column_name from information_schema.columns where table_name='" . $this->tabela . "'");
+        $query = mysql_query("select column_name from information_schema.columns where table_schema = '".$con->getDbName()."' and table_name='" . $this->tabela . "'");
         $sql = null;
 
         while ($campo = mysql_fetch_array($query)) {

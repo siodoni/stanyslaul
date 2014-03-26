@@ -46,7 +46,7 @@
             $nomeTabela = $_REQUEST["nomeTabela"];
             $orderBy = " order by 1";
 
-            $query = mysql_query("select column_name from information_schema.columns where table_name='".$nomeTabela."'");
+            $query = mysql_query("select column_name from information_schema.columns where table_schema = '".$con->getDbName()."' and table_name='".$nomeTabela."'");
             $sql = null;
 
             $cont = 0;

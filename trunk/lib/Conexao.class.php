@@ -1,17 +1,17 @@
 <?php
 class Conexao {
 
-    private $db_host = 'localhost'; // servidor
-    private $db_user = 'root';      // usuario do banco
-    private $db_pass = 'vertrigo';  // senha do usuario do banco
-    private $db_name = 'dmt';      // nome do banco
+    private $dbHost = 'localhost'; // servidor
+    private $dbUser = 'root';      // usuario do banco
+    private $dbPass = 'vertrigo';  // senha do usuario do banco
+    private $dbName = 'test';      // nome do banco
     private $con = false;
 
     public function connect() { // estabelece conexao
         if(!$this->con) {
-            $myconn = @mysql_connect($this->db_host,$this->db_user,$this->db_pass);
+            $myconn = @mysql_connect($this->dbHost,$this->dbUser,$this->dbPass);
             if($myconn) {
-                $seldb = @mysql_select_db($this->db_name,$myconn);
+                $seldb = @mysql_select_db($this->dbName,$myconn);
                 if($seldb) {
                     $this->con = true;
                     return true;
@@ -39,6 +39,10 @@ class Conexao {
                 return false;
             }
         }
+    }
+
+    public function getDbName(){
+        return $this->dbName;
     }
 }
 ?>

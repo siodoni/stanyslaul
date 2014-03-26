@@ -1,3 +1,4 @@
+<!--
 <div class="menu">
     <ul>
         <li><a href="update.php?nomeTabela=cam_publicacao">CAD PUBLICAÇÃO</a></li>
@@ -7,3 +8,4 @@
         <li><a href="logout.php">SAIR</a></li>
     </ul>
 </div>
+-->
