@@ -10,47 +10,67 @@
         <link href="prime/css/all.css" rel="stylesheet">
     </head>
     <body id="admin">
-
         <script type="text/javascript">
             $(function() {
-                // ************************* MENSAGENS *************************
-                $('#messages').puigrowl();
+                $('#menu').puibutton({
+                    icon: 'ui-icon-home'
+                });
+                $('#novo').puibutton({
+                    icon: 'ui-icon-document'
+                });
+                $('#editar').puibutton({
+                    icon: 'ui-icon-pencil'
+                });
+                $('#excluir').puibutton({
+                    icon: 'ui-icon-trash'
+                });
+
+                // MENSAGENS
+                $('#mensagens').puigrowl();
                 
-                // ************************* DATATABLE *************************
-                $('#tblremoteeager').puidatatable({
-                    caption: 'Remote Restful Webservice',
-                    paginator: {
-                        rows: 10
-                    },
-                    columns: [
-                        {field: 'id', headerText: 'Vin', sortable: true},
-                        {field: 'descricao', headerText: 'Brand', sortable: true},
-                        {field: 'tabela02', headerText: 'Year', sortable: true}
-                    ],
-                    datasource: function(callback) {
-                        $.ajax({
-                            type: "GET",
-                            url: 'http://localhost/stanyslaul/json.php?nomeTabela=tabela01',
-                            dataType: "json",
-                            context: this,
-                            success: function(response) {
-                                callback.call(this, response);
-                            }
-                        });
-                    },
-                    selectionMode: 'single',
-                    rowSelect: function(event, data) {
-                        $('#messages').puigrowl('show', [{severity: 'info', summary: 'Row Selected', detail: (data.id + ' ' + data.descricao)}]);
-                    },
-                    rowUnselect: function(event, data) {
-                        $('#messages').puigrowl('show', [{severity: 'info', summary: 'Row Unselected', detail: (data.id + ' ' + data.descricao)}]);
-                    }
+                // DATATABLE
+                $('#tabela').puidatatable({
+                    <?php
+                    require_once 'lib/JSON.class.php';
+                    $json = new JSON($_POST["nomeTabela"]);
+                    $_SESSION["nomeTabela"] = $_POST["nomeTabela"];
+
+                    echo "caption: '".$json->getTabela()."',\n";
+                    echo "paginator: {\n";
+                    echo "  rows: 10\n";
+                    echo "},\n";
+                    echo "datasource: function(callback) {\n";
+                    echo "  $.ajax({\n";
+                    echo "      type: \"GET\",\n";
+                    echo "      url: 'json.php',\n";
+                    echo "      dataType: \"json\",\n";
+                    echo "      context: this,\n";
+                    echo "      success: function(response) {\n";
+                    echo "          callback.call(this, response);\n";
+                    echo "      }\n";
+                    echo "  });\n";
+                    echo "},\n";
+                    echo $json->columns();
+                    echo "selectionMode: 'single',\n";
+                    echo "rowSelect: function(event, data) {\n";
+                    echo "  $('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Selected', detail: ('ID: ' + data.id)}]);\n";
+                    echo "},\n";
+                    echo "rowUnselect: function(event, data) {\n";
+                    echo "  $('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Unselected', detail: ('ID: ' + data.id)}]);\n";
+                    echo "}\n";
+                    ?>
                 });              
             });
         </script>  
-        <div id="messages"></div>  
-        <div id="tblremoteeager"></div>
+        <div id="mensagens"></div>  
+        <div id="tabela"></div>
 
+        <button id="menu" onclick="window.location='index.php';">Menu</button>
+        <button id="novo">Novo</button>
+        <button id="editar">Editar</button>
+        <button id="excluir">Excluir</button>
+        
+        <br/>
         <a href="http://www.pm-consultant.fr/primeui/">http://www.pm-consultant.fr/primeui/</a>
     </body>
 </html>
