@@ -17,11 +17,6 @@ if (empty($_SESSION['usuario_id'])) {
         <meta name="author" content="ABC 3 WebDesign"/>
         <link rel="stylesheet" type="text/css" href="css/style.css"/>
         <script type="text/javascript" src="js/site.js"></script>
-
-        <script src="../../kendo/js/jquery.min.js"></script>
-        <script src="../../kendo/js/kendo.web.min.js"></script>
-        <link href="../../kendo/styles/kendo.common.min.css" rel="stylesheet" />
-        <link href="../../kendo/styles/kendo.default.min.css" rel="stylesheet" />
     </head>
     <body id="admin">
         <?php
@@ -112,19 +107,6 @@ if (empty($_SESSION['usuario_id'])) {
 
             $con->disconnect();
             ?>
-            <script>
-                var caminho = "update.php?nomeTabela=";
-                $("#grid").kendoGrid({
-                    dataSource: {
-                        pageSize: 10
-                    },
-                    selectable: true,
-                    pageable: true,
-                    sortable: true,
-                    scrollable: false,
-                    navigatable: true
-                });
-            </script>
         </form>
     </body>
 </html>
