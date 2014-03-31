@@ -31,6 +31,7 @@
                 // DATATABLE
                 $('#tabela').puidatatable({
                     <?php
+                    session_start();
                     require_once 'lib/JSON.class.php';
                     $json = new JSON($_POST["nomeTabela"]);
                     $_SESSION["nomeTabela"] = $_POST["nomeTabela"];
