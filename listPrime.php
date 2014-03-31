@@ -1,3 +1,6 @@
+<?php
+session_start("stanyslaul");
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -31,10 +34,10 @@
                 // DATATABLE
                 $('#tabela').puidatatable({
                     <?php
-                    session_start();
                     require_once 'lib/JSON.class.php';
-                    $json = new JSON($_POST["nomeTabela"]);
-                    $_SESSION["nomeTabela"] = $_POST["nomeTabela"];
+                    $tabela = $_POST["nomeTabela"];
+                    $json = new JSON($tabela);
+                    $_SESSION["nomeTabela"] = $tabela;
 
                     echo "caption: '".$json->getTabela()."',\n";
                     echo "paginator: {\n";
