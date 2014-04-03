@@ -3,9 +3,11 @@ class JSON {
 
     private $tabela = "";
     private $columns = "";
+    private $sqlTabela;
 
     public function __construct($tabela) {
         $this->tabela = $tabela;
+        $this->sqlTabela = null;
     }
 
     public function json() {
@@ -27,19 +29,11 @@ class JSON {
                                   " from information_schema.columns ".
                                  " where table_schema = '".$con->getDbName()."' ".
                                    " and table_name   = '".$this->tabela."'");
-            $sql = null;
+           
+            $this->montarColunas($query);
 
-            while ($campo = mysql_fetch_array($query)) {
-                if ($sql == null) {
-                    $sql = $campo['column_name'];
-                    $this->columns = "{field: '".$campo['column_name']."', headerText: '".$campo['column_name']."', sortable: true}\n";
-                } else {
-                    $sql = $sql.", ".$campo['column_name'];
-                    $this->columns = $this->columns.",{field: '".$campo['column_name']."', headerText: '".$campo['column_name']."', sortable: true}\n";
-                }
-            }
-
-            $sql = "select ".$sql." from ".$this->tabela.$orderBy;
+            $sql = "select ".$this->sqlTabela." from ".$this->tabela.$orderBy;
+            
             $c = mysql_query($sql);
             $linha = array();
 
@@ -63,13 +57,7 @@ class JSON {
                              " where table_schema = '".$con->getDbName()."' ".
                                " and table_name   = '".$this->tabela."'");
 
-        while ($campo = mysql_fetch_array($query)) {
-            if ($this->columns == null) {
-                $this->columns = "{field: '".$campo['column_name']."', headerText: '".$campo['column_name']."', sortable: true}\n";
-            } else {
-                $this->columns = $this->columns.",{field: '".$campo['column_name']."', headerText: '".$campo['column_name']."', sortable: true}\n";
-            }
-        }
+        $this->montarColunas($query);
 
         $this->columns = "columns:\n[".$this->columns."],\n";
         $con->disconnect();
@@ -78,6 +66,19 @@ class JSON {
     
     public function getTabela(){
         return $this->tabela;
+    }
+    
+    private function montarColunas($query) {
+
+        while ($campo = mysql_fetch_array($query)) {
+            if ($this->sqlTabela == null) {
+                $this->sqlTabela = $campo['column_name'];
+                $this->columns = "{field: '".$campo['column_name']."', headerText: '".$campo['column_name']."', sortable: true}\n";
+            } else {
+                $this->sqlTabela .= ", ".$campo['column_name'];
+                $this->columns = $this->columns.",{field: '".$campo['column_name']."', headerText: '".$campo['column_name']."', sortable: true}\n";
+            }
+        }
     }
 }
 ?>
