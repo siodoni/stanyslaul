@@ -30,51 +30,68 @@ session_start("stanyslaul");
 
                 // MENSAGENS
                 $('#mensagens').puigrowl();
-                
+
                 // DATATABLE
                 $('#tabela').puidatatable({
-                    <?php
-                    require_once 'lib/JSON.class.php';
-                    $tabela = $_POST["nomeTabela"];
-                    $json = new JSON($tabela);
-                    $_SESSION["nomeTabela"] = $tabela;
+            <?php
+                require_once 'lib/JSON.class.php';
+                $tabela = $_POST["nomeTabela"];
+                $json = new JSON($tabela);
+                $_SESSION["nomeTabela"] = $tabela;
 
-                    echo "caption: '".$json->getTabela()."',\n";
-                    echo "paginator: {\n";
-                    echo "  rows: 10\n";
-                    echo "},\n";
-                    echo "datasource: function(callback) {\n";
-                    echo "  $.ajax({\n";
-                    echo "      type: \"GET\",\n";
-                    echo "      url: 'json.php',\n";
-                    echo "      dataType: \"json\",\n";
-                    echo "      context: this,\n";
-                    echo "      success: function(response) {\n";
-                    echo "          callback.call(this, response);\n";
-                    echo "      }\n";
-                    echo "  });\n";
-                    echo "},\n";
-                    echo $json->columns();
-                    echo "selectionMode: 'single',\n";
-                    echo "rowSelect: function(event, data) {\n";
-                    echo "  $('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Selected', detail: ('ID: ' + data.id)}]);\n";
-                    echo "},\n";
-                    echo "rowUnselect: function(event, data) {\n";
-                    echo "  $('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Unselected', detail: ('ID: ' + data.id)}]);\n";
-                    echo "}\n";
-                    ?>
-                });              
+                echo montarCabecalho($json->getTabela(), 10);
+                
+                echo dataSource("json.php");
+                
+                echo $json->columns();
+                echo "selectionMode: 'single',\n";
+                echo "rowSelect: function(event, data) {\n";
+                echo "  $('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Selected', detail: ('ID: ' + data.id)}]);\n";
+                echo "},\n";
+                echo "rowUnselect: function(event, data) {\n";
+                echo "  $('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Unselected', detail: ('ID: ' + data.id)}]);\n";
+                echo "}\n";
+            ?>
+                });
             });
         </script>  
         <div id="mensagens"></div>  
         <div id="tabela"></div>
 
-        <button id="menu" onclick="window.location='index.php';">Menu</button>
+        <button id="menu" onclick="window.location = 'index.php';">Menu</button>
         <button id="novo">Novo</button>
         <button id="editar">Editar</button>
         <button id="excluir">Excluir</button>
-        
+
         <br/>
         <a href="http://www.pm-consultant.fr/primeui/">http://www.pm-consultant.fr/primeui/</a>
     </body>
 </html>
+<?php
+
+function montarCabecalho($nomeTabela, $qtdPaginas) {
+
+    $cabecalho = "caption: '".ucwords(str_replace("_", " ", $nomeTabela))."', \n";
+    $cabecalho .= "paginator: {\n";
+    $cabecalho .= "  rows: $qtdPaginas\n";
+    $cabecalho .= "},\n";
+
+    return $cabecalho;
+}
+
+function dataSource($url) {
+    
+    $ds = "datasource: function(callback) {\n";
+    $ds .= "  $.ajax({\n";
+    $ds .=  "      type: \"GET\",\n";
+    $ds .=  "      url: '$url',\n";
+    $ds .=  "      dataType: \"json\",\n";
+    $ds .=  "      context: this,\n";
+    $ds .=  "      success: function(response) {\n";
+    $ds .=  "          callback.call(this, response);\n";
+    $ds .=  "      }\n";
+    $ds .=  "  });\n";
+    $ds .=  "},\n";
+    
+    return $ds;
+}
