@@ -4,7 +4,7 @@ class Conexao {
     private $dbHost = 'localhost'; // servidor
     private $dbUser = 'root';      // usuario do banco
     private $dbPass = 'vertrigo';  // senha do usuario do banco
-    private $dbName = 'test';      // nome do banco
+    private $dbName = 'newyork';   // nome do banco
     private $con = false;
 
     public function connect() { // estabelece conexao
