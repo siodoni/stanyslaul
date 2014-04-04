@@ -1,10 +1,12 @@
 <?php
 class Conexao {
 
-    private $dbHost = 'localhost'; // servidor
-    private $dbUser = 'root';      // usuario do banco
-    private $dbPass = 'vertrigo';  // senha do usuario do banco
-    private $dbName = 'newyork';   // nome do banco
+    include ('Constantes.php');
+
+    private $dbHost = HOST; // servidor
+    private $dbUser = USER;      // usuario do banco
+    private $dbPass = PASSWORD;  // senha do usuario do banco
+    private $dbName = DBNAME;   // nome do banco
     private $con = false;
 
     public function connect() { // estabelece conexao
