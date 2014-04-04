@@ -1,19 +1,17 @@
+<?php
+require_once 'lib/Estrutura.class.php';
+require_once 'lib/Conexao.class.php';
+
+$estrutura = new Estrutura();
+$con = new Conexao();
+?>
 <html>
-    <head>
-        <script type="text/javascript" src="jquery/jquery-1.11.0.min.js"></script>
-        <script type="text/javascript" src="jquery/jquery-ui.min.js"></script>
-        <script type="text/javascript" src="prime/primeui-1.0-min.js"></script>
-
-        <link href="prime/primeui-1.0-min.css" rel="stylesheet">
-        <link href="jquery/jquery-ui.min.css" rel="stylesheet">
-        <link href="prime/css/all.css" rel="stylesheet">
-    </head>
-
+    <?php
+    echo $estrutura->head();
+    ?>
     <body>
-        <form name="form" method="post" action="listPrime.php"> 
+        <form name="form" method="post" action="list.php"> 
             <?php
-            require_once 'lib/Conexao.class.php';
-            $con = new Conexao();
             $con->connect();
             
             $query = mysql_query("select table_name ".

@@ -1,21 +1,10 @@
-<?php
-/*
-session_start();
-if (empty($_SESSION['usuario_id'])) {
-    header('Location: index.php?r=2');
-} else {
-    $usuario_id = $_SESSION['usuario_id'];
-    $usuario_nome = $_SESSION['usuario_nome'];
-}*/
-?>
 <!DOCTYPE html>
 <html>
     <head>        
         <title></title>
-        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-        <meta name="author" content="ABC 3 WebDesign"/>
         <link rel="stylesheet"    type="text/css" href="css/style.css"/>
         <link rel="stylesheet"    type="text/css" href="css/table.css"/>
+
         <script type="text/javascript" src="js/site.js"></script>
         <script type="text/javascript" src="js/jquery.validation.ajax.js"></script>
         <script type="text/javascript" src="js/jquery.validation.js"></script>
@@ -24,9 +13,6 @@ if (empty($_SESSION['usuario_id'])) {
         <script src="kendo/js/kendo.web.min.js"></script>
         <link href="kendo/styles/kendo.common.min.css" rel="stylesheet" />
         <link href="kendo/styles/kendo.default.min.css" rel="stylesheet" />
-
-        <script type="text/javascript">
-        </script>
     </head>
     <body id="admin">
         <?php
@@ -40,17 +26,17 @@ if (empty($_SESSION['usuario_id'])) {
             die('Não conectado. Erro: ' . mysql_error());
         }
 
-        if (isset($_REQUEST["nomeTabela"])) {
-            $nomeTabela = $_REQUEST["nomeTabela"];
+        if (isset($_SESSION["nomeTabela"])) {
+            $nomeTabela = $_SESSION["nomeTabela"];
         } else {
             die("Informe o parametro nomeTabela.");
         }
 
         $comando = "";
-        if (isset($_REQUEST["id"])) {
-            $id = $_REQUEST["id"];
-            $campoId = $_REQUEST["campoId"];
-            $consultaUpdate = mysql_query("select * from " . $nomeTabela . " where " . $campoId . " = '" . $id . "'");
+        if (isset($_SESSION["id"])) {
+            $id = $_SESSION["id"];
+            $campoId = $_SESSION["campoId"];
+            $consultaUpdate = mysql_query("select * from " . $con->getDbName() . "." . $nomeTabela . " where " . $campoId . " = '" . $id . "'");
             $valorCampo = mysql_fetch_array($consultaUpdate);
             $comando = "update&campoId=" . $campoId . "&id=" . $id;
         } else {
@@ -182,11 +168,6 @@ if (empty($_SESSION['usuario_id'])) {
                 echo "    <input value='Cancelar' type='button' class='inputForm' onclick='window.location.href=\"list.php?nomeTabela=" . $nomeTabela . "\"'/></td></tr>";
                 ?>
             </form>
-            <script>                    
-                $(document).ready(function() {                    
-                    $("#editor").kendoEditor();
-                });
-            </script>
         </tbody>
     </table>
 </body>
@@ -195,7 +176,7 @@ if (empty($_SESSION['usuario_id'])) {
 <?php
 
 $valores = "";
-;
+
 foreach ($_POST as $post) {
     if ($valores == "") {
         if ($qtdAi > 0) {
