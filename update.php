@@ -1,3 +1,6 @@
+<?php
+session_start("stanyslaul");
+?>
 <!DOCTYPE html>
 <html>
     <head>        
@@ -165,7 +168,7 @@
                 }
                 echo "<tr><td>&nbsp;</td>";
                 echo "<td><input value='Salvar'   type='submit' class='inputForm'/>\n";
-                echo "    <input value='Cancelar' type='button' class='inputForm' onclick='window.location.href=\"list.php?nomeTabela=" . $nomeTabela . "\"'/></td></tr>";
+                echo "    <input value='Cancelar' type='button' class='inputForm' onclick='window.location.href=\"list.php\"'/></td></tr>";
                 ?>
             </form>
         </tbody>
@@ -198,7 +201,7 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "insert") {  // caso 
     echo $valores;
     $crud = new crud($nomeTabela);
     $crud->inserir($colunas, $valores);
-    header("Location: list.php?nomeTabela=" . $nomeTabela);
+    header("Location: list.php");
 }
 
 if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso nao seja passado o id via GET cadastra
@@ -221,7 +224,7 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso 
 
     $crud = new crud($nomeTabela);
     $crud->atualizar($comandoUpdate, $campoId . " = '" . $id . "' ");
-    print "<script>location='list.php?nomeTabela=".$nomeTabela."';</script>";
+    print "<script>location='list.php';</script>";
 }
 
 $con->disconnect();
