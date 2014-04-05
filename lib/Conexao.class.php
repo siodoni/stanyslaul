@@ -1,50 +1,48 @@
 <?php
-class Conexao {
+include_once 'Constantes.class.php';
 
-    include ('Constantes.php');
+class Conexao extends Contantes {
 
-    private $dbHost = HOST; // servidor
-    private $dbUser = USER;      // usuario do banco
-    private $dbPass = PASSWORD;  // senha do usuario do banco
-    private $dbName = DBNAME;   // nome do banco
+    private $dbHost = parent::HOST;
+    private $dbUser = parent::USER;
+    private $dbPass = parent::PASSWORD;
+    private $dbName = parent::DBNAME;
     private $con = false;
 
     public function connect() { // estabelece conexao
-        if(!$this->con) {
-            $myconn = @mysql_connect($this->dbHost,$this->dbUser,$this->dbPass);
-            if($myconn) {
-                $seldb = @mysql_select_db($this->dbName,$myconn);
-                if($seldb) {
+        if (!$this->con) {
+            $myconn = @mysql_connect($this->dbHost, $this->dbUser, $this->dbPass);
+            if ($myconn) {
+                $seldb = @mysql_select_db($this->dbName, $myconn);
+                if ($seldb) {
                     $this->con = true;
                     return true;
-                }
-                else {
+                } else {
                     return false;
                 }
-            }
-            else {
+            } else {
                 return false;
             }
-        }
-        else {
+        } else {
             return true;
         }
     }
 
     public function disconnect() { // fecha conexao
-        if($this->con) {
-            if(@mysql_close()) {
+        if ($this->con) {
+            if (@mysql_close()) {
                 $this->con = false;
                 return true;
-            }
-            else {
+            } else {
                 return false;
             }
         }
     }
 
-    public function getDbName(){
+    public function getDbName() {
         return $this->dbName;
     }
+
 }
+
 ?>
