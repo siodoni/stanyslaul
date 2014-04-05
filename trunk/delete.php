@@ -1,3 +1,6 @@
+<?php
+session_start("stanyslaul");
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -38,7 +41,7 @@
             $crud->excluir("".$campoId." = '".$id."'");
             $con->disconnect();
 
-            print "<script>location='list.php?nomeTabela=".$_SESSION["nomeTabela"]."';</script>";
+            print "<script>location='list.php';</script>";
             ?>
         </form>
     </body>
