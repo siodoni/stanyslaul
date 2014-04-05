@@ -26,5 +26,4 @@ class Estrutura extends Contantes {
                "\n<link href='jquery/jquery-ui.min.css'  rel='stylesheet'>" .
                "\n<link href='prime/css/all.css'         rel='stylesheet'>";
     }
-
 }
