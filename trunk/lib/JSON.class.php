@@ -1,4 +1,5 @@
 <?php
+
 class JSON {
 
     private $tabela = "";
@@ -11,7 +12,7 @@ class JSON {
     }
 
     public function json() {
-        if (empty($this->tabela)){
+        if (empty($this->tabela)) {
             $var = "acesso negado";
         } else {
             require_once 'Conexao.class.php';
@@ -25,15 +26,15 @@ class JSON {
             }
 
             $orderBy = " order by 1";
-            $query = mysql_query("select column_name ".
-                                  " from information_schema.columns ".
-                                 " where table_schema = '".$con->getDbName()."' ".
-                                   " and table_name   = '".$this->tabela."'");
-           
+            $query = mysql_query("select column_name " .
+                    " from information_schema.columns " .
+                    " where table_schema = '" . $con->getDbName() . "' " .
+                    " and table_name   = '" . $this->tabela . "'");
+
             $this->montarColunas($query);
 
-            $sql = "select ".$this->sqlTabela." from ".$this->tabela.$orderBy;
-            
+            $sql = "select " . $this->sqlTabela . " from " . $this->tabela . $orderBy;
+
             $c = mysql_query($sql);
             $linha = array();
 
@@ -47,38 +48,40 @@ class JSON {
         return $var;
     }
 
-    public function columns(){
+    public function columns() {
         require_once 'Conexao.class.php';
         $con = new conexao();
         $con->connect();
 
-        $query = mysql_query("select column_name ".
-                              " from information_schema.columns ".
-                             " where table_schema = '".$con->getDbName()."' ".
-                               " and table_name   = '".$this->tabela."'");
+        $query = mysql_query("select column_name " .
+                " from information_schema.columns " .
+                " where table_schema = '" . $con->getDbName() . "' " .
+                " and table_name   = '" . $this->tabela . "'");
 
         $this->montarColunas($query);
 
-        $this->columns = "columns:\n[".$this->columns."],\n";
+        $this->columns = "columns:\n[" . $this->columns . "],\n";
         $con->disconnect();
         return $this->columns;
     }
-    
-    public function getTabela(){
+
+    public function getTabela() {
         return $this->tabela;
     }
-    
+
     private function montarColunas($query) {
 
         while ($campo = mysql_fetch_array($query)) {
             if ($this->sqlTabela == null) {
                 $this->sqlTabela = $campo['column_name'];
-                $this->columns = "{field: '".$campo['column_name']."', headerText: '".$campo['column_name']."', sortable: true}\n";
+                $this->columns = "{field: '" . $campo['column_name'] . "', headerText: '" . $campo['column_name'] . "', sortable: true}\n";
             } else {
-                $this->sqlTabela .= ", ".$campo['column_name'];
-                $this->columns = $this->columns.",{field: '".$campo['column_name']."', headerText: '".$campo['column_name']."', sortable: true}\n";
+                $this->sqlTabela .= ", " . $campo['column_name'];
+                $this->columns = $this->columns . ",{field: '" . $campo['column_name'] . "', headerText: '" . $campo['column_name'] . "', sortable: true}\n";
             }
         }
     }
+
 }
+
 ?>
