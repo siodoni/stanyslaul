@@ -44,5 +44,3 @@ class Conexao extends Contantes {
     }
 
 }
-
-?>

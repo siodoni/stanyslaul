@@ -32,14 +32,12 @@ class JSON {
                     " and table_name   = '" . $this->tabela . "'");
 
             $this->montarColunas($query);
-
-            $sql = "select " . $this->sqlTabela . " from " . $this->tabela . $orderBy;
-
+            $sql = "select " . $this->sqlTabela . " from " .$con->getDbName().".".$this->tabela . $orderBy;
             $c = mysql_query($sql);
             $linha = array();
 
             while ($r = mysql_fetch_assoc($c)) {
-                $linha[] = $r;
+                $linha[] = array_map('utf8_encode', $r);
             }
 
             $var = json_encode($linha);
@@ -74,14 +72,11 @@ class JSON {
         while ($campo = mysql_fetch_array($query)) {
             if ($this->sqlTabela == null) {
                 $this->sqlTabela = $campo['column_name'];
-                $this->columns = "{field: '" . $campo['column_name'] . "', headerText: '" . $campo['column_name'] . "', sortable: true}\n";
+                $this->columns = "{field: '" . $campo['column_name'] . "', headerText: '" . ucfirst(str_replace("_", " ", $campo['column_name'])) . "', sortable: true}\n";
             } else {
                 $this->sqlTabela .= ", " . $campo['column_name'];
-                $this->columns = $this->columns . ",{field: '" . $campo['column_name'] . "', headerText: '" . $campo['column_name'] . "', sortable: true}\n";
+                $this->columns = $this->columns . ",{field: '" . $campo['column_name'] . "', headerText: '" . ucfirst(str_replace("_", " ", $campo['column_name'])) . "', sortable: true}\n";
             }
         }
     }
-
 }
-
-?>
