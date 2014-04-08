@@ -8,6 +8,8 @@ class Menu extends Contantes {
 
     private $estrutura;
     private $con;
+    private $button = "";
+    private $qtde = 0;
 
     public function __construct() {
         $this->estrutura = new Estrutura();
@@ -28,29 +30,57 @@ class Menu extends Contantes {
     }
     
     private function form(){
-        $qtde = 0;
-        $button = "";
         $form = "\n<form name='form' method='post' action='list.php'>";
+        $form = $form . $this->menuBar();
+        
+        $sqlModulo = mysql_query("select id, descricao, icone from snb_modulo order by id");
+        while ($i = mysql_fetch_array($sqlModulo)) {
+            $form = $form 
+                    . "\n<div class='st-menu'>"
+                    . "\n<h1>".$i["descricao"]."</h1> ";
+            $form = $form . $this->buttons($i["id"]);
+            $form = $form . "\n</div>";
+        }
+        
+        $form = $form . "\n</form>" . $this->script($this->button);
+        return $form;
+    }
+    
+    private function buttons($idModulo = 0){
+        $form = "";
         $query = mysql_query(
                 "select if(length(".parent::COLUMN_NAME_VIEW.")=0,".parent::COLUMN_NAME_TABLE.",".parent::COLUMN_NAME_VIEW.") as tabela, ".
                 "       ".parent::COLUMN_CODE_APP." codigo, ".
                 "       ".parent::COLUMN_TITLE." titulo ".
                 "  from ".$this->con->getDbName().".".parent::TABLE_MENU.
-                " ".parent::WHERE_MENU." ".
+                " ".str_replace("?", $idModulo, parent::WHERE_MENU)." ".
                 " ".parent::ORDER_BY_MENU." ");
-        while ($campo = mysql_fetch_array($query)) {
-            $qtde++;
-            $form = $form . "\n<button id='btn" . $qtde . "' type='submit' name='nomeTabela' value='" . $campo['tabela'] . "' class='menu ".substr($campo['codigo'], 0, 3)."'>" . $campo['titulo'] . "</button>";
-            $button = $button . "\n$('#btn" . $qtde . "').puibutton();";
+            
+        while ($j = mysql_fetch_array($query)) {
+            $this->qtde++;
+            $form = $form . "\n<button id='btn" . $this->qtde . "' type='submit' name='nomeTabela' value='" . $j['tabela'] . "' class='st-menu-button'>" . $j['titulo'] . "</button>";
+            $this->button = $this->button . "\n$('#btn" . $this->qtde . "').puibutton({icon: 'ui-icon-newwin'});";
         }
-        $form = $form . "\n</form>" . $this->script($button);
         return $form;
     }
     
-    private function script($button){
+    private function menuBar(){
+        
+        return "<ul id='toolbar'>"
+             . "<li>" 
+             . "<li><a data-icon='ui-icon-gear'>Alterar Senha</a></li>"
+             . "</li>"  
+             . "<li><a data-icon='ui-icon-close'>Sair</a></li>"  
+             . "</ul>";
+    }
+    
+    private function script(){
         return "\n<script type='text/javascript'>"
              . "\n$(function() {"
-             . $button
+             . $this->button
+             . "\n});"
+             . "\n$(function() {"
+             . "\n$('#toolbar').puimenubar();"
              . "\n});"
              . "\n</script>";
     }

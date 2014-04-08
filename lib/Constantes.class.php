@@ -22,6 +22,6 @@ class Contantes {
     const COLUMN_TITLE      = "nm_menu";
     const COLUMN_NAME_VIEW  = "nm_view";
     const COLUMN_NAME_TABLE = "nm_tabela";
-    const WHERE_MENU        = "where fg_ativa = 'S'";
+    const WHERE_MENU        = "where fg_ativa = 'S' and id_modulo = ? ";
     const ORDER_BY_MENU     = "order by sequencia";
 }
