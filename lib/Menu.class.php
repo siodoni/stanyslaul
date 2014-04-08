@@ -40,7 +40,7 @@ class Menu extends Contantes {
                 " ".parent::ORDER_BY_MENU." ");
         while ($campo = mysql_fetch_array($query)) {
             $qtde++;
-            $form = $form . "\n<button id='btn" . $qtde . "' type='submit' name='nomeTabela' value='" . $campo['tabela'] . "'>" . $campo['titulo'] . "</button>";
+            $form = $form . "\n<button id='btn" . $qtde . "' type='submit' name='nomeTabela' value='" . $campo['tabela'] . "' class='menu ".substr($campo['codigo'], 0, 3)."'>" . $campo['titulo'] . "</button>";
             $button = $button . "\n$('#btn" . $qtde . "').puibutton();";
         }
         $form = $form . "\n</form>" . $this->script($button);
@@ -51,7 +51,7 @@ class Menu extends Contantes {
         return "\n<script type='text/javascript'>"
              . "\n$(function() {"
              . $button
-             . "});"
+             . "\n});"
              . "\n</script>";
     }
 }

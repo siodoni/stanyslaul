@@ -5,17 +5,12 @@ session_start("stanyslaul");
 <html>
     <head>        
         <title></title>
-        <link rel="stylesheet"    type="text/css" href="css/style.css"/>
-        <link rel="stylesheet"    type="text/css" href="css/table.css"/>
+        <link rel="stylesheet"    type="text/css" href="res/css/stanyslaul.css"/>
+        <link rel="stylesheet"    type="text/css" href="res/css/stanyslaul.table.css"/>
 
-        <script type="text/javascript" src="js/site.js"></script>
-        <script type="text/javascript" src="js/jquery.validation.ajax.js"></script>
-        <script type="text/javascript" src="js/jquery.validation.js"></script>
-
-        <script src="kendo/js/jquery.min.js"></script>
-        <script src="kendo/js/kendo.web.min.js"></script>
-        <link href="kendo/styles/kendo.common.min.css" rel="stylesheet" />
-        <link href="kendo/styles/kendo.default.min.css" rel="stylesheet" />
+        <script type="text/javascript" src="res/js/stanyslaul.js"></script>
+        <script type="text/javascript" src="res/js/jquery.validation.ajax.js"></script>
+        <script type="text/javascript" src="res/js/jquery.validation.js"></script>
     </head>
     <body id="admin">
         <?php
@@ -168,7 +163,7 @@ session_start("stanyslaul");
                 }
                 echo "<tr><td>&nbsp;</td>";
                 echo "<td><input value='Salvar'   type='submit' class='inputForm'/>\n";
-                echo "    <input value='Cancelar' type='button' class='inputForm' onclick='window.location.href=\"list.php\"'/></td></tr>";
+                echo "    <input value='Cancelar' type='button' class='inputForm' onclick='window.location=\"list.php\"'/></td></tr>";
                 ?>
             </form>
         </tbody>
