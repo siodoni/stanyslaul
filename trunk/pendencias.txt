@@ -1,0 +1,6 @@
+- desenvolver o login
+- desenvolver o logout
+- desenvolver o alterar senha
+- desenvolver o esqueci minha senha
+- terminar o insert/update
+- melhorar o delete

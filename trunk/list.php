@@ -12,22 +12,12 @@ $estrutura = new Estrutura();
     <body id="admin">
         <script type="text/javascript">
             $(function() {
-                $('#menu').puibutton({
-                    icon: 'ui-icon-home'
-                });
-                $('#novo').puibutton({
-                    icon: 'ui-icon-document'
-                });
-                $('#editar').puibutton({
-                    icon: 'ui-icon-pencil'
-                });
-                $('#excluir').puibutton({
-                    icon: 'ui-icon-trash'
-                });
-
                 // MENSAGENS
                 $('#mensagens').puigrowl();
-
+                
+                //TOOLBAR
+                $('#toolbar').puimenubar();
+                
                 // DATATABLE
                 $('#tabela').puidatatable({
             <?php
@@ -52,15 +42,16 @@ $estrutura = new Estrutura();
                 });
             });
         </script>
+        
+        <ul id='toolbar'>
+            <li><a data-icon='ui-icon-home'     onclick="window.location='index.php';">Menu</a></li>
+            <li><a data-icon='ui-icon-document' onclick="window.location='update.php';">Novo</a></li>
+            <li><a data-icon='ui-icon-pencil'>Editar</a></li>
+            <li><a data-icon='ui-icon-trash'>Excluir</a></li>
+        </ul>
+        
         <div id="mensagens"></div>  
         <div id="tabela"></div>
-
-        <button id="menu"   onclick="window.location='index.php';" >Menu</button>
-        <button id="novo"   onclick="window.location='update.php';">Novo</button>
-        <button id="editar" >Editar</button>
-        <button id="excluir">Excluir</button>
-
-        <br/>
         
         <a href="http://www.pm-consultant.fr/primeui/">http://www.pm-consultant.fr/primeui/</a>
     </body>
