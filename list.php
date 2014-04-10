@@ -12,6 +12,8 @@ $estrutura = new Estrutura();
     <body id="admin">
         <script type="text/javascript">
             $(function() {
+                $("#datepicker").datepicker({dateFormat:"dd/mm/yy"});
+
                 // MENSAGENS
                 $('#mensagens').puigrowl();
                 
@@ -52,6 +54,8 @@ $estrutura = new Estrutura();
         
         <div id="mensagens"></div>  
         <div id="tabela"></div>
+        
+        <input type="text" id="datepicker">
         
         <a href="http://www.pm-consultant.fr/primeui/">http://www.pm-consultant.fr/primeui/</a>
     </body>
