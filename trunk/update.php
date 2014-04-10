@@ -30,7 +30,7 @@ $estrutura = new Estrutura();
         $comando = "";
         if (isset($_SESSION["id"])) {
             $id = $_SESSION["id"];
-            $campoId = $_SESSION["campoId"];
+            $campoId = "id";
             $consultaUpdate = mysql_query("select * from " . $con->getDbName() . "." . $nomeTabela . " where " . $campoId . " = '" . $id . "'");
             $valorCampo = mysql_fetch_array($consultaUpdate);
             $comando = "update&campoId=" . $campoId . "&id=" . $id;
@@ -125,7 +125,7 @@ $estrutura = new Estrutura();
                             echo "<td><input type='text' id='" . $campo['coluna'] . "' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . "/></td>\n";
                             $campoData = $campoData . "\n$('#" . $campo['coluna'] . "').datepicker({dateFormat:'dd/mm/yy'});";
                         } elseif ($campo['tabela_ref'] != null) {
-                            $query_ = mysql_query("select * from " . $campo["tabela_ref"]);
+                            $query_ = mysql_query("select * from ".$con->getDbName().".".$campo["tabela_ref"]." order by id");
                             echo "<td><select name='" . $campo['coluna'] . "' class='inputForm'>";
                             echo "<option value='' $selected >Escolha...</option>\n";
                             while ($campo_ref = mysql_fetch_row($query_)) {
@@ -135,7 +135,7 @@ $estrutura = new Estrutura();
                         } elseif ($campo['tipo_dado'] == 'longtext') {
                             echo "<td><textarea id=\"editor\" rows=\"10\" cols=\"30\" name=\"conteudo\" style=\"width:100%;height:440px\" ></textarea></td>\n";
                         } elseif (substr($campo['coluna'], 0, 3) == "fi_") {
-                            echo "<td><input type='file' name=" . $campo['coluna'] . "   /></td>\n";
+                            echo "<td><input type='file' name=" . $campo['coluna'] . "/></td>\n";
                             $qtdArq = 1;
                         } elseif (substr($campo['coluna'], 0, 3) == "pw_") {
                             echo "<td><input type='password' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . " /></td>\n";

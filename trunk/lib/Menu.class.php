@@ -31,8 +31,9 @@ class Menu extends Contantes {
     }
     
     private function form(){
-        $form = "\n<form name='form' method='post' action='list.php'>";
-        $form = $form . $this->menuBar();
+        $form = "\n<div class='st-div-main'>"
+              . "\n<form name='form' method='post' action='list.php'>"
+              . $this->menuBar();
         
         $sqlModulo = mysql_query("select id, descricao, icone from snb_modulo order by id");
         while ($i = mysql_fetch_array($sqlModulo)) {
@@ -43,7 +44,10 @@ class Menu extends Contantes {
             $form = $form . "\n</div>";
         }
         
-        $form = $form . "\n</form>" . $this->script($this->button);
+        $form = $form
+              . "\n</form>"
+              . "\n</div>"
+              . $this->script($this->button);
         return $form;
     }
     

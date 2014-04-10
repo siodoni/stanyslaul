@@ -13,7 +13,7 @@ class JSON {
 
     public function json() {
         if (empty($this->tabela)) {
-            $var = "acesso negado";
+            $var = "Acesso Negado!";
         } else {
             require_once 'Conexao.class.php';
             header('Content-type: application/json');
@@ -40,7 +40,7 @@ class JSON {
                 $linha[] = array_map('utf8_encode', $r);
             }
 
-            $var = json_encode($linha);
+            $var = json_encode($linha,JSON_NUMERIC_CHECK);
             $con->disconnect();
         }
         return $var;
