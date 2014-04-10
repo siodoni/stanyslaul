@@ -21,6 +21,7 @@ class Menu extends Contantes {
     }
 
     private function buildMenu() {
+        echo "<!DOCTYPE html>";
         echo "\n<html>";
         echo $this->estrutura->head();
         echo "\n<body>";

@@ -1,22 +1,19 @@
 <?php
 session_start("stanyslaul");
+
+require_once 'lib/Conexao.class.php';
+require_once 'lib/Crud.class.php';
+require_once 'lib/Estrutura.class.php';
+
+$estrutura = new Estrutura();
 ?>
 <!DOCTYPE html>
 <html>
-    <head>        
-        <title></title>
-        <link rel="stylesheet"    type="text/css" href="res/css/stanyslaul.css"/>
-        <link rel="stylesheet"    type="text/css" href="res/css/stanyslaul.table.css"/>
-
-        <script type="text/javascript" src="res/js/stanyslaul.js"></script>
-        <script type="text/javascript" src="res/js/jquery.validation.ajax.js"></script>
-        <script type="text/javascript" src="res/js/jquery.validation.js"></script>
-    </head>
+    <?php
+    echo $estrutura->head();
+    ?>
     <body id="admin">
         <?php
-        require_once 'lib/Conexao.class.php';
-        require_once 'lib/Crud.class.php';
-
         $con = new conexao();
         $con->connect();
 
@@ -61,118 +58,119 @@ session_start("stanyslaul");
                      and a.TABLE_NAME             = b.TABLE_NAME 
                      and a.COLUMN_NAME            = b.COLUMN_NAME
                      and b.REFERENCED_TABLE_NAME is not null
-                   where a.table_schema = '".$con->getDbName()."'
+                   where a.table_schema = '" . $con->getDbName() . "'
                      and a.table_name   = '" . $nomeTabela . "' 
                    order by a.ordinal_position");
         ?>
-        <table id='hor-minimalist-a'>
-            <thead>
-                <tr>
-                    <th colspan="2">Cadastro de <?php echo ucfirst(str_replace("_", " ", $nomeTabela)) ?></th>
-                </tr>
-            </thead>
-            <tbody>
-            <form id="formInsert" action="update.php?comando=<?php echo($comando . "&nomeTabela=" . $nomeTabela); ?>" method="post">
-                <?php
-                $contador = 0;
-                $colunas = "";
-                // se existe campo de ID com Auto increment
-                $qtdAi = 0;
-                // se exsite campo do tipo "file"
-                $qtdArq = 0;
-                $arquivo = "";
-                while ($campo = mysql_fetch_array($query)) {
+        <form id="formInsert" action="update.php?comando=<?php echo($comando . "&nomeTabela=" . $nomeTabela); ?>" method="post">
+            <table id='hor-minimalist-a'>
+                <thead>
+                    <tr>
+                        <th colspan="2">Cadastro de <?php echo ucfirst(str_replace("_", " ", $nomeTabela)) ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $contador = 0;
+                    $colunas = "";
+                    // se existe campo de ID com Auto increment
+                    $qtdAi = 0;
+                    // se exsite campo do tipo "file"
+                    $qtdArq = 0;
+                    $arquivo = "";
+                    $campoData = "";
+                    while ($campo = mysql_fetch_array($query)) {
 
-                    // zerar variáveis
-                    $ai = "";
-                    $required = "";
-                    $tamCampo = "";
-                    $valor = "";
-                    $selected = "";
+                        // zerar variáveis
+                        $ai = "";
+                        $required = "";
+                        $tamCampo = "";
+                        $valor = "";
+                        $selected = "";
 
-                    if ($campo['tamanho_campo'] > 100) {
-                        $tamCampo = 80;
-                    } else {
-                        $tamCampo = $campo['tamanho_campo'];
-                    }
+                        if ($campo['tamanho_campo'] > 100) {
+                            $tamCampo = 80;
+                        } else {
+                            $tamCampo = $campo['tamanho_campo'];
+                        }
 
-                    if ($campo['auto_increment'] != "") {
-                        $ai = "disabled=\"disabled\"";
-                        $qtdAi = 1;
-                    }
+                        if ($campo['auto_increment'] != "") {
+                            $ai = "disabled=\"disabled\"";
+                            $qtdAi = 1;
+                        }
 
-                    if ($campo['nulo'] == "NO") {
-                        $required = "required=\"required\"";
-                    }
+                        if ($campo['nulo'] == "NO") {
+                            $required = "required=\"required\"";
+                        }
 
-                    // label
-                    echo "<tr><td>" . ucwords(str_replace("_", " ",
-                            str_replace("fi_", "", $campo['coluna'])
-                            )) . "</td>\n";
+                        // label
+                        echo "<tr><td>" . ucwords(str_replace("_", " ", str_replace("fi_", "", $campo['coluna'])
+                        )) . "</td>\n";
 
-                    if (isset($valorCampo)) {
-                        $valor = $valorCampo[$contador];
-                    }
+                        if (isset($valorCampo)) {
+                            $valor = $valorCampo[$contador];
+                        }
 
-                    if ($campo['tipo_dado'] == 'enum') {
-                        $enum = explode(',', $campo['valor_enum']);
-
-                        echo "<td><select name='" . $campo['coluna'] . "' class='inputForm'>";
-
-                        foreach ($enum as $enum) {
-
-                            if ($valor == $enum) {
-                                $selected = "selected";
+                        if ($campo['tipo_dado'] == 'enum') {
+                            $enum = explode(',', $campo['valor_enum']);
+                            echo "<td><select name='" . $campo['coluna'] . "' class='inputForm'>";
+                            foreach ($enum as $enum) {
+                                if ($valor == $enum) {
+                                    $selected = "selected";
+                                }
+                                echo "<option value='" . $enum . "' $selected >" . ucfirst(strtolower($enum)) . "</option>";
                             }
-
-                            echo "<option value='" . $enum . "' $selected >" . ucfirst(strtolower($enum)) . "</option>";
+                            echo "</select></td>\n";
+                        } elseif (($campo['tipo_dado'] == 'date')) {
+                            echo "<td><input type='text' id='" . $campo['coluna'] . "' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . "/></td>\n";
+                            $campoData = $campoData . "\n$('#" . $campo['coluna'] . "').datepicker({dateFormat:'dd/mm/yy'});";
+                        } elseif ($campo['tabela_ref'] != null) {
+                            $query_ = mysql_query("select * from " . $campo["tabela_ref"]);
+                            echo "<td><select name='" . $campo['coluna'] . "' class='inputForm'>";
+                            echo "<option value='' $selected >Escolha...</option>\n";
+                            while ($campo_ref = mysql_fetch_row($query_)) {
+                                echo "<option value='" . $campo_ref[0] . "' >" . $campo_ref[1] . "</option>\n";
+                            }
+                            echo "</select></td>\n";
+                        } elseif ($campo['tipo_dado'] == 'longtext') {
+                            echo "<td><textarea id=\"editor\" rows=\"10\" cols=\"30\" name=\"conteudo\" style=\"width:100%;height:440px\" ></textarea></td>\n";
+                        } elseif (substr($campo['coluna'], 0, 3) == "fi_") {
+                            echo "<td><input type='file' name=" . $campo['coluna'] . "   /></td>\n";
+                            $qtdArq = 1;
+                        } elseif (substr($campo['coluna'], 0, 3) == "pw_") {
+                            echo "<td><input type='password' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . " /></td>\n";
+                        } else {
+                            echo "<td><input type='text' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . " /></td>\n";
                         }
-                        echo "</select></td>\n";
-                    } elseif ($campo['tabela_ref'] != null) {
-                        $query_ = mysql_query("select * from " . $campo["tabela_ref"]);
-                        echo "<td><select name='" . $campo['coluna'] . "' class='inputForm'>";
-                        echo "<option value='' $selected >Escolha...</option>\n";
-                        while ($campo_ref = mysql_fetch_row($query_)) {
-                            echo "<option value='" . $campo_ref[0] . "' >" . $campo_ref[1] . "</option>\n";
+
+                        //echo "<td><label class='error' generated='true' for='" . $campo['coluna'] . "'></label></td></tr>";
+                        // montar query de insert
+                        if ($colunas == "") {
+                            $colunas .= $campo['coluna'];
+                        } else {
+                            $colunas .= "," . $campo['coluna'];
+                            if (substr($campo['coluna'], 0, 3) == "fi_") {
+                                $arquivo = isset($_FILES[$campo['coluna']]);
+                            }
                         }
-                        echo "</select></td>\n";
-                    } elseif ($campo['tipo_dado'] == 'longtext') {
-                        echo "<td><textarea id=\"editor\" rows=\"10\" cols=\"30\" name=\"conteudo\" style=\"width:100%;height:440px\" ></textarea></td>\n";
-                    } elseif (substr($campo['coluna'], 0, 3) == "fi_") {
-                        echo "<td><input type='file' name=" . $campo['coluna'] . "   /></td>\n";
-                        $qtdArq = 1;
-                    } elseif (substr($campo['coluna'], 0, 3) == "pw_") {
-                        echo "<td><input type='password' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . " /></td>\n";
-                    }
-                    else {
-                        echo "<td><input type='text' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . " /></td>\n";
+                        $contador += 1;
                     }
 
-                    //echo "<td><label class='error' generated='true' for='" . $campo['coluna'] . "'></label></td></tr>";
-
-                    // montar query de insert
-                    if ($colunas == "") {
-                        $colunas .= $campo['coluna'];
-                    } else {
-                        $colunas .= "," . $campo['coluna'];
-                        if (substr($campo['coluna'], 0, 3) == "fi_") {
-                            $arquivo = isset($_FILES[$campo['coluna']]);
-                        }
-                    }
-                    $contador += 1;
-                }
-                echo "<tr><td>&nbsp;</td>";
-                echo "<td><input value='Salvar'   type='submit' class='inputForm'/>\n";
-                echo "    <input value='Cancelar' type='button' class='inputForm' onclick='window.location=\"list.php\"'/></td></tr>";
-                ?>
-            </form>
-        </tbody>
-    </table>
-</body>
+                    echo "<tr><td>&nbsp;</td>";
+                    echo "<td><input value='Salvar'   type='submit' class='inputForm'/>\n";
+                    echo "    <input value='Cancelar' type='button' class='inputForm' onclick='window.location=\"list.php\"'/></td></tr>";
+                    ?>
+                </tbody>
+            </table>
+            <?php
+            if ($campoData != "") {
+                echo "\n<script type='text/javascript'>\n$(function() {" . $campoData . "\n});\n</script>\n";
+            }
+            ?>
+        </form>
+    </body>
 </html>
-
 <?php
-
 $valores = "";
 
 foreach ($_POST as $post) {
@@ -224,26 +222,26 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso 
 
 $con->disconnect();
 
-echo 
-"<pre>select a.ordinal_position id_coluna,".
-"\n        a.column_name coluna,".
-"\n        a.is_nullable nulo,".
-"\n        a.data_type tipo_dado,".
-"\n        a.numeric_precision numerico,".
-"\n        if(a.data_type='date',10,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,".
-"\n        if(a.data_type='date',10,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres,".
-"\n        replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum,".
-"\n        a.column_type enum,".
-"\n        if (a.extra = 'auto_increment',1,null) auto_increment,".
-"\n        a.column_key tp_chave,".
-"\n        b.REFERENCED_TABLE_NAME tabela_ref".
-"\n   from information_schema.columns a ".
-"\n   left join information_schema.key_column_usage b ".
-"\n     on a.TABLE_SCHEMA           = b.TABLE_SCHEMA".
-"\n    and a.TABLE_NAME             = b.TABLE_NAME ".
-"\n    and a.COLUMN_NAME            = b.COLUMN_NAME".
-"\n    and b.REFERENCED_TABLE_NAME is not null".
-"\n  where a.table_schema = '".$con->getDbName()."'".
-"\n    and a.table_name   = '" . $nomeTabela . "' ".
+echo
+"<pre>select a.ordinal_position id_coluna," .
+"\n        a.column_name coluna," .
+"\n        a.is_nullable nulo," .
+"\n        a.data_type tipo_dado," .
+"\n        a.numeric_precision numerico," .
+"\n        if(a.data_type='date',10,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo," .
+"\n        if(a.data_type='date',10,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres," .
+"\n        replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum," .
+"\n        a.column_type enum," .
+"\n        if (a.extra = 'auto_increment',1,null) auto_increment," .
+"\n        a.column_key tp_chave," .
+"\n        b.REFERENCED_TABLE_NAME tabela_ref" .
+"\n   from information_schema.columns a " .
+"\n   left join information_schema.key_column_usage b " .
+"\n     on a.TABLE_SCHEMA           = b.TABLE_SCHEMA" .
+"\n    and a.TABLE_NAME             = b.TABLE_NAME " .
+"\n    and a.COLUMN_NAME            = b.COLUMN_NAME" .
+"\n    and b.REFERENCED_TABLE_NAME is not null" .
+"\n  where a.table_schema = '" . $con->getDbName() . "'" .
+"\n    and a.table_name   = '" . $nomeTabela . "' " .
 "\n  order by a.ordinal_position</pre>";
 ?>
