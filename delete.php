@@ -13,6 +13,9 @@ session_start("stanyslaul");
 
             $con = new conexao();
             $con->connect();
+            $campoId = "id";
+            $nomeTabela = "";
+            $id = "";
 
             if($con->connect() == true) {
                 echo "";
@@ -20,27 +23,30 @@ session_start("stanyslaul");
                 die('Não conectado. Erro: '.mysql_error());
             }
 
-            if (isset($_SESSION["nomeTabela"])) {
-                $crud = new crud($_SESSION["nomeTabela"]);
+            if (isset($_POST["nomeTabela"])) {
+                $nomeTabela = $_POST["nomeTabela"];
+            } else{
+                $nomeTabela = $_SESSION["nomeTabela"];
+            }
+            
+            if ($nomeTabela != ""){
+                $crud = new Crud($nomeTabela);
             } else {
                 die("Informe o parametro nomeTabela.");
             }
-
-            if (isset($_SESSION["campoId"])) {
-                $campoId = $_SESSION["campoId"];
-            }else {
-                die("Informe o parametro campoId.");
+            
+            if (isset($_POST["id"])) {
+                $id = $_POST["id"];
+            } else{
+                $id = $_SESSION["id"];
             }
 
-            if (isset($_SESSION["id"])) {
-                $id = $_SESSION["id"];
-            }else {
+            if ($id == "") {
                 die("Informe o parametro id.");
             }
 
             $crud->excluir("".$campoId." = '".$id."'");
             $con->disconnect();
-
             print "<script>location='list.php';</script>";
             ?>
         </form>

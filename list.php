@@ -12,8 +12,6 @@ $estrutura = new Estrutura();
     <body id="admin">
         <script type="text/javascript">
             $(function() {
-                $("#datepicker").datepicker({dateFormat:"dd/mm/yy"});
-
                 // MENSAGENS
                 $('#mensagens').puigrowl();
                 
@@ -24,7 +22,11 @@ $estrutura = new Estrutura();
                 $('#tabela').puidatatable({
             <?php
                 require_once 'lib/JSON.class.php';
-                $tabela = $_POST["nomeTabela"];
+                if (isset($_POST["nomeTabela"])){
+                    $tabela = $_POST["nomeTabela"];
+                } else {
+                    $tabela = $_SESSION["nomeTabela"];
+                }
                 $json = new JSON($tabela);
                 $_SESSION["nomeTabela"] = $tabela;
 
@@ -35,36 +37,51 @@ $estrutura = new Estrutura();
                 echo $json->columns();
                 echo "selectionMode: 'single',\n";
                 echo "rowSelect: function(event, data) {\n";
-                echo "  $('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Selected', detail: ('ID: ' + data.id)}]);\n";
+                //echo "  $('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Selected', detail: ('ID: ' + data.id)}]);\n";
                 echo "},\n";
                 echo "rowUnselect: function(event, data) {\n";
-                echo "  $('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Unselected', detail: ('ID: ' + data.id)}]);\n";
+                //echo "  $('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Unselected', detail: ('ID: ' + data.id)}]);\n";
                 echo "}\n";
             ?>
                 });
             });
         </script>
-        
-        <ul id='toolbar'>
-            <li><a data-icon='ui-icon-home'     onclick="window.location='index.php';">Menu</a></li>
-            <li><a data-icon='ui-icon-document' onclick="window.location='update.php';">Novo</a></li>
-            <li><a data-icon='ui-icon-pencil'>Editar</a></li>
-            <li><a data-icon='ui-icon-trash'>Excluir</a></li>
-        </ul>
-        
-        <div id="mensagens"></div>  
-        <div id="tabela"></div>
-        
-        <input type="text" id="datepicker">
+        <div class="st-div-main">
+            <ul id='toolbar'>
+                <li>
+                    <a data-icon='ui-icon-home' onclick="window.location='index.php';" >
+                        Menu
+                    </a>
+                </li>
+                <li>
+                    <a data-icon='ui-icon-document' onclick="window.location='update.php';">
+                        Novo
+                    </a>
+                </li>
+                <li>
+                    <a data-icon='ui-icon-pencil' onclick="window.location='update.php';">
+                        Editar
+                    </a>
+                </li>
+                <li>
+                    <a data-icon='ui-icon-trash' onclick="return excluir();">
+                        Excluir
+                    </a>
+                </li>
+            </ul>
+
+            <div id="mensagens"></div>  
+            <div id="tabela"></div>
+        </div>
         
         <a href="http://www.pm-consultant.fr/primeui/">http://www.pm-consultant.fr/primeui/</a>
     </body>
 </html>
 <?php
 
-function montarCabecalho($nomeTabela, $qtdPaginas) {
+function montarCabecalho($tabela, $qtdPaginas) {
 
-    $cabecalho = "caption: '".ucwords(str_replace("_", " ", $nomeTabela))."', \n";
+    $cabecalho = "caption: '".ucwords(str_replace("_", " ", $tabela))."', \n";
     $cabecalho .= "paginator: {\n";
     $cabecalho .= "  rows: $qtdPaginas\n";
     $cabecalho .= "},\n";
