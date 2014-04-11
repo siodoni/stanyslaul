@@ -33,6 +33,7 @@ class Crud {
      */
     public function inserir($campos, $valores) { // funçao de inserçao, campos e seus respectivos valores como parametros
         $this->sql_ins = "INSERT INTO " . $this->tabela . " ($campos) VALUES ($valores)";
+
         if (!$this->ins = mysql_query($this->sql_ins)) {
             die("<center>Erro na inclusão " . '<br>Linha: ' . __LINE__ . "<br>" . mysql_error() . "<br>
 		  <a href='list.php'>Voltar ao Menu</a></center>");

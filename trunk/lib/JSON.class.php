@@ -11,13 +11,15 @@ class JSON {
         $this->sqlTabela = null;
     }
 
-    public function json() {
+    public function json($alteraHeader = true) {
         if (empty($this->tabela)) {
             $var = "Acesso Negado!";
         } else {
             require_once 'Conexao.class.php';
-            header('Content-type: application/json');
-
+            if ($alteraHeader){
+                header('Content-type: application/json');
+            }
+            
             $con = new conexao();
             $con->connect();
 

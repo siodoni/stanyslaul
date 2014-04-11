@@ -4,6 +4,7 @@ session_start("stanyslaul");
 require_once 'lib/Conexao.class.php';
 require_once 'lib/Crud.class.php';
 require_once 'lib/Estrutura.class.php';
+require_once 'lib/JSON.class.php';
 
 $estrutura = new Estrutura();
 ?>
@@ -125,6 +126,33 @@ $estrutura = new Estrutura();
                             echo "<td><input type='text' id='" . $campo['coluna'] . "' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . "/></td>\n";
                             $campoData = $campoData . "\n$('#" . $campo['coluna'] . "').datepicker({dateFormat:'dd/mm/yy'});";
                         } elseif ($campo['tabela_ref'] != null) {
+                            /*
+                             * 
+                             * ========================================
+                             * 
+                             * PORQUE DESSE JEITO NÃO DÁ CERTO!!!!!!!!!
+                             * 
+                             * ========================================
+                             * 
+                             * 
+                            $json = new JSON($campo["tabela_ref"]);
+                            $array = json_decode($json->json(false),true);
+                            
+                            echo "<td><select name='" . $campo['coluna'] . "' class='inputForm'>\n";
+                            echo "<option value='' $selected >Escolha...</option>\n";
+                            $option = "";
+                            
+                            foreach ($array as $i => $value) {
+                                $option = "<option $selected value='";
+                                foreach ($value as $j => $valor) {
+                                    $option = $option . ($j=="id" ? $value[$j]."'>" : "") . $value[$j]." ";
+                                }
+                                echo $option = trim($option) . "</option>\n";
+                            }
+                            echo "</select></td>\n";
+                            */
+                            
+                            ///*
                             $query_ = mysql_query("select * from ".$con->getDbName().".".$campo["tabela_ref"]." order by id");
                             echo "<td><select name='" . $campo['coluna'] . "' class='inputForm'>";
                             echo "<option value='' $selected >Escolha...</option>\n";
@@ -132,6 +160,8 @@ $estrutura = new Estrutura();
                                 echo "<option value='" . $campo_ref[0] . "' >" . $campo_ref[1] . "</option>\n";
                             }
                             echo "</select></td>\n";
+                            //*/
+
                         } elseif ($campo['tipo_dado'] == 'longtext') {
                             echo "<td><textarea id=\"editor\" rows=\"10\" cols=\"30\" name=\"conteudo\" style=\"width:100%;height:440px\" ></textarea></td>\n";
                         } elseif (substr($campo['coluna'], 0, 3) == "fi_") {
