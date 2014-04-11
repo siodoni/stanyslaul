@@ -4,3 +4,4 @@
 - desenvolver o esqueci minha senha
 - terminar o insert/update
 - melhorar o delete
+- melhorar a forma como as lovs são montadas (utilizar JSon)
