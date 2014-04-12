@@ -44,7 +44,7 @@
                             <option value='NAO' selected >Nao</option>
                         </select></td>
                     <td><label class='error' generated='true' for='status'></label></td></tr><tr><td>&nbsp;</td><td><input value='Salvar'   type='submit' class='inputForm'/>
-                        <input value='Cancelar' type='button' class='inputForm' onclick='window.location.href="index.php?nomeTabela=fat_artigo"'/></td></tr>
+                        <input value='Cancelar' type='button' class='inputForm' onclick='window.location.href="menu.php?nomeTabela=fat_artigo"'/></td></tr>
             </table>
             <textarea id="editor" rows="10" cols="30" name="conteudo" style="width:100%;height:440px" ></textarea>
         </form>

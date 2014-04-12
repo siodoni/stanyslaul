@@ -9,10 +9,12 @@ class Menu extends Contantes {
     private $estrutura;
     private $con;
     private $button = "";
+    private $panel = "";
     private $qtde = 0;
     private $nomeUsuario = "";
 
-    public function __construct() {
+    public function __construct($nome = "") {
+        $this->setNomeUsuario($nome);
         $this->estrutura = new Estrutura();
         $this->con = new Conexao();
         
@@ -39,8 +41,8 @@ class Menu extends Contantes {
         $sqlModulo = mysql_query("select id, descricao, icone from snb_modulo order by id");
         while ($i = mysql_fetch_array($sqlModulo)) {
             $form = $form 
-                    . "\n<div class='st-menu'>"
-                    . "\n<h1>".$i["descricao"]."</h1> ";
+                    . "\n<div id='panel".$i["id"]."' class='st-menu' title='".$i["descricao"]."'>";
+            $this->panel = $this->panel . "\n$('#panel".$i["id"]."').puipanel({toggleable: true})";
             $form = $form . $this->buttons($i["id"]);
             $form = $form . "\n</div>";
         }
@@ -64,7 +66,7 @@ class Menu extends Contantes {
             
         while ($j = mysql_fetch_array($query)) {
             $this->qtde++;
-            $form = $form . "\n<button id='btn" . $this->qtde . "' type='submit' name='nomeTabela' value='" . $j['tabela'] . "' class='st-menu-button'>" . $j['titulo'] . "</button>";
+            $form = $form . "\n<button id='btn" . $this->qtde . "' type='submit' name='nomeTabela' value='" . $j['tabela'] . "' class='st-menu-button'>" . $j['titulo'] . "</button><br/>";
             $this->button = $this->button . "\n$('#btn" . $this->qtde . "').puibutton({icon: 'ui-icon-newwin'});";
         }
         return $form;
@@ -73,7 +75,7 @@ class Menu extends Contantes {
     private function menuBar(){
         
         return "<ul id='toolbar'>"
-             . "<li><a data-icon='ui-icon-person'>".$this->nomeUsuario."</a></li>"
+             . "<li><a data-icon='ui-icon-person'>Bem vindo ".$this->nomeUsuario."</a></li>"
              . "<li><a data-icon='ui-icon-gear'>Alterar Senha</a></li>"
              . "<li><a data-icon='ui-icon-close' href='logout.php'>Sair</a></li>"  
              . "</ul>";
@@ -83,9 +85,8 @@ class Menu extends Contantes {
         return "\n<script type='text/javascript'>"
              . "\n$(function() {"
              . $this->button
-             . "\n});"
-             . "\n$(function() {"
              . "\n$('#toolbar').puimenubar();"
+             . $this->panel
              . "\n});"
              . "\n</script>";
     }

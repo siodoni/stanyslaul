@@ -82,7 +82,7 @@ class Crud {
                 print "<center>Registro Excluído com Sucesso!<br><a href='list.php'>Voltar ao Menu</a></center>";
             }
         } else {
-            print "<center>Registro Não encontrado!<br><a href='index.php?'>Voltar ao Menu</a></center>";
+            print "<center>Registro Não encontrado!<br><a href='menu.php?'>Voltar ao Menu</a></center>";
         }
     }
 
