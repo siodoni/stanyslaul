@@ -1,3 +1,21 @@
+.st-panel-login {
+    position:absolute; 
+    width:250px;
+    margin-left:-125px;
+    height:180px;
+    margin-top:-90px;
+    top:50%; 
+    left:50%;
+}
+
+.st-input-login {
+    width: 224px;
+}
+
+.st-button-login {
+    width: 108px;
+}
+
 .st-menu {
     padding: 5px;
     border-style: solid;
