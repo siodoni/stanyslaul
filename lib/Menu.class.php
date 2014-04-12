@@ -10,6 +10,7 @@ class Menu extends Contantes {
     private $con;
     private $button = "";
     private $qtde = 0;
+    private $nomeUsuario = "";
 
     public function __construct() {
         $this->estrutura = new Estrutura();
@@ -72,10 +73,9 @@ class Menu extends Contantes {
     private function menuBar(){
         
         return "<ul id='toolbar'>"
-             . "<li>" 
+             . "<li><a data-icon='ui-icon-person'>".$this->nomeUsuario."</a></li>"
              . "<li><a data-icon='ui-icon-gear'>Alterar Senha</a></li>"
-             . "</li>"  
-             . "<li><a data-icon='ui-icon-close'>Sair</a></li>"  
+             . "<li><a data-icon='ui-icon-close' href='logout.php'>Sair</a></li>"  
              . "</ul>";
     }
     
@@ -88,5 +88,9 @@ class Menu extends Contantes {
              . "\n$('#toolbar').puimenubar();"
              . "\n});"
              . "\n</script>";
+    }
+    
+    public function setNomeUsuario($nome = ""){
+        $this->nomeUsuario = $nome;
     }
 }

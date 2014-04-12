@@ -1,5 +1,6 @@
 <?php
-session_start("stanyslaul");
+session_start();
+if (!isset($_SESSION["usuario"])){header('location:index.php');}
 
 require_once 'lib/Estrutura.class.php';
 $estrutura = new Estrutura();
