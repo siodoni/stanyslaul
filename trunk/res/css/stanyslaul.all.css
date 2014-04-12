@@ -8,6 +8,21 @@
     left:50%;
 }
 
+.st-panel-login-error {
+    position:absolute; 
+    width:255px;
+    margin-left:-125px;
+    height:40px;
+    margin-top:100px;
+    top:50%; 
+    left:50%;
+    
+}
+
+.st-panel-login-error strong{
+    margin: 10px;
+}
+
 .st-input-login {
     width: 224px;
 }
@@ -17,10 +32,10 @@
 }
 
 .st-menu {
-    padding: 5px;
-    border-style: solid;
-    border-width: 0px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    width: 30%;
+    float: left;
 }
 
 .st-menu-button {

@@ -141,7 +141,7 @@ while ($campo = mysql_fetch_array($query)) {
 
 $corpo .= "<tr><td>&nbsp;</td>";
 $corpo .= "<td><input value='Salvar'   type='submit' class='inputForm'/>\n";
-$corpo .= "    <input value='Cancelar' type='button' class='inputForm' onclick='window.location.href=\"index.php?nomeTabela=" . $nomeTabela . "\"'/></td></tr>\n";
+$corpo .= "    <input value='Cancelar' type='button' class='inputForm' onclick='window.location.href=\"menu.php?nomeTabela=" . $nomeTabela . "\"'/></td></tr>\n";
 $corpo .= "</tbody>\n";
 $corpo .= "</table>\n";
 
@@ -208,7 +208,7 @@ foreach ($_POST as $post) {
 if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "insert") {  // caso nao seja passado o id via GET cadastra
     $crud = new crud($nomeTabela);
     $crud->inserir($colunas, $valores);
-    header("Location: index.php?nomeTabela=" . $nomeTabela);
+    header("Location: menu.php?nomeTabela=" . $nomeTabela);
 }
 
 if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso nao seja passado o id via GET cadastra
@@ -231,7 +231,7 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso 
 
     $crud = new crud($nomeTabela);
     $crud->atualizar($comandoUpdate, $campoId . " = '" . $id . "' ");
-    header("Location: index.php?nomeTabela=" . $nomeTabela);
+    header("Location: menu.php?nomeTabela=" . $nomeTabela);
 }
 
 $con->disconnect();

@@ -50,7 +50,7 @@ $estrutura = new Estrutura();
         <div class="st-div-main">
             <ul id='toolbar'>
                 <li>
-                    <a data-icon='ui-icon-home' onclick="window.location='index.php';" >
+                    <a data-icon='ui-icon-home' onclick="window.location='menu.php';" >
                         Menu
                     </a>
                 </li>

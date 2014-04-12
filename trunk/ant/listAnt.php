@@ -84,7 +84,7 @@
             $cont += 1;
             echo("<tfoot><tr><td colspan=$cont><a href='update.php?nomeTabela=" . $nomeTabela . "'><img src='img/ico-add.png' alt='Novo Registro' />&nbsp;Novo&nbsp;</a></td></tr></tfoot>");
             echo("</table>\n");
-            echo("<a href='index.php'>Menu</a>\n");
+            echo("<a href='menu.php'>Menu</a>\n");
 
             $con->disconnect();
             ?>

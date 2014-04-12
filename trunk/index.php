@@ -2,6 +2,7 @@
 require_once 'lib/Estrutura.class.php';
 $estrutura = new Estrutura();
 ?>
+<!DOCTYPE html>
 <html>
     <?php
     echo $estrutura->head();
@@ -17,14 +18,22 @@ $estrutura = new Estrutura();
 
                 <br/>
                 <button id="logar" type="submit" class="st-button-login">Entrar</button>
-                <button id="cancelar" type="reset" class="st-button-login">Limpar</button>
+                <button id="cancelar" type="reset" class="st-button-login" onclick="window.location='menu.php';">Limpar</button>
             </div>
-        </form>
-        <?php
+            <?php
             if (isset($_GET["return"]) && $_GET["return"] == "error"){
-                echo "Usuario ou senha invalidos.<br>";
+                echo "<div class='ui-state-error st-panel-login-error'>"
+                    ."<p>"
+                    ."<span class='ui-icon ui-icon-alert' style='float:left;margin-left:30px;'>"
+                    ."</span>"
+                    ."<strong>Usuario ou senha invalidos.</strong>"
+                    ."</p>"
+                    ."</div>";
             }
-        ?>
+            ?>
+            
+            
+        </form>
     </body>
     <script type="text/javascript">
         $(function() {

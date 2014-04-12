@@ -6,6 +6,7 @@ class Estrutura extends Contantes {
     public function head() {
         return "\n<head>" .
                $this->title() .
+               $this->meta() .
                $this->script() .
                $this->css() .
                "\n</head>\n";
@@ -13,6 +14,10 @@ class Estrutura extends Contantes {
 
     public function title() {
         return "\n<title>" . parent::TITLE . "</title>";
+    }
+    
+    public function meta(){
+        return "\n<meta charset='iso-8859-1'></meta>";
     }
 
     public function script() {

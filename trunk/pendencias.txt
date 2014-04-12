@@ -1,7 +1,7 @@
-- desenvolver o login
-- desenvolver o logout
+ok - desenvolver o login
+ok - desenvolver o logout
 - desenvolver o alterar senha
 - desenvolver o esqueci minha senha
 - terminar o insert/update
 - melhorar o delete
-- melhorar a forma como as lovs são montadas (utilizar JSon)
+- melhorar a forma como as lovs sao montadas (utilizar JSon)
