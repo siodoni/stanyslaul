@@ -57,7 +57,8 @@ class Menu extends Contantes {
     private function buttons($idModulo = 0){
         $form = "";
         $query = mysql_query(
-                "select if(length(".parent::COLUMN_NAME_VIEW.")=0,".parent::COLUMN_NAME_TABLE.",".parent::COLUMN_NAME_VIEW.") as tabela, ".
+              //"select if(length(".parent::COLUMN_NAME_VIEW.")=0,".parent::COLUMN_NAME_TABLE.",".parent::COLUMN_NAME_VIEW.") as tabela, ".
+                "select ".parent::COLUMN_NAME_TABLE." as tabela, ".
                 "       ".parent::COLUMN_CODE_APP." codigo, ".
                 "       ".parent::COLUMN_TITLE." titulo ".
                 "  from ".$this->con->getDbName().".".parent::TABLE_MENU.
