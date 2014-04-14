@@ -3,6 +3,8 @@ include_once 'Constantes.class.php';
 
 class Estrutura extends Contantes {
 
+    private $javaScript;
+    
     public function head() {
         return "\n<head>" .
                $this->title() .
@@ -39,4 +41,13 @@ class Estrutura extends Contantes {
                "\n<link href='res/css/stanyslaul.all.css'       rel='stylesheet'>".
                "\n<link href='res/css/themes/redmond/theme.css' rel='stylesheet'>";
     }
+    
+    public function montarJS($texto) {
+        $this->javaScript .= $texto;
+    }
+    
+    public function retornaJS() {
+        return $this->javaScript;
+    }
+    
 }

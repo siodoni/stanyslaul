@@ -15,6 +15,42 @@ $estrutura = new Estrutura();
     echo $estrutura->head();
     ?>
     <body id="admin">
+        <script type="text/javascript">
+            $(function() {
+                // MENSAGENS
+                $('#mensagens').puigrowl();
+
+                //TOOLBAR
+                $('#toolbar').puimenubar();
+            });
+        </script>
+        <div class="st-div-main">
+            <ul id='toolbar'>
+                <li>
+                    <a data-icon='ui-icon-home' onclick="window.location='menu.php';" >
+                        Menu
+                    </a>
+                </li>
+                <li>
+                    <a data-icon='ui-icon-document' onclick="window.location='update.php';">
+                        Novo
+                    </a>
+                </li>
+                <li>
+                    <a data-icon='ui-icon-pencil' onclick="window.location='update.php';">
+                        Editar
+                    </a>
+                </li>
+                <li>
+                    <a data-icon='ui-icon-trash' onclick="return excluir();">
+                        Excluir
+                    </a>
+                </li>
+            </ul>
+
+            <div id="mensagens"></div>  
+            <div id="tabela"></div>
+        </div>
         <?php
         $con = new conexao();
         $con->connect();
@@ -64,13 +100,11 @@ $estrutura = new Estrutura();
                      and a.table_name   = '" . $nomeTabela . "' 
                    order by a.ordinal_position");
         ?>
+        <div id="panel" class="st-menu"><?="Cadastro de " . $nomeTabela ?>
+                
+        </div>
         <form id="formInsert" action="update.php?comando=<?php echo($comando . "&nomeTabela=" . $nomeTabela); ?>" method="post">
             <table id='hor-minimalist-a'>
-                <thead>
-                    <tr>
-                        <th colspan="2">Cadastro de <?php echo ucfirst(str_replace("_", " ", $nomeTabela)) ?></th>
-                    </tr>
-                </thead>
                 <tbody>
                     <?php
                     $contador = 0;
@@ -81,6 +115,7 @@ $estrutura = new Estrutura();
                     $qtdArq = 0;
                     $arquivo = "";
                     $campoData = "";
+
                     while ($campo = mysql_fetch_array($query)) {
 
                         // zerar variáveis
@@ -89,7 +124,7 @@ $estrutura = new Estrutura();
                         $tamCampo = "";
                         $valor = "";
                         $selected = "";
-
+                        
                         if ($campo['tamanho_campo'] > 100) {
                             $tamCampo = 80;
                         } else {
@@ -162,6 +197,8 @@ $estrutura = new Estrutura();
                             }
                             echo "</select></td>\n";
                             //*/
+                            //montarCampo($campo['coluna'],$campo['coluna'],null,null,null,null,$campo['tipo_dado']);
+                            $estrutura->montarJS("$('#".$campo['coluna']."').puidropdown();\n");
 
                         } elseif ($campo['tipo_dado'] == 'longtext') {
                             echo "<td><textarea id=\"editor\" rows=\"10\" cols=\"30\" name=\"conteudo\" style=\"width:100%;height:440px\" ></textarea></td>\n";
@@ -169,9 +206,13 @@ $estrutura = new Estrutura();
                             echo "<td><input type='file' name=" . $campo['coluna'] . "/></td>\n";
                             $qtdArq = 1;
                         } elseif (substr($campo['coluna'], 0, 3) == "pw_") {
-                            echo "<td><input type='password' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . " /></td>\n";
+                            //echo "<td><input type='password' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . " /></td>\n";
+                            montarCampo($campo['coluna'],$campo['coluna'],$tamCampo,$campo['qtde_caracteres'],$valor,$ai,$campo['tipo_dado']);
+                            $estrutura->montarJS("$('#".$campo['coluna']."').puipassword();\n");
                         } else {
-                            echo "<td><input type='text' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . " /></td>\n";
+                            montarCampo($campo['coluna'],$campo['coluna'],$tamCampo,$campo['qtde_caracteres'],$valor,$ai,$campo['tipo_dado']);
+                            $estrutura->montarJS("$('#".$campo['coluna']."').puiinputtext();\n");
+                            //echo "<td><input type='text' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . " /></td>\n";
                         }
 
                         //echo "<td><label class='error' generated='true' for='" . $campo['coluna'] . "'></label></td></tr>";
@@ -186,7 +227,7 @@ $estrutura = new Estrutura();
                         }
                         $contador += 1;
                     }
-
+                    echo "<input hidden='comando' value='$comando' />";
                     echo "<tr><td>&nbsp;</td>";
                     echo "<td><input value='Salvar'   type='submit' class='inputForm'/>\n";
                     echo "    <input value='Cancelar' type='button' class='inputForm' onclick='window.location=\"list.php\"'/></td></tr>";
@@ -200,6 +241,12 @@ $estrutura = new Estrutura();
             ?>
         </form>
     </body>
+    <script type="text/javascript">
+        $(function() {
+            $('#panel').puipanel();
+            <?=$estrutura->retornaJS();?>
+        });
+    </script>
 </html>
 <?php
 $valores = "";
@@ -253,7 +300,23 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso 
 
 $con->disconnect();
 
-echo
+/* Campos */
+function inputText($id, $name, $size, $maxLength, $value, $enable) {
+    return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' class='inputForm' value='$value' $enable /></td>\n";
+}
+
+function montarCampo($id, $name, $size, $maxLength, $value, $enable, $tipo) {
+    $campoTexto = array("int", "bigint", "varchar");
+    //$campoSenha = array("passord")
+    
+    if (in_array($tipo, $campoTexto)) {
+        echo inputText($id, $name, $size, $maxLength, $value, $enable);
+    } elseif (in_array($tipo, $campoSenha)) {
+        echo inputPassword($id, $name, $size, $maxLength, $value, $enable);
+    }
+}
+
+echo (
 "<pre>select a.ordinal_position id_coluna," .
 "\n        a.column_name coluna," .
 "\n        a.is_nullable nulo," .
@@ -274,5 +337,5 @@ echo
 "\n    and b.REFERENCED_TABLE_NAME is not null" .
 "\n  where a.table_schema = '" . $con->getDbName() . "'" .
 "\n    and a.table_name   = '" . $nomeTabela . "' " .
-"\n  order by a.ordinal_position</pre>";
+"\n  order by a.ordinal_position</pre>");
 ?>
