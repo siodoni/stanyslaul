@@ -1,12 +1,19 @@
-ok - desenvolver o login
-ok - desenvolver o logout
+===================
+=== Finalizadas ===
+===================
+- desenvolver o login
+- desenvolver o logout
+- incluir o controle de permissão no menu
+- usar a criptografia SHA1 no login.
+
+===================
+===  Pendentes  ===
+===================
 - desenvolver o alterar senha
 - desenvolver o esqueci minha senha
 - terminar o insert/update
 - melhorar o delete
 - melhorar a forma como as lovs sao montadas (utilizar JSon)
 - melhorar a forma como as lovs sao montadas (verificar se é possível utilizar a view)
-- incluir o controle de permissão no menu
 - alterar o list.php para usarem as lovs quando as mesmas existirem.
-ok - usar a criptografia SHA1 no login.
 - usar a criptografia SHA1 na gravação e geração da senha.
