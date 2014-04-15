@@ -6,7 +6,7 @@ $con = new Conexao();
 $con->connect();
 
 $usuario = $_POST["usuario"];
-$senha   = $_POST["senha"];
+$senha   = sha1($_POST["senha"]);
 
 $sql = mysql_query("select b.nome "
                   ."  from newyork.snb_pessoa b, "

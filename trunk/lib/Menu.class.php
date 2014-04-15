@@ -11,10 +11,12 @@ class Menu extends Contantes {
     private $button = "";
     private $panel = "";
     private $qtde = 0;
+    private $usuario = "";
     private $nomeUsuario = "";
 
-    public function __construct($nome = "") {
+    public function __construct($nome = "", $usuario = "") {
         $this->setNomeUsuario($nome);
+        $this->setUsuario($usuario);
         $this->estrutura = new Estrutura();
         $this->con = new Conexao();
         
@@ -58,13 +60,19 @@ class Menu extends Contantes {
         $form = "";
         $query = mysql_query(
               //"select if(length(".parent::COLUMN_NAME_VIEW.")=0,".parent::COLUMN_NAME_TABLE.",".parent::COLUMN_NAME_VIEW.") as tabela, ".
-                "select ".parent::COLUMN_NAME_TABLE." as tabela, ".
-                "       ".parent::COLUMN_CODE_APP." codigo, ".
-                "       ".parent::COLUMN_TITLE." titulo ".
-                "  from ".$this->con->getDbName().".".parent::TABLE_MENU.
+                "select a.".parent::COLUMN_NAME_TABLE." as tabela, ".
+                "       a.".parent::COLUMN_CODE_APP." codigo, ".
+                "       a.".parent::COLUMN_TITLE." titulo ".
+                "  from ".$this->con->getDbName().".".parent::TABLE_MENU." a ".
                 " ".str_replace("?", $idModulo, parent::WHERE_MENU)." ".
+                " and exists (select 1 " .
+                "               from ".$this->con->getDbName().".snb_autorizacao b ".
+                "              where b.id_menu    = a.id " .
+                "                and b.id_usuario = (select c.id " .
+                "                                      from ".$this->con->getDbName().".snb_usuario c " .
+                "                                     where c.usuario = '".$this->usuario."')) ".
                 " ".parent::ORDER_BY_MENU." ");
-            
+        
         while ($j = mysql_fetch_array($query)) {
             $this->qtde++;
             $form = $form . "\n<button id='btn" . $this->qtde . "' type='submit' name='nomeTabela' value='" . $j['tabela'] . "' class='st-menu-button'>" . $j['titulo'] . "</button><br/>";
@@ -94,5 +102,9 @@ class Menu extends Contantes {
     
     public function setNomeUsuario($nome = ""){
         $this->nomeUsuario = $nome;
+    }
+    
+    public function setUsuario($usuario = ""){
+        $this->usuario = $usuario;
     }
 }

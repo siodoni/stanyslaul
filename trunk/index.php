@@ -31,8 +31,6 @@ $estrutura = new Estrutura();
                     ."</div>";
             }
             ?>
-            
-            
         </form>
     </body>
     <script type="text/javascript">

@@ -5,3 +5,5 @@ ok - desenvolver o logout
 - terminar o insert/update
 - melhorar o delete
 - melhorar a forma como as lovs sao montadas (utilizar JSon)
+ok - usar a criptografia SHA1 no login.
+- usar a criptografia SHA1 na gravação e geração da senha.
