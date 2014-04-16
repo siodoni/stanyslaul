@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION["usuario"])){header('location:menu.php');}
+if (!isset($_SESSION["usuario"])){header('location:index.php');}
 ?>
 <!DOCTYPE html>
 <html>

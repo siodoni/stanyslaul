@@ -17,11 +17,18 @@ class Contantes {
     const COLUMN_PASS = 'senha';
     
     //Menu
-    const TABLE_MENU        = "snb_menu";
-    const COLUMN_CODE_APP   = "cod_aplicacao";
-    const COLUMN_TITLE      = "nm_menu";
-    const COLUMN_NAME_VIEW  = "nm_view";
-    const COLUMN_NAME_TABLE = "nm_tabela";
-    const WHERE_MENU        = "where a.fg_ativa = 'S' and a.id_modulo = ? ";
-    const ORDER_BY_MENU     = "order by a.sequencia";
+    const QUERY_MENU = "select a.nm_tabela as tabela,
+                               a.cod_aplicacao codigo, 
+                               a.nm_menu titulo,
+                               a.nm_view view
+                          from newyork.snb_menu a 
+                         where a.fg_ativa  = 'S' 
+                           and a.id_modulo = #idModulo 
+                           and exists (select 1 
+                                         from newyork.snb_autorizacao b 
+                                        where b.id_menu    = a.id 
+                                          and b.id_usuario = (select c.id 
+                                                                from newyork.snb_usuario c 
+                                                               where c.usuario = '#usuario')) 
+                         order by a.sequencia ";
 }
