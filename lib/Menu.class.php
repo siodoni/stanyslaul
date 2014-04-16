@@ -40,7 +40,7 @@ class Menu extends Contantes {
               . "\n<form name='form' method='post' action='list.php'>"
               . $this->menuBar();
         
-        $sqlModulo = mysql_query("select id, descricao, icone from snb_modulo order by id");
+        $sqlModulo = mysql_query("select id, descricao, icone from ".$this->con->getDbName().".snb_modulo order by id");
         while ($i = mysql_fetch_array($sqlModulo)) {
             $form = $form 
                     . "\n<div id='panel".$i["id"]."' class='st-menu' title='".$i["descricao"]."'>";
@@ -58,20 +58,9 @@ class Menu extends Contantes {
     
     private function buttons($idModulo = 0){
         $form = "";
-        $query = mysql_query(
-              //"select if(length(".parent::COLUMN_NAME_VIEW.")=0,".parent::COLUMN_NAME_TABLE.",".parent::COLUMN_NAME_VIEW.") as tabela, ".
-                "select a.".parent::COLUMN_NAME_TABLE." as tabela, ".
-                "       a.".parent::COLUMN_CODE_APP." codigo, ".
-                "       a.".parent::COLUMN_TITLE." titulo ".
-                "  from ".$this->con->getDbName().".".parent::TABLE_MENU." a ".
-                " ".str_replace("?", $idModulo, parent::WHERE_MENU)." ".
-                " and exists (select 1 " .
-                "               from ".$this->con->getDbName().".snb_autorizacao b ".
-                "              where b.id_menu    = a.id " .
-                "                and b.id_usuario = (select c.id " .
-                "                                      from ".$this->con->getDbName().".snb_usuario c " .
-                "                                     where c.usuario = '".$this->usuario."')) ".
-                " ".parent::ORDER_BY_MENU." ");
+        $query = mysql_query(str_replace("#usuario",$this->usuario,(
+                             str_replace("#idModulo",$idModulo,
+                             parent::QUERY_MENU))));
         
         while ($j = mysql_fetch_array($query)) {
             $this->qtde++;

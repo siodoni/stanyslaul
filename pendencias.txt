@@ -3,8 +3,9 @@
 ===================
 - desenvolver o login
 - desenvolver o logout
-- incluir o controle de permissão no menu
+- incluir o controle de permissao no menu
 - usar a criptografia SHA1 no login.
+- alterar o list.php para usarem as lovs quando as mesmas existirem.
 
 ===================
 ===  Pendentes  ===
@@ -14,6 +15,6 @@
 - terminar o insert/update
 - melhorar o delete
 - melhorar a forma como as lovs sao montadas (utilizar JSon)
-- melhorar a forma como as lovs sao montadas (verificar se é possível utilizar a view)
-- alterar o list.php para usarem as lovs quando as mesmas existirem.
-- usar a criptografia SHA1 na gravação e geração da senha.
+- melhorar a forma como as lovs sao montadas (verificar se eh possivel utilizar a view)
+- usar a criptografia SHA1 na gravacao e geracao da senha
+- transformar o list.php em classe
