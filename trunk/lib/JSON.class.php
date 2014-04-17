@@ -28,10 +28,11 @@ class JSON {
             }
 
             $orderBy = " order by 1";
-            $query = mysql_query("select column_name " .
-                    " from information_schema.columns " .
-                    " where table_schema = '" . $con->getDbName() . "' " .
-                    " and table_name   = '" . $this->tabela . "'");
+            $query = mysql_query(
+                    "select column_name " .
+                    "  from information_schema.columns " .
+                    " where table_schema = '".$con->getDbName()."' " .
+                    "   and table_name   = '".$this->tabela."' ");
 
             $this->montarColunas($query);
             $sql = "select " . $this->sqlTabela . " from " .$con->getDbName().".".$this->tabela . $orderBy;
@@ -53,10 +54,11 @@ class JSON {
         $con = new conexao();
         $con->connect();
 
-        $query = mysql_query("select column_name " .
-                " from information_schema.columns " .
-                " where table_schema = '" . $con->getDbName() . "' " .
-                " and table_name   = '" . $this->tabela . "'");
+        $query = mysql_query(
+                "select column_name " .
+                "  from information_schema.columns " .
+                " where table_schema = '".$con->getDbName()."' " .
+                "   and table_name   = '".$this->tabela."' ");
 
         $this->montarColunas($query);
 
