@@ -50,6 +50,7 @@ $estrutura = new Estrutura();
 
             <div id="mensagens"></div>  
             <div id="tabela"></div>
+        </div>
         <?php
         $con = new conexao();
         $con->connect();
@@ -98,9 +99,9 @@ $estrutura = new Estrutura();
                    where a.table_schema = '" . $con->getDbName() . "'
                      and a.table_name   = '" . $nomeTabela . "' 
                    order by a.ordinal_position");
-            //$campos = json_encode(mysql_fetch_array($query));
+        die(json_encode(mysql_fetch_array($query)));
         ?>
-        <div id="panel" class="pui-menu"><?="Cadastro de " . $nomeTabela ?>
+        <div id="panel" class="st-menu"><?="Cadastro de " . $nomeTabela ?>
                 
         </div>
         <form id="formInsert" action="update.php?comando=<?php echo($comando . "&nomeTabela=" . $nomeTabela); ?>" method="post">
@@ -125,54 +126,97 @@ $estrutura = new Estrutura();
                         $valor = "";
                         $selected = "";
                         
+                        montarCampo($campo);
+                        $estrutura->montarJS("$('#".$campo['coluna']."').puiinputtext();\n");
+                        
+                        if ($campo['tamanho_campo'] > 100) {
+                            $tamCampo = 80;
+                        } else {
+                            $tamCampo = $campo['tamanho_campo'];
+                        }
+
+                        if ($campo['auto_increment'] != "") {
+                            $ai = "disabled=\"disabled\"";
+                            $qtdAi = 1;
+                        }
+
                         if ($campo['nulo'] == "NO") {
                             $required = "required=\"required\"";
                         }
 
+                        // label
+                        echo "<tr><td>" . ucwords(str_replace("_", " ", str_replace("fi_", "", $campo['coluna'])
+                        )) . "</td>\n";
+
                         if (isset($valorCampo)) {
                             $valor = $valorCampo[$contador];
                         }
-                        
-                        if ($campo['tabela_ref'] != null) {
-                            $tabelaRef = $campo['tabela_ref'];
-                        }
 
-                        // label
-                        echo label($campo);
-
-                        if /*($campo['tipo_dado'] == 'enum') {
-                            montarCampo($campo, $valor);
-                            $estrutura->montarJS("$('#".$campo['coluna']."').puidropdown();\n");
-                        } elseif*/ (($campo['tipo_dado'] == 'date')) {
-                            montarCampo($campo,$valor);
-                            $estrutura->montarJS("$('#".$campo['coluna']."').datepicker({dateFormat:'dd/mm/yy'});\n");
-                        } elseif ($tabelaRef != null) {
-                            montarCampo($campo,$valor);
-                            $estrutura->montarJS("$('#".$campo['coluna']."').puidropdown();\n");
+                        if ($campo['tipo_dado'] == 'enum') {
+                            $enum = explode(',', $campo['valor_enum']);
+                            echo "<td><select name='" . $campo['coluna'] . "' class='inputForm'>";
+                            foreach ($enum as $enum) {
+                                if ($valor == $enum) {
+                                    $selected = "selected";
+                                }
+                                echo "<option value='" . $enum . "' $selected >" . ucfirst(strtolower($enum)) . "</option>";
+                            }
+                            echo "</select></td>\n";
+                        } elseif (($campo['tipo_dado'] == 'date')) {
+                            echo "<td><input type='text' id='" . $campo['coluna'] . "' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . "/></td>\n";
+                            $campoData = $campoData . "\n$('#" . $campo['coluna'] . "').datepicker({dateFormat:'dd/mm/yy'});";
+                        } elseif ($campo['tabela_ref'] != null) {
+                            /*
+                             * 
+                             * ========================================
+                             * 
+                             * PORQUE DESSE JEITO NÃO DÁ CERTO!!!!!!!!!
+                             * 
+                             * ========================================
+                             * 
+                             * 
+                            $json = new JSON($campo["tabela_ref"]);
+                            $array = json_decode($json->json(false),true);
+                            
+                            echo "<td><select name='" . $campo['coluna'] . "' class='inputForm'>\n";
+                            echo "<option value='' $selected >Escolha...</option>\n";
+                            $option = "";
+                            
+                            foreach ($array as $i => $value) {
+                                $option = "<option $selected value='";
+                                foreach ($value as $j => $valor) {
+                                    $option = $option . ($j=="id" ? $value[$j]."'>" : "") . $value[$j]." ";
+                                }
+                                echo $option = trim($option) . "</option>\n";
+                            }
+                            echo "</select></td>\n";
+                            */
                             
                             ///*
-//                            $query_ = mysql_query("select * from ".$con->getDbName().".".$campo["tabela_ref"]." order by id");
-//                            echo "<td><select name='" . $campo['coluna'] . "' class='inputForm'>";
-//                            echo "<option value='' $selected >Escolha...</option>\n";
-//                            while ($campo_ref = mysql_fetch_row($query_)) {
-//                                echo "<option value='" . $campo_ref[0] . "' >" . $campo_ref[1] . "</option>\n";
-//                            }
-//                            echo "</select></td>\n";
+                            $query_ = mysql_query("select * from ".$con->getDbName().".".$campo["tabela_ref"]." order by id");
+                            echo "<td><select name='" . $campo['coluna'] . "' class='inputForm'>";
+                            echo "<option value='' $selected >Escolha...</option>\n";
+                            while ($campo_ref = mysql_fetch_row($query_)) {
+                                echo "<option value='" . $campo_ref[0] . "' >" . $campo_ref[1] . "</option>\n";
+                            }
+                            echo "</select></td>\n";
                             //*/
                             //montarCampo($campo['coluna'],$campo['coluna'],null,null,null,null,$campo['tipo_dado']);
-//                            $estrutura->montarJS("$('#".$campo['coluna']."').puidropdown();\n");
+                            $estrutura->montarJS("$('#".$campo['coluna']."').puidropdown();\n");
 
                         } elseif ($campo['tipo_dado'] == 'longtext') {
-                            montarCampo($campo, $valor);
-                            $estrutura->montarJS("$('#".$campo['coluna']."').puiinputtextarea();\n");
+                            echo "<td><textarea id=\"editor\" rows=\"10\" cols=\"30\" name=\"conteudo\" style=\"width:100%;height:440px\" ></textarea></td>\n";
                         } elseif (substr($campo['coluna'], 0, 3) == "fi_") {
-                            montarCampo($campo, $valor);
+                            echo "<td><input type='file' name=" . $campo['coluna'] . "/></td>\n";
+                            $qtdArq = 1;
                         } elseif (substr($campo['coluna'], 0, 3) == "pw_") {
-                            montarCampo($campo, $valor);
+                            //echo "<td><input type='password' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . " /></td>\n";
+                            montarCampo($campo['coluna'],$campo['coluna'],$tamCampo,$campo['qtde_caracteres'],$valor,$ai,$campo['tipo_dado']);
                             $estrutura->montarJS("$('#".$campo['coluna']."').puipassword();\n");
                         } else {
-                            montarCampo($campo,$valor);
+                            montarCampo($campo['coluna'],$campo['coluna'],$tamCampo,$campo['qtde_caracteres'],$valor,$ai,$campo['tipo_dado']);
                             $estrutura->montarJS("$('#".$campo['coluna']."').puiinputtext();\n");
+                            //echo "<td><input type='text' name='" . $campo['coluna'] . "' size='" . $tamCampo . "' maxlength='" . $campo['qtde_caracteres'] . "' class='inputForm' value='" . $valor . "' " . $ai . " /></td>\n";
                         }
 
                         //echo "<td><label class='error' generated='true' for='" . $campo['coluna'] . "'></label></td></tr>";
@@ -187,12 +231,10 @@ $estrutura = new Estrutura();
                         }
                         $contador += 1;
                     }
+                    echo "<input hidden='comando' value='$comando' />";
                     echo "<tr><td>&nbsp;</td>";
-                    inputHidden($comando);
-                    echo "<td>" . button("salvar", "submit","Salvar","");
-                    $estrutura->montarJS("$('#salvar').puibutton();\n");
-                    echo button("cancelar","button", "Cancelar", "onclick='window.location=\"list.php\"'") . "</td></tr>";
-                    $estrutura->montarJS("$('#cancelar').puibutton();\n");
+                    echo "<td><input value='Salvar'   type='submit' class='inputForm'/>\n";
+                    echo "    <input value='Cancelar' type='button' class='inputForm' onclick='window.location=\"list.php\"'/></td></tr>";
                     ?>
                 </tbody>
             </table>
@@ -202,7 +244,6 @@ $estrutura = new Estrutura();
             }
             ?>
         </form>
-        </div>
     </body>
     <script type="text/javascript">
         $(function() {
@@ -264,100 +305,18 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso 
 $con->disconnect();
 
 /* Campos */
-function label($arrayCampo) {
-    return "<tr><td>" . ucwords(str_replace("_", " ", str_replace("fi_", "", $arrayCampo['coluna']))) . "</td>\n";
-}
-
-function button($id, $tipo, $valor, $acao) {
-    return "<input id='$id' value='$valor' type='$tipo' class='inputForm'/ $acao >\n";
-}
-
 function inputText($id, $name, $size, $maxLength, $value, $enable) {
     return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' class='inputForm' value='$value' $enable /></td>\n";
 }
 
-function inputPassword($id, $name, $size, $maxLength, $value, $enable) {
-    return "<td><input type='password' id='$id' name='$name' size='$size' maxlength='$maxLength' class='inputForm' value='$value' $enable /></td>\n";
-}
-
-function inputHidden($valor) {
-    return "<td><input hidden='comando' value='$valor' /></td>\n";
-}
-
-function inputFile($id, $name, $valor) {
-    return "<td><input type='file' id='$id' name='$name' value='$valor' /></td>\n";
-}
-
-function inputTextArea($id, $name) {
-    return "<td><textarea id='$id' rows=\"10\" cols=\"30\" name='$name' style=\"width:100%;height:440px\" ></textarea></td>\n";
-}
-
-function inputDate($id, $name, $size, $maxLength, $value, $enable) {
-    return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' class='inputForm' value='$value' $enable /></td>\n";
-}
-
-function selectMenuEnum($id, $valoresSelect, $valorSelecionado) {
+function montarCampo($id, $name, $size, $maxLength, $value, $enable, $tipo) {
+    $campoTexto = array("int", "bigint", "varchar");
+    //$campoSenha = array("passord")
     
-    $enum = explode(',', $valoresSelect);
-    $selectMenu = "<td><select id='$id' name='$id' class='inputForm'>";
-    foreach ($enum as $enum) {
-        ($valorSelecionado == $enum) ? $selected = "selected" : $selected = "";
-        $selectMenu .= "<option value='" . $enum . "' $selected >" . ucfirst($enum) . "</option>";
-    }
-    $selectMenu .= "</select></td>\n";
-    return $selectMenu;
-}
-
-function selectMenu($id, $name, $tabelaRef, $valorSelecionado) {
-    
-    echo "<td><select id='$id' name='$name' class='inputForm'>\n";
-    echo "<option value='' $selected >Escolha...</option>\n";
-
-    $option = "";
-    $q = mysql_query("select * from $tabelaRef");
-
-    while ($c = mysql_fetch_array($q)) {
-        $option = "<option $selected value='$c[0]'>";
-        $option .= trim($c[2]);
-        $option .= "</option>\n";
-        echo $option;
-    }
-
-    echo "</select></td>\n";
-}
-
-function montarCampo($arrayCampo, $valorCampo) {
-    //$campoTexto = array("int", "bigint", "varchar");
-    $campoSenha = array("password");
-    $campoArquivo = array("file");
-    $campoTextArea = array("longtext");
-    $campoData = array("date");
-    $campoEnum = array("enum");
-    
-    if ($arrayCampo['tamanho_campo'] > 100) {
-        $tamCampo = 80;
-    } else {
-        $tamCampo = $arrayCampo['tamanho_campo'];
-    }
-
-    if ($arrayCampo['auto_increment'] != "") {
-        $ai = "disabled=\"disabled\"";
-    }
-    
-    if (in_array($arrayCampo['tipo_dado'], $campoSenha)) {
-        echo inputPassword($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
-    } elseif (in_array ($arrayCampo['tipo_dado'], $campoArquivo)) {
-        echo inputFile($arrayCampo['coluna'], $arrayCampo['coluna'], $valorCampo);
-    } elseif (in_array($arrayCampo['tipo_dado'], $campoTextArea)) {
-        echo inputTextArea($arrayCampo['coluna'], $arrayCampo['coluna']);
-    } elseif (in_array($arrayCampo['tipo_dado'], $campoData)) {
-        echo inputDate($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
-    } elseif (in_array($arrayCampo['tipo_dado'] && $arrayCampo['tipo_chave'] == 'MUL', $campoEnum)) {
-        echo selectMenuEnum($arrayCampo['coluna'], $arrayCampo[valor_enum], $valorCampo);
-    } elseif ($arrayCampo['tipo_chave'] == 'MUL') {
-        selectMenu($arrayCampo['coluna'], $arrayCampo['coluna'], $arrayCampo['tabela_ref'], $valorCampo);
-    } else {
-        echo inputText($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
+    if (in_array($tipo, $campoTexto)) {
+        echo inputText($id, $name, $size, $maxLength, $value, $enable);
+    } elseif (in_array($tipo, $campoSenha)) {
+        echo inputPassword($id, $name, $size, $maxLength, $value, $enable);
     }
 }
 
