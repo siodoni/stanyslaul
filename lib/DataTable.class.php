@@ -76,6 +76,7 @@ class DataTable {
              . "\n".$this->json->columns()
              . "\nselectionMode: 'single',"
              . "\nrowSelect: function(event, data) {"
+             . "\nwindow.open('update.php?id='+data.id,'_self');"
              //. "\n$('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Selected', detail: ('ID: ' + data.id)}]);"
              . "\n},"
              . "\nrowUnselect: function(event, data) {"
