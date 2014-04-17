@@ -6,6 +6,8 @@
 - incluir o controle de permissao no menu
 - usar a criptografia SHA1 no login.
 - alterar o list.php para usarem as lovs quando as mesmas existirem.
+- transformar o list.php em classe
+- montar as views para melhorar a visualização dos dados (obs.: ainda faltam visões mas as principais estão prontas)
 
 ===================
 ===  Pendentes  ===
@@ -17,4 +19,3 @@
 - melhorar a forma como as lovs sao montadas (utilizar JSon)
 - melhorar a forma como as lovs sao montadas (verificar se eh possivel utilizar a view)
 - usar a criptografia SHA1 na gravacao e geracao da senha
-- transformar o list.php em classe

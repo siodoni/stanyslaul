@@ -13,11 +13,11 @@ class Upload {
         $_FILES['$nomeCampo'] = $arquivo;
         $f_name = $_FILES["$nomeCampo"]['name'];
 
-// Tamanho máximo do arquivo (em Bytes)
+        // Tamanho máximo do arquivo (em Bytes)
         $_UP['tamanho'] = 1024 * 1024 * 2; // 2Mb
-// Array com as extensões permitidas
+        // Array com as extensões permitidas
         $_UP['extensao'] = array(0 => 'pdf', 1 => 'php', 2 => 'jpg');
-// Renomeia o arquivo? (Se true, o arquivo será salvo como .pdf e um nome único)
+        // Renomeia o arquivo? (Se true, o arquivo será salvo como .pdf e um nome único)
         $_UP['renomeia'] = false;
         if ($pasta == "") {
             $_UP['pasta'] = "../publicacao/arquivos/";
@@ -25,7 +25,7 @@ class Upload {
             $_UP['pasta'] = $pasta;
         }
 
-// Array com os tipos de erros de upload do PHP
+        // Array com os tipos de erros de upload do PHP
         $_UP['erros'][0] = 'Não houve erro';
         $_UP['erros'][1] = 'O arquivo no upload é maior do que o limite do PHP';
         $_UP['erros'][2] = 'O arquivo ultrapassa o limite de tamanho especifiado no HTML';
@@ -33,14 +33,14 @@ class Upload {
         $_UP['erros'][4] = 'Não foi feito o upload do arquivo';
         $_UP['erros'][5] = 'Arquivo já existe no servidor';
 
-// Verifica se houve algum erro com o upload. Se sim, exibe a mensagem do erro
+        // Verifica se houve algum erro com o upload. Se sim, exibe a mensagem do erro
         if ($_FILES["$nomeCampo"]['error'] != 0) {
             return ("Não foi possível fazer o upload, erro:<br />" . $_UP['erros'][$_FILES['$nomeCampo']['error']]);
             //exit; // Para a execução do script
         }
 
-// Caso script chegue a esse ponto, não houve erro com o upload e o PHP pode continuar
-// Faz a verificação da extensão do arquivo
+        // Caso script chegue a esse ponto, não houve erro com o upload e o PHP pode continuar
+        // Faz a verificação da extensão do arquivo
         $extensao_arr = explode(".", $f_name);
         $extensao = strtolower(end($extensao_arr));
         if (array_search($extensao, $_UP['extensao']) === false) {
@@ -56,16 +56,16 @@ class Upload {
             }
 
             if ($_UP['renomeia'] == true) {
-// Cria um nome baseado no UNIX TIMESTAMP atual e com extensão .jpg
+            // Cria um nome baseado no UNIX TIMESTAMP atual e com extensão .jpg
                 $nome_final = time() . '_' . $f_name . '.' . $extensao;
             }
-// Depois verifica se é possível mover o arquivo para a pasta escolhida
+            // Depois verifica se é possível mover o arquivo para a pasta escolhida
             if (move_uploaded_file($_FILES["$nomeCampo"]['tmp_name'], $_UP['pasta'] . $nome_final)) {
-// Upload efetuado com sucesso, exibe uma mensagem e um link para o arquivo
+            // Upload efetuado com sucesso, exibe uma mensagem e um link para o arquivo
                 //echo "Upload efetuado com sucesso!";
                 return true;
             } else {
-// Não foi possível fazer o upload, provavelmente a pasta está incorreta
+            // Não foi possível fazer o upload, provavelmente a pasta está incorreta
                 //echo "Não foi possível enviar o arquivo, tente novamente";
                 return "Erro " . $_UP['erro'][$_FILES["$nomeCampo"]['error']];
             }

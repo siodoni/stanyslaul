@@ -44,6 +44,9 @@ class DataTable {
         $this->view = $a["view"];
         $this->tabelaJSON = ($this->view == "" || $this->view == null ? $this->tabela : $this->view);
         $this->json = new JSON($this->tabelaJSON);
+        
+        $_SESSION["nomeTabela"] = $this->tabelaJSON;
+        $_SESSION["nomeTabelaJSON"] = $this->tabelaJSON;
     }
     
     private function buildDataTable(){
