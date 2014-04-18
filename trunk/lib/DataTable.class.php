@@ -56,8 +56,8 @@ class DataTable {
         echo "\n<body id='admin'>";
         echo $this->script();
         echo $this->divMain();
-        echo "<br>Tabela: ". $this->tabela;
-        echo "<br>Tabela JSON: " . $this->tabelaJSON;
+        //echo "<br>Tabela: ". $this->tabela;
+        //echo "<br>Tabela JSON: " . $this->tabelaJSON;
         echo "\n</body>";
         echo "\n</html>";
     }
