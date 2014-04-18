@@ -87,7 +87,7 @@ $estrutura = new Estrutura();
                          replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum,
                          a.column_type enum,
                          if (a.extra = 'auto_increment',1,null) auto_increment,
-                         a.column_key tp_chave,
+                         a.column_key tipo_chave,
                          b.REFERENCED_TABLE_NAME tabela_ref
                     from information_schema.columns a 
                     left join information_schema.key_column_usage b 
@@ -124,6 +124,7 @@ $estrutura = new Estrutura();
                         $tamCampo = "";
                         $valor = "";
                         $selected = "";
+                        $tabelaRef = "";
                         
                         if ($campo['nulo'] == "NO") {
                             $required = "required=\"required\"";
@@ -333,6 +334,7 @@ function montarCampo($arrayCampo, $valorCampo) {
     $campoTextArea = array("longtext");
     $campoData = array("date");
     $campoEnum = array("enum");
+    $ai = "";
     
     if ($arrayCampo['tamanho_campo'] > 100) {
         $tamCampo = 80;
@@ -353,7 +355,7 @@ function montarCampo($arrayCampo, $valorCampo) {
     } elseif (in_array($arrayCampo['tipo_dado'], $campoData)) {
         echo inputDate($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
     } elseif (in_array($arrayCampo['tipo_dado'] && $arrayCampo['tipo_chave'] == 'MUL', $campoEnum)) {
-        echo selectMenuEnum($arrayCampo['coluna'], $arrayCampo[valor_enum], $valorCampo);
+        echo selectMenuEnum($arrayCampo['coluna'], $arrayCampo['valor_enum'], $valorCampo);
     } elseif ($arrayCampo['tipo_chave'] == 'MUL') {
         selectMenu($arrayCampo['coluna'], $arrayCampo['coluna'], $arrayCampo['tabela_ref'], $valorCampo);
     } else {
@@ -361,6 +363,7 @@ function montarCampo($arrayCampo, $valorCampo) {
     }
 }
 
+/*
 echo (
 "<pre>select a.ordinal_position id_coluna," .
 "\n        a.column_name coluna," .
@@ -383,4 +386,5 @@ echo (
 "\n  where a.table_schema = '" . $con->getDbName() . "'" .
 "\n    and a.table_name   = '" . $nomeTabela . "' " .
 "\n  order by a.ordinal_position</pre>");
+ */
 ?>
