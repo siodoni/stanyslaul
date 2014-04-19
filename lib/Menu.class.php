@@ -30,6 +30,7 @@ class Menu extends Contantes {
         echo "\n<html>";
         echo $this->estrutura->head();
         echo "\n<body>";
+        echo $this->dialog();
         echo $this->form();
         echo "\n</body>";
         echo "\n</html>";
@@ -72,11 +73,11 @@ class Menu extends Contantes {
     
     private function menuBar(){
         
-        return "<ul id='toolbar'>"
-             . "<li><a data-icon='ui-icon-person'>Bem vindo ".$this->nomeUsuario."</a></li>"
-             . "<li><a data-icon='ui-icon-gear'>Alterar Senha</a></li>"
-             . "<li><a data-icon='ui-icon-close' href='logout.php'>Sair</a></li>"  
-             . "</ul>";
+        return "\n<ul id='toolbar'>"
+             . "\n<li><a data-icon='ui-icon-person'>Bem vindo ".$this->nomeUsuario."</a></li>"
+             . "\n<li><a data-icon='ui-icon-key' onclick='$(\"#dlgChangePass\").puidialog(\"show\");'>Alterar Senha</a></li>"
+             . "\n<li><a data-icon='ui-icon-close' href='logout.php'>Sair</a></li>"  
+             . "\n</ul>";
     }
     
     private function script(){
@@ -84,9 +85,42 @@ class Menu extends Contantes {
              . "\n$(function() {"
              . $this->button
              . "\n$('#toolbar').puimenubar();"
+             . $this->dialogJS()
+             . "\n$('#senha1').puipassword({inline:true,promptLabel:'',weakLabel:'fraca',goodLabel:'media',strongLabel:'forte'});"
+             . "\n$('#senha2').puipassword({inline:true,promptLabel:'',weakLabel:'fraca',goodLabel:'media',strongLabel:'forte'});"
              . $this->panel
              . "\n});"
              . "\n</script>";
+    }
+    
+    private function dialogJS(){
+        return "\n$('#dlgChangePass').puidialog({"
+             . "\nmodal: true,"
+             . "\nresizable: false,"
+             . "\nwidth: 200,"
+             . "\nbuttons: [{"
+             . "\ntext: 'OK',"
+             . "\nicon: 'ui-icon-circle-check',"
+             . "\nclick: function() {"
+             . "\n$('#dlgChangePass').puidialog('hide');"
+             . "\n}"
+             . "\n},"
+             . "\n{"
+             . "\ntext: 'Cancelar',"
+             . "\nicon: 'ui-icon-circle-close',"
+             . "\nclick: function() {"
+             . "\n$('#dlgChangePass').puidialog('hide');"
+             . "\n}"
+             . "\n}"
+             . "\n]"
+             . "\n});";
+    }
+    
+    private function dialog(){
+        return "\n<div id='dlgChangePass' title='Alterar Senha' class='st-div-dlg-change-pass'>"
+             . "\n<p>Informe  a nova senha: <input id='senha1' name='senha2' type='password' class='st-input-change-pass'/></p>"
+             . "\n<p>Confirme a nova senha: <input id='senha2' name='senha2' type='password' class='st-input-change-pass'/></p>"
+             . "\n</div>";
     }
     
     public function setNomeUsuario($nome = ""){

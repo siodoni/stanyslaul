@@ -16,7 +16,6 @@
     margin-top:100px;
     top:50%; 
     left:50%;
-    
 }
 
 .st-panel-login-error strong{
@@ -50,6 +49,14 @@
     padding-right: 10px;
 }
 
+.st-div-dlg-change-pass {
+    position: absolute;
+}
+
+.st-input-change-pass {
+    width:165px;
+}
+
 /* PRIME */
 .pui-menubar {
     margin-top: 0px;
@@ -63,4 +70,11 @@
 
 .pui-menuitem-link.ui-corner-all.ui-state-hover {
     font-weight: normal;
+}
+
+.pui-password-panel .pui-password-meter{
+    height:10px;
+    background:transparent url("../images/password-meter.png") no-repeat left top;
+    padding:0;
+    margin:0;
 }
