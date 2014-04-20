@@ -22,6 +22,7 @@ $estrutura = new Estrutura();
 
                 //TOOLBAR
                 $('#toolbar').puimenubar();
+                $('#toolbar').parent().puisticky();
             });
         </script>
         <div class="st-div-main">

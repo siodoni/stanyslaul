@@ -3,6 +3,7 @@
 include_once 'lib/Estrutura.class.php';
 include_once 'lib/Conexao.class.php';
 include_once 'lib/Constantes.class.php';
+include_once 'lib/Crud.class.php';
 
 class Menu extends Contantes {
 
@@ -19,9 +20,9 @@ class Menu extends Contantes {
         $this->setUsuario($usuario);
         $this->estrutura = new Estrutura();
         $this->con = new Conexao();
-        
         $this->con->connect();
         $this->buildMenu();
+        $this->alteraSenhaUsuario();
         $this->con->disconnect();
     }
 
@@ -84,10 +85,15 @@ class Menu extends Contantes {
         return "\n<script type='text/javascript'>"
              . "\n$(function() {"
              . $this->button
+             . "\n$('#mensagens').puigrowl();"
              . "\n$('#toolbar').puimenubar();"
+             . "\n$('#toolbar').parent().puisticky();"
              . $this->dialogJS()
              . "\n$('#senha1').puipassword({inline:true,promptLabel:'',weakLabel:'fraca',goodLabel:'media',strongLabel:'forte'});"
              . "\n$('#senha2').puipassword({inline:true,promptLabel:'',weakLabel:'fraca',goodLabel:'media',strongLabel:'forte'});"
+             . "\n$('#btnConfSenha').puibutton({icon:'ui-icon-circle-check'});"
+             . "\n$('#btnCancSenha').puibutton({icon:'ui-icon-circle-close'});"
+             . "addMessage = function(msg){ $('#mensagens').puigrowl('show', msg); }"
              . $this->panel
              . "\n});"
              . "\n</script>";
@@ -97,30 +103,21 @@ class Menu extends Contantes {
         return "\n$('#dlgChangePass').puidialog({"
              . "\nmodal: true,"
              . "\nresizable: false,"
-             . "\nwidth: 200,"
-             . "\nbuttons: [{"
-             . "\ntext: 'OK',"
-             . "\nicon: 'ui-icon-circle-check',"
-             . "\nclick: function() {"
-             . "\n$('#dlgChangePass').puidialog('hide');"
-             . "\n}"
-             . "\n},"
-             . "\n{"
-             . "\ntext: 'Cancelar',"
-             . "\nicon: 'ui-icon-circle-close',"
-             . "\nclick: function() {"
-             . "\n$('#dlgChangePass').puidialog('hide');"
-             . "\n}"
-             . "\n}"
-             . "\n]"
+             . "\nwidth: 220,"
              . "\n});";
     }
     
     private function dialog(){
-        return "\n<div id='dlgChangePass' title='Alterar Senha' class='st-div-dlg-change-pass'>"
-             . "\n<p>Informe  a nova senha: <input id='senha1' name='senha2' type='password' class='st-input-change-pass'/></p>"
+        return "\n<form method='post' action='menu.php'>"
+             . "\n<div id='dlgChangePass' title='Alterar Senha' class='st-div-dlg-change-pass'>"
+             . "\n<p>Informe  a nova senha: <input id='senha1' name='senha1' type='password' class='st-input-change-pass'/></p>"
              . "\n<p>Confirme a nova senha: <input id='senha2' name='senha2' type='password' class='st-input-change-pass'/></p>"
-             . "\n</div>";
+             . "\n<p>"
+             . "\n<button id='btnConfSenha' type='submit'>Ok</button>"
+             . "\n<button id='btnCancSenha' type='button' onclick=\"$('#dlgChangePass').puidialog('hide');\">Cancelar</button>"
+             . "\n</p>"
+             . "\n</div>"
+             . "\n</form>";
     }
     
     public function setNomeUsuario($nome = ""){
@@ -129,5 +126,27 @@ class Menu extends Contantes {
     
     public function setUsuario($usuario = ""){
         $this->usuario = $usuario;
+    }
+    
+    private function alteraSenhaUsuario(){
+        $senha1 = isset($_POST["senha1"]) ? sha1($_POST["senha1"]) : "";
+        $senha2 = isset($_POST["senha2"]) ? sha1($_POST["senha2"]) : "";
+        $crud = new Crud(parent::TABLE_USER);
+        
+        if (strlen(trim($senha1)) > 0
+        &&  strlen(trim($senha2)) > 0
+        &&  $senha1 == $senha2){
+            $crud->atualizar(
+                    parent::COLUMN_PASS." = '".$senha1."'",
+                    parent::COLUMN_USER." = '".$this->usuario."'",
+                    false);
+            unset($_POST["senha1"]);
+            unset($_POST["senha2"]);
+            echo "Senha alterada com sucesso...";
+        } elseif (strlen(trim($senha1)) > 0
+              &&  strlen(trim($senha2)) > 0
+              &&  $senha1 != $senha2) {
+            echo "Senhas nao conferem!";
+        }
     }
 }
