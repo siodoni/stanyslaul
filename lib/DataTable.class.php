@@ -69,6 +69,7 @@ class DataTable {
              . "\n$('#mensagens').puigrowl();"
              . "\n//TOOLBAR"
              . "\n$('#toolbar').puimenubar();"
+             . "\n$('#toolbar').parent().puisticky();"
              . "\n// DATATABLE"
              . "\n$('#tabela').puidatatable({"
              . $this->captionDataSource(10)
