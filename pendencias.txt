@@ -5,16 +5,17 @@
 - desenvolver o logout
 - incluir o controle de permissao no menu
 - usar a criptografia SHA1 no login.
-- alterar o list.php para usarem as lovs quando as mesmas existirem.
+- alterar o list.php para usarem as views quando as mesmas existirem.
 - transformar o list.php em classe
-- montar as views para melhorar a visualização dos dados (obs.: ainda faltam visões mas as principais estão prontas)
+- montar as views para melhorar a visualização dos dados
 - desenvolver o alterar senha
+- melhorar as mensagens de sucesso/erro na alteração da senha
+- verificar porque ao postar com os campos nulo no alterar senha ele considera como se os mesmos estivessem preenchidos
 
 ===================
 ===  Pendentes  ===
 ===================
-- melhorar as mensagens de sucesso/erro na alteração da senha
-- verificar porque ao postar com os campos nulo no alterar senha ele considera como se os mesmos estivessem preenchidos
+- ainda faltam visões mas as principais estão prontas
 - desenvolver o esqueci minha senha
 - terminar o insert/update
 - melhorar o delete
