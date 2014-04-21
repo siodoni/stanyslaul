@@ -14,8 +14,10 @@ class Menu extends Contantes {
     private $qtde = 0;
     private $usuario = "";
     private $nomeUsuario = "";
+    private $onload = "";
 
     public function __construct($nome = "", $usuario = "") {
+        $this->onLoad();
         $this->setNomeUsuario($nome);
         $this->setUsuario($usuario);
         $this->estrutura = new Estrutura();
@@ -30,7 +32,7 @@ class Menu extends Contantes {
         echo "<!DOCTYPE html>";
         echo "\n<html>";
         echo $this->estrutura->head();
-        echo "\n<body>";
+        echo "\n<body $this->onload>";
         echo $this->dialog();
         echo $this->form();
         echo "\n</body>";
@@ -54,6 +56,7 @@ class Menu extends Contantes {
         $form = $form
               . "\n</form>"
               . "\n</div>"
+              . "\n<div id='mensagens'></div>"
               . $this->script($this->button);
         return $form;
     }
@@ -89,11 +92,10 @@ class Menu extends Contantes {
              . "\n$('#toolbar').puimenubar();"
              . "\n$('#toolbar').parent().puisticky();"
              . $this->dialogJS()
-             . "\n$('#senha1').puipassword({inline:true,promptLabel:'',weakLabel:'fraca',goodLabel:'media',strongLabel:'forte'});"
-             . "\n$('#senha2').puipassword({inline:true,promptLabel:'',weakLabel:'fraca',goodLabel:'media',strongLabel:'forte'});"
+             . "\n$('#senha1').puipassword({inline:true,promptLabel:'Informe a nova senha', weakLabel:'fraca',mediumLabel:'media',goodLabel:'media',strongLabel:'forte'});"
+             . "\n$('#senha2').puipassword({inline:true,promptLabel:'Confirme a nova senha',weakLabel:'fraca',mediumLabel:'media',goodLabel:'media',strongLabel:'forte'});"
              . "\n$('#btnConfSenha').puibutton({icon:'ui-icon-circle-check'});"
              . "\n$('#btnCancSenha').puibutton({icon:'ui-icon-circle-close'});"
-             . "addMessage = function(msg){ $('#mensagens').puigrowl('show', msg); }"
              . $this->panel
              . "\n});"
              . "\n</script>";
@@ -114,7 +116,7 @@ class Menu extends Contantes {
              . "\n<p>Confirme a nova senha: <input id='senha2' name='senha2' type='password' class='st-input-change-pass'/></p>"
              . "\n<p>"
              . "\n<button id='btnConfSenha' type='submit'>Ok</button>"
-             . "\n<button id='btnCancSenha' type='button' onclick=\"$('#dlgChangePass').puidialog('hide');\">Cancelar</button>"
+             . "\n<button id='btnCancSenha' type='reset' onclick=\"$('#dlgChangePass').puidialog('hide');\">Cancelar</button>"
              . "\n</p>"
              . "\n</div>"
              . "\n</form>";
@@ -133,20 +135,33 @@ class Menu extends Contantes {
         $senha2 = isset($_POST["senha2"]) ? sha1($_POST["senha2"]) : "";
         $crud = new Crud(parent::TABLE_USER);
         
-        if (strlen(trim($senha1)) > 0
-        &&  strlen(trim($senha2)) > 0
-        &&  $senha1 == $senha2){
-            $crud->atualizar(
-                    parent::COLUMN_PASS." = '".$senha1."'",
-                    parent::COLUMN_USER." = '".$this->usuario."'",
-                    false);
-            unset($_POST["senha1"]);
-            unset($_POST["senha2"]);
-            echo "Senha alterada com sucesso...";
-        } elseif (strlen(trim($senha1)) > 0
-              &&  strlen(trim($senha2)) > 0
-              &&  $senha1 != $senha2) {
-            echo "Senhas nao conferem!";
+        if (!empty($_POST["senha1"]) && !empty($_POST["senha2"])) {
+            if ($senha1 == $senha2){
+                $crud->atualizar(
+                        parent::COLUMN_PASS." = '".$senha1."'",
+                        parent::COLUMN_USER." = '".$this->usuario."'",
+                        false);
+                unset($_POST["senha1"]);
+                unset($_POST["senha2"]);
+                $_SESSION["returnPass"] = "info";
+                print "<script>location='menu.php';</script>";
+            } else {
+                $_SESSION["returnPass"] = "error";
+                print "<script>location='menu.php';</script>";
+            }
         }
+    }
+    
+    private function onLoad(){
+        if (isset($_SESSION["returnPass"]) && $_SESSION["returnPass"] == "error"){
+            $this->onload = "onload=\"$('#mensagens').puigrowl('show', [{severity: 'error', summary: 'Erro', detail: 'Erro ao alterar a senha. Senhas n&atilde;o conferem!'}]);\"";                       
+        } else if (isset($_SESSION["returnPass"]) && $_SESSION["returnPass"] == "info") {
+            $this->onload = "onload=\"$('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Informa&ccedil;&atilde;o', detail: 'Senha alterada com sucesso!'}]);\"";
+        } else if (isset($_SESSION["returnPass"]) && $_SESSION["returnPass"] == "warn") {
+            $this->onload = "onload=\"$('#mensagens').puigrowl('show', [{severity: 'warn', summary: 'Aten&ccedil;&atilde;o', detail: 'Informe a nova senha e a confirma&ccedil;&atilde;o!'}]);\"";
+        } else {
+            $this->onload = "";
+        }
+        unset($_SESSION["returnPass"]);
     }
 }
