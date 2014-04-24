@@ -148,7 +148,7 @@ $estrutura = new Estrutura();
                         } elseif*/ (($campo['tipo_dado'] == 'date')) {
                             montarCampo($campo,$valor);
                             $estrutura->montarJS("$('#".$campo['coluna']."').datepicker({dateFormat:'dd/mm/yy'});\n");
-                        } elseif ($tabelaRef != null) {
+                        } elseif ($tabelaRef != null && $campo['tipo_chave'] == 'MUL' ) {
                             montarCampo($campo,$valor);
                             $estrutura->montarJS("$('#".$campo['coluna']."').puidropdown();\n");
                             
@@ -311,7 +311,6 @@ function selectMenuEnum($id, $valoresSelect, $valorSelecionado) {
 }
 
 function selectMenu($id, $name, $tabelaRef, $valorSelecionado) {
-    
     echo "<td><select id='$id' name='$name' class='inputForm'>\n";
     echo "<option value='' $selected >Escolha...</option>\n";
 
@@ -320,7 +319,7 @@ function selectMenu($id, $name, $tabelaRef, $valorSelecionado) {
 
     while ($c = mysql_fetch_array($q)) {
         $option = "<option $selected value='$c[0]'>";
-        $option .= trim($c[2]);
+        $option .= trim($c[1]);
         $option .= "</option>\n";
         echo $option;
     }
@@ -355,7 +354,7 @@ function montarCampo($arrayCampo, $valorCampo) {
         echo inputTextArea($arrayCampo['coluna'], $arrayCampo['coluna']);
     } elseif (in_array($arrayCampo['tipo_dado'], $campoData)) {
         echo inputDate($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
-    } elseif (in_array($arrayCampo['tipo_dado'] && $arrayCampo['tipo_chave'] == 'MUL', $campoEnum)) {
+    } elseif (in_array($arrayCampo['tipo_dado'], $campoEnum) && $arrayCampo['tipo_chave'] == 'MUL') {
         echo selectMenuEnum($arrayCampo['coluna'], $arrayCampo['valor_enum'], $valorCampo);
     } elseif ($arrayCampo['tipo_chave'] == 'MUL') {
         selectMenu($arrayCampo['coluna'], $arrayCampo['coluna'], $arrayCampo['tabela_ref'], $valorCampo);
@@ -364,7 +363,6 @@ function montarCampo($arrayCampo, $valorCampo) {
     }
 }
 
-/*
 echo (
 "<pre>select a.ordinal_position id_coluna," .
 "\n        a.column_name coluna," .
@@ -387,5 +385,4 @@ echo (
 "\n  where a.table_schema = '" . $con->getDbName() . "'" .
 "\n    and a.table_name   = '" . $nomeTabela . "' " .
 "\n  order by a.ordinal_position</pre>");
- */
 ?>
