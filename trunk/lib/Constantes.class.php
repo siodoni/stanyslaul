@@ -9,7 +9,7 @@ class Contantes {
     const PASSWORD = 'vertrigo';
     
     //Estrutura
-    const TITLE = 'Stanyslaul';  
+    const TITLE = '&Aacute;rea Administrativa - New York Idiomas';  
     
     //Login
     const TABLE_USER  = 'snb_usuario';

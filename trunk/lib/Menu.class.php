@@ -46,8 +46,7 @@ class Menu extends Contantes {
         
         $sqlModulo = mysql_query("select id, descricao, icone from ".$this->con->getDbName().".snb_modulo order by id");
         while ($i = mysql_fetch_array($sqlModulo)) {
-            $form = $form 
-                    . "\n<div id='panel".$i["id"]."' class='st-menu' title='".$i["descricao"]."'>";
+            $form = $form . "\n<div id='panel".$i["id"]."' class='st-menu' title='".$i["descricao"]."'>";
             $this->panel = $this->panel . "\n$('#panel".$i["id"]."').puipanel({toggleable: true})";
             $form = $form . $this->buttons($i["id"]);
             $form = $form . "\n</div>";
@@ -78,6 +77,7 @@ class Menu extends Contantes {
     private function menuBar(){
         
         return "\n<ul id='toolbar'>"
+             . "\n<li><a><img src='res/images/topo.png' alt='".parent::TITLE."' class='st-img-logo'/></a></li>"
              . "\n<li><a data-icon='ui-icon-person'>Bem vindo ".$this->nomeUsuario."</a></li>"
              . "\n<li><a data-icon='ui-icon-key' onclick='$(\"#dlgChangePass\").puidialog(\"show\");'>Alterar Senha</a></li>"
              . "\n<li><a data-icon='ui-icon-close' href='logout.php'>Sair</a></li>"  

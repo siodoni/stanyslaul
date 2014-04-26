@@ -9,9 +9,9 @@ $estrutura = new Estrutura();
     ?>
     <body>
         <form action="logar.php" method="post">
-            <div id="panel" title="Area Administrativa" class="st-panel-login">
+            <div id="panel" title="&Aacute;rea Administrativa" class="st-panel-login">
                 <label for="usuario">Usuario</label><br/>
-                <input id="usuario" type="text" name="usuario" class="st-input-login"/><br/>
+                <input id="usuario" type="text" name="usuario" class="st-input-login" autofocus="autofocus"/><br/>
 
                 <label for="senha">Senha</label><br/>
                 <input id="senha" type="password" name="senha" class="st-input-login"/><br/>

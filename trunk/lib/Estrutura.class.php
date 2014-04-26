@@ -51,8 +51,6 @@ class Estrutura extends Contantes {
     }
 
     private function nomeArquivo($file){
-        if (file_exists($file)) {
-            return $file."?st=".filemtime($file);
-        }
+        return file_exists($file) ? $file."?st=".filemtime($file) : "";
     }
 }
