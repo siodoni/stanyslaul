@@ -1,3 +1,7 @@
+.st-img-logo{
+    height: 50px;
+}
+
 .st-panel-login {
     position:absolute; 
     width:250px;
@@ -23,11 +27,11 @@
 }
 
 .st-input-login {
-    width: 224px;
+    width: 220px;
 }
 
 .st-button-login {
-    width: 108px;
+    width: 100px;
 }
 
 .st-menu {
