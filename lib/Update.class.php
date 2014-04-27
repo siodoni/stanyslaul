@@ -60,7 +60,7 @@ class Update {
     }
 
     function montarCampo($arrayCampo, $valorCampo) {
-        //$campoTexto = array("int", "bigint", "varchar");
+        $campoNumero = array("int", "bigint");
         $campoSenha = array("password");
         $campoArquivo = array("file");
         $campoTextArea = array("longtext");
@@ -75,6 +75,8 @@ class Update {
 
         if ($arrayCampo['auto_increment'] != "") {
             $ai = "disabled=\"disabled\"";
+        } else {
+            $this->adicionarColuna($arrayCampo['coluna']);
         }
 
 //        switch ($arrayCampo['tipo_dado']) {
@@ -112,10 +114,12 @@ class Update {
             echo $this->selectMenuEnum($arrayCampo['coluna'], $arrayCampo['valor_enum'], $valorCampo);
         } elseif ($arrayCampo['tipo_chave'] == 'MUL') {
             echo $this->selectMenu($arrayCampo['coluna'], $arrayCampo['coluna'], $arrayCampo['tabela_ref'], $valorCampo);
+        } elseif (in_array($arrayCampo['tipo_dado'], $campoNumero)) {
+            echo $this->inputNumber($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
         } else {
             echo $this->inputText($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
         }
-        $this->adicionarColuna($arrayCampo['coluna']);
+        
     }
     
     /* Campos */
@@ -130,6 +134,11 @@ class Update {
 
     function inputText($id, $name, $size, $maxLength, $value, $enable) {
         $this->montarJS("$('#".$id."').puiinputtext();\n");
+        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' class='inputForm' value='$value' $enable /></td>\n";
+    }
+
+    function inputNumber($id, $name, $size, $maxLength, $value, $enable) {
+        $this->montarJS("$('#".$id."').puispinner();\n");
         return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' class='inputForm' value='$value' $enable /></td>\n";
     }
 
@@ -152,7 +161,7 @@ class Update {
     }
 
     function inputDate($id, $name, $size, $maxLength, $value, $enable) {
-        $this->montarJS("$('#".$id."').datepicker({dateFormat:'dd/mm/yy'});\n");
+        $this->montarJS("$('#".$id."').datepicker({dateFormat:'dd/mm/yy'}).puiinputtext()   ;\n");
         return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' class='inputForm' value='$value' $enable /></td>\n";
     }
 
@@ -161,8 +170,8 @@ class Update {
         $enum = explode(',', $valoresSelect);
         $selectMenu = "\n<td><select id='$id' name='$id' class='inputForm'>";
         foreach ($enum as $enum) {
-            ($valorSelecionado == $enum) ? $selected = "selected" : $selected = "";
-            $selectMenu .= "\n<option value='" . $enum . "' $selected >" . ucfirst($enum) . "</option>";
+            $selected = ($valorSelecionado == $enum) ? "selected" : "";
+            $selectMenu .= "\n<option value='$enum' $selected >" . ucfirst($enum) . "</option>";
         }
         $selectMenu .= "\n</select></td>\n";
         $this->montarJS("$('#".$id."').puidropdown();\n");
@@ -172,11 +181,12 @@ class Update {
     function selectMenu($id, $name, $tabelaRef, $valorSelecionado) {
         
         $selectMenu = "\n<td><select id='$id' name='$name' class='inputForm'>\n";
-        $selectMenu .= "\n<option value='' $selected >Escolha...</option>\n";
+        $selectMenu .= "\n<option value='' >Escolha...</option>\n";
         $q = mysql_query("select * from $tabelaRef");
 
         while ($c = mysql_fetch_array($q)) {
-            $option = "\n<option $selected value='$c[0]'>";
+            $selected = ($valorSelecionado == $c[0]) ? "selected" : "";
+            $option = "\n<option value='$c[0]' $selected >";
             $option .= trim($c[1]);
             $option .= "\n</option>\n";
         }

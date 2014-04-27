@@ -68,8 +68,8 @@ $update = new Update();
         }
 
         $comando = "";
-        if (isset($_SESSION["id"])) {
-            $id = $_SESSION["id"];
+        if (isset($_REQUEST["id"])) {
+            $id = $_REQUEST["id"];
             $campoId = "id";
             $consultaUpdate = mysql_query("select * from " . $con->getDbName() . "." . $nomeTabela . " where " . $campoId . " = '" . $id . "'");
             $valorCampo = mysql_fetch_array($consultaUpdate);
@@ -80,63 +80,45 @@ $update = new Update();
         }
         //$campos = json_encode(mysql_fetch_array($query));
         ?>
-        <div id="panel" class="pui-menu"><?="Cadastro de " . $nomeTabela ?>
-                
-        </div>
-        <form id="formInsert" action="update.php?comando=<?php echo($comando . "&nomeTabela=" . $nomeTabela); ?>" method="post">
-            <table id='hor-minimalist-a'>
-                <tbody>
-                    <?php
-                    $contador = 0;
-                    
-                    // se existe campo de ID com Auto increment
-                    $qtdAi = 0;
-                    // se exsite campo do tipo "file"
-                    $qtdArq = 0;
-                    $arquivo = "";
-                    //$campoData = "";
-                    $q = mysql_query($update->retornaQueryTabela());
-                    while ($campo = mysql_fetch_array($q)) {
+            <fieldset id="panel" class="pui-menu">
+                <legend><?="Cadastro de " . $nomeTabela ?></legend>
+                <form id="formInsert" action="update.php?comando=<?=$comando?>" method="post">
+                    <table id='hor-minimalist-a'>
+                        <tbody>
+                            <?php
+                            $contador = 0;
 
-                        // zerar variáveis
-                        $ai = "";
-                        $required = "";
-                        $tamCampo = "";
-                        $valor = "";
-                        $selected = "";
-                        $tabelaRef = "";
-                        
-                        if ($campo['nulo'] == "NO") {
-                            $required = "required=\"required\"";
-                        }
+                            $q = mysql_query($update->retornaQueryTabela());
+                            while ($campo = mysql_fetch_array($q)) {
 
-                        if (isset($valorCampo)) {
-                            $valor = $valorCampo[$contador];
-                        }
-                        
-                        if ($campo['tabela_ref'] != null) {
-                            $tabelaRef = $campo['tabela_ref'];
-                        }
+                                $valor = "";
 
-                        echo $update->label($campo);
-                        $update->montarCampo($campo,$valor);
+                                $required = ($campo['nulo'] == "NO") ? "required=\"required\"" : "";
+                                $tabelaRef = ($campo['tabela_ref'] != null) ? $campo['tabela_ref'] : null;
 
-                        //echo "<td><label class='error' generated='true' for='" . $campo['coluna'] . "'></label></td></tr>";
-                        $contador += 1;
-                    }
-                    echo "<tr><td>&nbsp;</td>";
-                    $update->inputHidden($comando);
-                    echo "<td>" . $update->button("salvar", "submit","Salvar","");
-                    echo $update->button("cancelar","button", "Cancelar", "onclick='window.location=\"list.php\"'") . "</td></tr>";
-                    ?>
-                </tbody>
-            </table>
-        </form>
+                                if (isset($valorCampo)) {
+                                    $valor = $valorCampo[$contador];
+                                }
+
+                                echo $update->label($campo);
+                                $update->montarCampo($campo,$valor);
+
+                                //echo "<td><label class='error' generated='true' for='" . $campo['coluna'] . "'></label></td></tr>";
+                                $contador += 1;
+                            }
+                            echo "<tr><td>&nbsp;</td>";
+                            echo "<td>" . $update->button("salvar", "submit","Salvar","");
+                            echo $update->button("cancelar","button", "Cancelar", "onclick='window.location=\"list.php\"'") . "</td></tr>";
+                            ?>
+                        </tbody>
+                    </table>
+                </form>
+            </fieldset>
         </div>
     </body>
     <script type="text/javascript">
         $(function() {
-            $('#panel').puipanel();
+            $('#panel').puifieldset();
             <?=$update->retornaJS();?>
         });
     </script>
@@ -163,14 +145,13 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "insert") {  // caso 
 //        $up->inserir($arquivo);
 //    }
     echo $update->retornaColuna() ." - " .$valores;
-    //die ($colunas ." valores ". $valores);
     $crud = new crud($nomeTabela);
-    $crud->inserir($colunas, $valores);
+    $crud->inserir($update->retornaColuna(), $valores);
     header("Location: list.php");
 }
 
 if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso nao seja passado o id via GET cadastra
-    $camposUpdate = explode(",", $colunas);
+    $camposUpdate = explode(",", $update->retornaColuna());
     $valoresUpdate = explode(",", $valores);
     $comandoUpdate = "";
 
@@ -186,7 +167,6 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso 
         }
         $contador += 1;
     }
-
     $crud = new crud($nomeTabela);
     $crud->atualizar($comandoUpdate, $campoId . " = '" . $id . "' ");
     print "<script>location='list.php';</script>";
