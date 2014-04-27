@@ -43,7 +43,6 @@ class Menu extends Contantes {
         $form = "\n<div class='st-div-main'>"
               . "\n<form name='form' method='post' action='list.php'>"
               . $this->menuBar();
-        
         $sqlModulo = mysql_query("select id, descricao, icone from ".$this->con->getDbName().".snb_modulo order by id");
         while ($i = mysql_fetch_array($sqlModulo)) {
             $form = $form . "\n<div id='panel".$i["id"]."' class='st-menu' title='".$i["descricao"]."'>";

@@ -20,6 +20,7 @@ $a = mysql_fetch_assoc($sql);
 if (!empty($a)){
     $_SESSION["usuario"] = $usuario;
     $_SESSION["nomeUsuario"] = $a["nome"];
+    $_SESSION["schema"] = $con->getDbName(); // TEMOS QUE VERIFICAR SE É A MELHOR OPÇÃO
     header('location:menu.php');
 } else {
     unset($_SESSION["usuario"]);
