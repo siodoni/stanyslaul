@@ -1,36 +1,36 @@
 <?php
 
 class Update {
-    
+
     private $coluna;
     private $tabela;
     private $schema;
     private $javaScript;
-    
+
     public function __construct() {
         $this->tabela = $_SESSION["nomeTabela"];
         $this->schema = $_SESSION["schema"];
     }
-    
+
     public function adicionarColuna($coluna) {
         if ($this->coluna == null) {
-        $this->coluna .= $coluna;
+            $this->coluna .= $coluna;
         } else {
             $this->coluna .= "," . $coluna;
-    //        if (substr($colunaAtual, 0, 3) == "fi_") {
-    //            $arquivo = isset($_FILES[$campo['coluna']]);
-    //        }
+            //        if (substr($colunaAtual, 0, 3) == "fi_") {
+            //            $arquivo = isset($_FILES[$campo['coluna']]);
+            //        }
         }
     }
-    
+
     public function retornaColuna() {
         return $this->coluna;
     }
-    
+
     public function montarJS($texto) {
         $this->javaScript .= $texto;
     }
-    
+
     public function retornaJS() {
         return $this->javaScript;
     }
@@ -41,8 +41,8 @@ class Update {
                         a.is_nullable nulo,
                         a.data_type tipo_dado,
                         a.numeric_precision numerico,
-                        if(a.data_type='date',10,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,
-                        if(a.data_type='date',10,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres,
+                        if(a.data_type='date',14,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,
+                        if(a.data_type='date',14,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres,
                         replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum,
                         a.column_type enum,
                         if (a.extra = 'auto_increment',1,null) auto_increment,
@@ -104,7 +104,7 @@ class Update {
 //        };
         if (in_array($arrayCampo['tipo_dado'], $campoSenha)) {
             echo $this->inputPassword($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
-        } elseif (in_array ($arrayCampo['tipo_dado'], $campoArquivo)) {
+        } elseif (in_array($arrayCampo['tipo_dado'], $campoArquivo)) {
             echo $this->inputFile($arrayCampo['coluna'], $arrayCampo['coluna'], $valorCampo);
         } elseif (in_array($arrayCampo['tipo_dado'], $campoTextArea)) {
             echo $this->inputTextArea($arrayCampo['coluna'], $arrayCampo['coluna']);
@@ -119,10 +119,10 @@ class Update {
         } else {
             echo $this->inputText($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
         }
-        
     }
-    
+
     /* Campos */
+
     function label($arrayCampo) {
         return "<tr><td>" . ucwords(str_replace("_", " ", str_replace("fi_", "", $arrayCampo['coluna']))) . "</td>\n";
     }
@@ -133,17 +133,17 @@ class Update {
     }
 
     function inputText($id, $name, $size, $maxLength, $value, $enable) {
-        $this->montarJS("$('#".$id."').puiinputtext();\n");
+        $this->montarJS("$('#" . $id . "').puiinputtext();\n");
         return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' class='inputForm' value='$value' $enable /></td>\n";
     }
 
     function inputNumber($id, $name, $size, $maxLength, $value, $enable) {
-        $this->montarJS("$('#".$id."').puispinner();\n");
+        $this->montarJS("$('#" . $id . "').puispinner();\n");
         return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' class='inputForm' value='$value' $enable /></td>\n";
     }
 
     function inputPassword($id, $name, $size, $maxLength, $value, $enable) {
-        $this->montarJS("$('#".$id."').puipassword();\n");
+        $this->montarJS("$('#" . $id . "').puipassword();\n");
         return "<td><input type='password' id='$id' name='$name' size='$size' maxlength='$maxLength' class='inputForm' value='$value' $enable /></td>\n";
     }
 
@@ -156,12 +156,12 @@ class Update {
     }
 
     function inputTextArea($id, $name) {
-        $this->montarJS("$('#".$id."').puiinputtextarea();\n");
+        $this->montarJS("$('#" . $id . "').puiinputtextarea();\n");
         return "<td><textarea id='$id' rows=\"10\" cols=\"30\" name='$name' style=\"width:100%;height:440px\" ></textarea></td>\n";
     }
 
     function inputDate($id, $name, $size, $maxLength, $value, $enable) {
-        $this->montarJS("$('#".$id."').datepicker({dateFormat:'dd/mm/yy'}).puiinputtext()   ;\n");
+        $this->montarJS("$('#" . $id . "').datepicker({dateFormat:'dd/mm/yy'}).puiinputtext();\n");
         return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' class='inputForm' value='$value' $enable /></td>\n";
     }
 
@@ -174,26 +174,53 @@ class Update {
             $selectMenu .= "\n<option value='$enum' $selected >" . ucfirst($enum) . "</option>";
         }
         $selectMenu .= "\n</select></td>\n";
-        $this->montarJS("$('#".$id."').puidropdown();\n");
+        $this->montarJS("$('#" . $id . "').puidropdown({filter: true});\n");
         return $selectMenu;
     }
 
     function selectMenu($id, $name, $tabelaRef, $valorSelecionado) {
-        
+
         $selectMenu = "\n<td><select id='$id' name='$name' class='inputForm'>\n";
         $selectMenu .= "\n<option value='' >Escolha...</option>\n";
         $q = mysql_query("select * from $tabelaRef");
+        $option = "";
 
         while ($c = mysql_fetch_array($q)) {
             $selected = ($valorSelecionado == $c[0]) ? "selected" : "";
-            $option = "\n<option value='$c[0]' $selected >";
+            $option .= "\n<option value='$c[0]' $selected >";
             $option .= trim($c[1]);
-            $option .= "\n</option>\n";
+            $option .= "</option>";
         }
         $selectMenu .= $option;
         $selectMenu .= "\n</select></td>\n";
-        $this->montarJS("$('#".$id."').puidropdown();\n");
+        $this->montarJS("$('#" . $id . "').puidropdown({filter: true});\n");
         return $selectMenu;
+
+        /*
+         * ========================================
+         * 
+         * PORQUE DESSE JEITO NÃO DÁ CERTO!!!!!!!!!
+         * 
+         * ========================================* 
+          $selectMenu = "\n<td><select id='$id' name='$name' class='inputForm'>\n";
+          $selectMenu .= "\n<option value='' >Escolha...</option>\n";
+          $json = new JSON($tabelaRef);
+          $array = json_decode($json->json(false),true);
+          $option = "";
+
+          foreach ($array as $i => $value) {
+          $selected = ($valorSelecionado == $i[0]) ? "selected" : "";
+          $option .= "<option $selected value='";
+          foreach ($value as $j => $valor) {
+          $option .= ($j == "id" ? $value[$j] . "'>" : "") . $value[$j] . " ";
+          }
+          echo $option = trim($option) . "</option>\n";
+          }
+          $selectMenu .= $option;
+          $selectMenu .= "\n</select></td>\n";
+          $this->montarJS("$('#" . $id . "').puidropdown({filter: true});\n");
+          return $selectMenu;
+         */
     }
 
 }

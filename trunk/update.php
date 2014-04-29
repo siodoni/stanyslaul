@@ -17,6 +17,13 @@ $update = new Update();
     echo $estrutura->head();
     ?>
     <body id="admin">
+        <?php
+        if (isset($_SESSION["nomeTabela"])) {
+            echo "nome tabela " . $_SESSION["nomeTabela"];
+        } else {
+            echo "nome tabela ??? ";
+        }
+        ?>
         <script type="text/javascript">
             $(function() {
                 // MENSAGENS
@@ -81,8 +88,8 @@ $update = new Update();
         //$campos = json_encode(mysql_fetch_array($query));
         ?>
             <fieldset id="panel" class="pui-menu">
-                <legend><?="Cadastro de " . $nomeTabela ?></legend>
-                <form id="formInsert" action="update.php?comando=<?=$comando?>" method="post">
+                <legend><?php echo "Cadastro de " . $nomeTabela ?></legend>
+                <form id="formInsert" action="update.php?comando=<?php echo $comando?>" method="post">
                     <table id='hor-minimalist-a'>
                         <tbody>
                             <?php
@@ -119,7 +126,7 @@ $update = new Update();
     <script type="text/javascript">
         $(function() {
             $('#panel').puifieldset();
-            <?=$update->retornaJS();?>
+            <?php echo $update->retornaJS(); ?>
         });
     </script>
 </html>
