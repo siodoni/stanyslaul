@@ -13,6 +13,7 @@ class DataTable {
     private $titulo;
     private $view;
     private $tabelaJSON;
+    private $mensagemRetorno;
     
     public function __construct($tabela){
         $this->tabela = $tabela;
@@ -23,6 +24,7 @@ class DataTable {
         $this->verificaParametro();
         $this->buildDataTable();
         $this->con->disconnect();
+        $this->mensagemRetorno = $_SESSION['mensagemRetorno'];
     }   
     
     private function verificaParametro(){
@@ -61,12 +63,12 @@ class DataTable {
         echo "\n</body>";
         echo "\n</html>";
     }
-    
+    // Tentei colocar a mensagem no growl para quando retornar do update mostrar o resultado da operação mas ainda nao consegui
     private function script(){
         return "\n<script type='text/javascript'>"
              . "\n$(function() {"
              . "\n// MENSAGENS"
-             . "\n$('#mensagens').puigrowl();"
+             . "\n$('#mensagens').puigrowl(" . (isset($this->mensagemRetorno)) ? ("'show',".$this->mensagemRetorno) : '' . ";"
              . "\n//TOOLBAR"
              . "\n$('#toolbar').puimenubar();"
              . "\n$('#toolbar').parent().puisticky();"

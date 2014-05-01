@@ -175,32 +175,9 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso 
         $contador += 1;
     }
     $crud = new crud($nomeTabela);
-    $crud->atualizar($comandoUpdate, $campoId . " = '" . $id . "' ");
+    $crud->atualizar($comandoUpdate, $campoId . " = '" . $id . "' ",true);
     print "<script>location='list.php';</script>";
 }
 
 $con->disconnect();
-
-echo (
-"<pre>select a.ordinal_position id_coluna," .
-"\n        a.column_name coluna," .
-"\n        a.is_nullable nulo," .
-"\n        a.data_type tipo_dado," .
-"\n        a.numeric_precision numerico," .
-"\n        if(a.data_type='date',10,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo," .
-"\n        if(a.data_type='date',10,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres," .
-"\n        replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum," .
-"\n        a.column_type enum," .
-"\n        if (a.extra = 'auto_increment',1,null) auto_increment," .
-"\n        a.column_key tp_chave," .
-"\n        b.REFERENCED_TABLE_NAME tabela_ref" .
-"\n   from information_schema.columns a " .
-"\n   left join information_schema.key_column_usage b " .
-"\n     on a.TABLE_SCHEMA           = b.TABLE_SCHEMA" .
-"\n    and a.TABLE_NAME             = b.TABLE_NAME " .
-"\n    and a.COLUMN_NAME            = b.COLUMN_NAME" .
-"\n    and b.REFERENCED_TABLE_NAME is not null" .
-"\n  where a.table_schema = '" . $con->getDbName() . "'" .
-"\n    and a.table_name   = '" . $nomeTabela . "' " .
-"\n  order by a.ordinal_position</pre>");
 ?>

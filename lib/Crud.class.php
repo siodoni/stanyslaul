@@ -41,6 +41,7 @@ class Crud extends Contantes {
             die("<center>Erro na inclusão " . '<br>Linha: ' . __LINE__ . "<br>" . mysql_error() . "<br>
 		  <a href='list.php'>Voltar ao Menu</a></center>");
         } else {
+            $_SESSION['mensagemRetorno'] = parent::GRAVAR;
             print "<script>location='list.php';</script>";
         }
     }
@@ -60,6 +61,7 @@ class Crud extends Contantes {
               . "<br><a href='list.php'>Voltar ao Menu</a></center>");
         } else {
             if ($mostrarMensagem) {
+                $_SESSION['mensagemRetorno'] = parent::ATUALIZAR;
                 print "<center>Registro Atualizado com Sucesso!<br><a href='list.php'>Voltar ao Menu</a></center>";
             }
         }
