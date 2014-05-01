@@ -1,6 +1,7 @@
 <?php
+include_once 'Constantes.class.php';
 
-class JSON {
+class JSON extends Contantes {
 
     private $tabela = "";
     private $columns = "";
@@ -11,7 +12,7 @@ class JSON {
         $this->sqlTabela = null;
     }
 
-    public function json($alteraHeader = true) {
+    public function json($alteraHeader = true, $connectar = true) {
         if (empty($this->tabela)) {
             $var = "Acesso Negado!";
         } else {
@@ -20,22 +21,20 @@ class JSON {
                 header('Content-type: application/json');
             }
             
-            $con = new conexao();
-            $con->connect();
-
-            if ($con->connect() == false) {
-                die('Não conectou');
+            if ($connectar) {
+                $con = new conexao();
+                $con->connect();
             }
 
             $orderBy = " order by 1";
             $query = mysql_query(
                     "select column_name " .
                     "  from information_schema.columns " .
-                    " where table_schema = '".$con->getDbName()."' " .
+                    " where table_schema = '".parent::DBNAME."' " .
                     "   and table_name   = '".$this->tabela."' ");
 
             $this->montarColunas($query);
-            $sql = "select " . $this->sqlTabela . " from " .$con->getDbName().".".$this->tabela . $orderBy;
+            $sql = "select " . $this->sqlTabela . " from " .parent::DBNAME.".".$this->tabela . $orderBy;
             $c = mysql_query($sql);
             $linha = array();
 
@@ -44,26 +43,32 @@ class JSON {
             }
 
             $var = json_encode($linha,JSON_NUMERIC_CHECK);
-            $con->disconnect();
+            if ($connectar) {
+                $con->disconnect();
+            }
         }
         return $var;
     }
 
-    public function columns() {
+    public function columns($connectar = true) {
         require_once 'Conexao.class.php';
-        $con = new conexao();
-        $con->connect();
+        if ($connectar) {
+            $con = new conexao();
+            $con->connect();
+        }
 
         $query = mysql_query(
                 "select column_name " .
                 "  from information_schema.columns " .
-                " where table_schema = '".$con->getDbName()."' " .
+                " where table_schema = '".parent::DBNAME."' " .
                 "   and table_name   = '".$this->tabela."' ");
 
         $this->montarColunas($query);
 
         $this->columns = "columns:\n[" . $this->columns . "],\n";
-        $con->disconnect();
+        if ($connectar) {
+            $con->disconnect();
+        }
         return $this->columns;
     }
 

@@ -17,9 +17,9 @@ class Update {
             $this->coluna .= $coluna;
         } else {
             $this->coluna .= "," . $coluna;
-            //        if (substr($colunaAtual, 0, 3) == "fi_") {
-            //            $arquivo = isset($_FILES[$campo['coluna']]);
-            //        }
+            //if (substr($colunaAtual, 0, 3) == "fi_") {
+            //$arquivo = isset($_FILES[$campo['coluna']]);
+            //}
         }
     }
 
@@ -37,26 +37,26 @@ class Update {
 
     public function retornaQueryTabela() {
         return "select a.ordinal_position id_coluna,
-                        a.column_name coluna,
-                        a.is_nullable nulo,
-                        a.data_type tipo_dado,
-                        a.numeric_precision numerico,
-                        if(a.data_type='date',14,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,
-                        if(a.data_type='date',14,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres,
-                        replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum,
-                        a.column_type enum,
-                        if (a.extra = 'auto_increment',1,null) auto_increment,
-                        a.column_key tipo_chave,
-                        b.REFERENCED_TABLE_NAME tabela_ref
-                   from information_schema.columns a 
-                   left join information_schema.key_column_usage b 
-                     on a.TABLE_SCHEMA           = b.TABLE_SCHEMA
-                    and a.TABLE_NAME             = b.TABLE_NAME 
-                    and a.COLUMN_NAME            = b.COLUMN_NAME
-                    and b.REFERENCED_TABLE_NAME is not null
-                  where a.table_schema = '" . $this->schema . "'
-                    and a.table_name   = '" . $this->tabela . "' 
-                  order by a.ordinal_position";
+                       a.column_name coluna,
+                       a.is_nullable nulo,
+                       a.data_type tipo_dado,
+                       a.numeric_precision numerico,
+                       if(a.data_type='date',14,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,
+                       if(a.data_type='date',14,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres,
+                       replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum,
+                       a.column_type enum,
+                       if (a.extra = 'auto_increment',1,null) auto_increment,
+                       a.column_key tipo_chave,
+                       b.referenced_table_name tabela_ref
+                  from information_schema.columns a 
+                  left join information_schema.key_column_usage b 
+                    on a.table_schema           = b.table_schema
+                   and a.table_name             = b.table_name 
+                   and a.column_name            = b.column_name
+                   and b.referenced_table_name is not null
+                 where a.table_schema           = '" . $this->schema . "'
+                   and a.table_name             = '" . $this->tabela . "' 
+                 order by a.ordinal_position";
     }
 
     function montarCampo($arrayCampo, $valorCampo) {
@@ -79,29 +79,6 @@ class Update {
             $this->adicionarColuna($arrayCampo['coluna']);
         }
 
-//        switch ($arrayCampo['tipo_dado']) {
-//            case "password":
-//                echo $this->inputPassword($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
-//                break;
-//            case "file":
-//                echo $this->inputFile($arrayCampo['coluna'], $arrayCampo['coluna'], $valorCampo);
-//                break;
-//            case "longtext":
-//                echo $this->inputTextArea($arrayCampo['coluna'], $arrayCampo['coluna']);
-//                break;
-//            case "date";
-//                echo $this->inputDate($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
-//                break;
-//            case "enum";
-//                echo $this->selectMenuEnum($arrayCampo['coluna'], $arrayCampo['valor_enum'], $valorCampo);
-//                break;
-//            case "fk":
-//                echo $this->selectMenu($arrayCampo['coluna'], $arrayCampo['coluna'], $arrayCampo['tabela_ref'], $valorCampo);
-//                break;
-//            default:
-//                echo $this->inputText($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
-//                break;
-//        };
         if (in_array($arrayCampo['tipo_dado'], $campoSenha)) {
             echo $this->inputPassword($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
         } elseif (in_array($arrayCampo['tipo_dado'], $campoArquivo)) {
@@ -112,7 +89,7 @@ class Update {
             echo $this->inputDate($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
         } elseif (in_array($arrayCampo['tipo_dado'], $campoEnum)) {
             echo $this->selectMenuEnum($arrayCampo['coluna'], $arrayCampo['valor_enum'], $valorCampo);
-        } elseif ($arrayCampo['tipo_chave'] == 'MUL') {
+        } elseif ($arrayCampo['tipo_chave'] == 'MUL' && $arrayCampo['tabela_ref'] != null) {
             echo $this->selectMenu($arrayCampo['coluna'], $arrayCampo['coluna'], $arrayCampo['tabela_ref'], $valorCampo);
         } elseif (in_array($arrayCampo['tipo_dado'], $campoNumero)) {
             echo $this->inputNumber($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
@@ -127,24 +104,26 @@ class Update {
         return "<tr><td>" . ucwords(str_replace("_", " ", str_replace("fi_", "", $arrayCampo['coluna']))) . "</td>\n";
     }
 
-    function button($id, $tipo, $valor, $acao) {
-        $this->montarJS("$('#$id').puibutton();\n");
-        return "<input id='$id' value='$valor' type='$tipo' class='inputForm'/ $acao >\n";
+    function button($id, $tipo, $valor, $acao, $icone) {
+        $ico = $icone != null || $icone != "" ? "{icon:'" . $icone . "'}" : "";
+        $this->montarJS("$('#$id').puibutton(" . $ico . ");\n");
+        return "<button id='$id' type='$tipo' $acao >$valor</button>\n";
     }
 
     function inputText($id, $name, $size, $maxLength, $value, $enable) {
         $this->montarJS("$('#" . $id . "').puiinputtext();\n");
-        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' class='inputForm' value='$value' $enable /></td>\n";
+        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable /></td>\n";
     }
 
     function inputNumber($id, $name, $size, $maxLength, $value, $enable) {
+        $size = $size + 2;
         $this->montarJS("$('#" . $id . "').puispinner();\n");
-        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' class='inputForm' value='$value' $enable /></td>\n";
+        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable /></td>\n";
     }
 
     function inputPassword($id, $name, $size, $maxLength, $value, $enable) {
         $this->montarJS("$('#" . $id . "').puipassword();\n");
-        return "<td><input type='password' id='$id' name='$name' size='$size' maxlength='$maxLength' class='inputForm' value='$value' $enable /></td>\n";
+        return "<td><input type='password' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable /></td>\n";
     }
 
     function inputHidden($valor) {
@@ -162,13 +141,12 @@ class Update {
 
     function inputDate($id, $name, $size, $maxLength, $value, $enable) {
         $this->montarJS("$('#" . $id . "').datepicker({dateFormat:'yy-mm-dd'}).puiinputtext();\n");
-        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' class='inputForm' value='$value' $enable /></td>\n";
+        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable /></td>\n";
     }
 
     function selectMenuEnum($id, $valoresSelect, $valorSelecionado) {
-
         $enum = explode(',', $valoresSelect);
-        $selectMenu = "\n<td><select id='$id' name='$id' class='inputForm'>";
+        $selectMenu = "\n<td><select id='$id' name='$id'>";
         foreach ($enum as $enum) {
             $selected = ($valorSelecionado == $enum) ? "selected" : "";
             $selectMenu .= "\n<option value='$enum' $selected >" . ucfirst($enum) . "</option>";
@@ -180,47 +158,41 @@ class Update {
 
     function selectMenu($id, $name, $tabelaRef, $valorSelecionado) {
 
-        $selectMenu = "\n<td><select id='$id' name='$name' class='inputForm'>\n";
+        $selectMenu = "\n<td><select id='$id' name='$name'>\n";
         $selectMenu .= "\n<option value='' >Escolha...</option>\n";
-        $q = mysql_query("select * from $tabelaRef");
+
+        $json = new JSON($this->retornaView($tabelaRef));
+        $array = json_decode($json->json(false, false), true);
         $option = "";
 
-        while ($c = mysql_fetch_array($q)) {
-            $selected = ($valorSelecionado == $c[0]) ? "selected" : "";
-            $option .= "\n<option value='$c[0]' $selected >";
-            $option .= trim($c[1]);
-            $option .= "</option>";
+        foreach ($array as $i => $value) {
+            foreach ($value as $j => $valor) {
+                $selected = ($j == "id" && $valorSelecionado == $value[$j]) ? "selected" : "";
+                $this->i0 = $j == "id" ? $value[$j] : "";
+
+                $option .= ($j == "id" ? "\n<option $selected value='$value[$j]'>" : "") . $value[$j] . " | ";
+            }
+            $option = trim(substr($option, 0, (strlen($option) - 2))) . "</option>";
         }
-        $selectMenu .= $option;
+        $selectMenu .= trim($option);
         $selectMenu .= "\n</select></td>\n";
-        $this->montarJS("$('#" . $id . "').puidropdown({filter: true});\n");
+        $this->montarJS("$('#" . $id . "').puidropdown({filter: true, filterMatchMode: 'contains'});\n");
         return $selectMenu;
+    }
 
-        /*
-         * ========================================
-         * 
-         * PORQUE DESSE JEITO NÃO DÁ CERTO!!!!!!!!!
-         * 
-         * ========================================* 
-          $selectMenu = "\n<td><select id='$id' name='$name' class='inputForm'>\n";
-          $selectMenu .= "\n<option value='' >Escolha...</option>\n";
-          $json = new JSON($tabelaRef);
-          $array = json_decode($json->json(false),true);
-          $option = "";
+    private function retornaView($tabelaRef) {
+        $view = mysql_query(
+                "  select 1 ret "
+                . "  from information_schema.views a "
+                . " where a.table_schema = '" . $this->schema . "'"
+                . "   and a.table_name   = 'v" . $tabelaRef . "'");
+        $ret = mysql_fetch_row($view);
 
-          foreach ($array as $i => $value) {
-          $selected = ($valorSelecionado == $i[0]) ? "selected" : "";
-          $option .= "<option $selected value='";
-          foreach ($value as $j => $valor) {
-          $option .= ($j == "id" ? $value[$j] . "'>" : "") . $value[$j] . " ";
-          }
-          echo $option = trim($option) . "</option>\n";
-          }
-          $selectMenu .= $option;
-          $selectMenu .= "\n</select></td>\n";
-          $this->montarJS("$('#" . $id . "').puidropdown({filter: true});\n");
-          return $selectMenu;
-         */
+        if ($ret[0] == 1) {
+            return "v" . $tabelaRef;
+        } else {
+            return $tabelaRef;
+        }
     }
 
 }

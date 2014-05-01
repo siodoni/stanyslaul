@@ -38,8 +38,9 @@ class Crud extends Contantes {
         $this->sql_ins = "insert into " . parent::DBNAME . "." . $this->tabela . " ($campos) values ($valores)";
 
         if (!$this->ins = mysql_query($this->sql_ins)) {
-            die("<center>Erro na inclusão " . '<br>Linha: ' . __LINE__ . "<br>" . mysql_error() . "<br>
-		  <a href='list.php'>Voltar ao Menu</a></center>");
+            die("Erro na inclusão " . '<br>Linha: ' . __LINE__ . "<br>" . mysql_error() . "<br>"
+               ."comando ". $this->sql_ins . "<br>"
+               ."<a href='list.php'>Voltar ao Menu</a>");
         } else {
             $_SESSION['mensagemRetorno'] = parent::GRAVAR;
             print "<script>location='list.php';</script>";
@@ -55,7 +56,7 @@ class Crud extends Contantes {
         }
 
         if (!$this->upd = mysql_query($this->sql_upd)) {
-            die("<center>Erro na atualização " 
+            die("<center>Erro na atualizacao " 
               . "<br>Linha: " . __LINE__ . "<br>" 
               . mysql_error() 
               . "<br><a href='list.php'>Voltar ao Menu</a></center>");
@@ -90,10 +91,10 @@ class Crud extends Contantes {
                 die("<center>Erro na exclusão " . '<br>Linha: ' . __LINE__ . "<br>" . mysql_error() . "<br>
                       <a href='list.php'>Voltar ao Menu</a></center>");
             } else {
-                print "<center>Registro Excluído com Sucesso!<br><a href='list.php'>Voltar ao Menu</a></center>";
+                print "<center>Registro Excluido com Sucesso!<br><a href='list.php'>Voltar ao Menu</a></center>";
             }
         } else {
-            print "<center>Registro Não encontrado!<br><a href='menu.php?'>Voltar ao Menu</a></center>";
+            print "<center>Registro Nao Encontrado!<br><a href='menu.php?'>Voltar ao Menu</a></center>";
         }
     }
 
