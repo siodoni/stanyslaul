@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION["usuario"])){header('location:index.php');}
+if (!isset($_SESSION["usuario"])) {header('location:index.php');}
 
 require_once 'lib/Conexao.class.php';
 require_once 'lib/Crud.class.php';
@@ -17,13 +17,6 @@ $update = new Update();
     echo $estrutura->head();
     ?>
     <body id="admin">
-        <?php
-        if (isset($_SESSION["nomeTabela"])) {
-            echo "nome tabela " . $_SESSION["nomeTabela"];
-        } else {
-            echo "nome tabela ??? ";
-        }
-        ?>
         <script type="text/javascript">
             $(function() {
                 // MENSAGENS
@@ -34,62 +27,62 @@ $update = new Update();
                 $('#toolbar').parent().puisticky();
             });
         </script>
+        <div id="mensagens"></div>
         <div class="st-div-main">
             <ul id='toolbar'>
                 <li>
-                    <a data-icon='ui-icon-home' onclick="window.location='menu.php';" >
+                    <a data-icon='ui-icon-home' onclick="window.location = 'menu.php';">
                         Menu
                     </a>
                 </li>
                 <li>
-                    <a data-icon='ui-icon-document' onclick="window.location='update.php';">
+                    <a data-icon='ui-icon-newwin' onclick="window.location = 'list.php';">
+                        Lista
+                    </a>
+                </li>
+                <li>
+                    <a data-icon='ui-icon-document' onclick="window.location = 'update.php';">
                         Novo
                     </a>
                 </li>
                 <li>
-                    <a data-icon='ui-icon-pencil' onclick="window.location='update.php';">
-                        Editar
-                    </a>
-                </li>
-                <li>
-                    <a data-icon='ui-icon-trash' onclick="return excluir();">
+                    <a data-icon='ui-icon-trash' href='delete.php' onclick="return excluir();">
                         Excluir
                     </a>
                 </li>
             </ul>
-
-            <div id="mensagens"></div>  
             <div id="tabela"></div>
-        <?php
-        $con = new conexao();
-        $con->connect();
+            <?php
+            $con = new conexao();
+            $con->connect();
 
-        if ($con->connect() == false) {
-            die('Não conectado. Erro: ' . mysql_error());
-        }
+            if ($con->connect() == false) {
+                die('Não conectado. Erro: ' . mysql_error());
+            }
 
-        if (isset($_SESSION["nomeTabela"])) {
-            $nomeTabela = $_SESSION["nomeTabela"];
-        } else {
-            die("Informe o parametro nomeTabela.");
-        }
+            if (isset($_SESSION["nomeTabela"])) {
+                $nomeTabela = $_SESSION["nomeTabela"];
+            } else {
+                die("Informe o parametro nomeTabela.");
+            }
 
-        $comando = "";
-        if (isset($_REQUEST["id"])) {
-            $id = $_REQUEST["id"];
-            $campoId = "id";
-            $consultaUpdate = mysql_query("select * from " . $con->getDbName() . "." . $nomeTabela . " where " . $campoId . " = '" . $id . "'");
-            $valorCampo = mysql_fetch_array($consultaUpdate);
-            $comando = "update&campoId=" . $campoId . "&id=" . $id;
-        } else {
-            $id = "";
-            $comando = "insert";
-        }
-        //$campos = json_encode(mysql_fetch_array($query));
-        ?>
+            $comando = "";
+            if (isset($_REQUEST["id"])) {
+                $id = $_REQUEST["id"];
+                $_SESSION["id"] = $id;
+                $campoId = "id";
+                $consultaUpdate = mysql_query("select * from " . $con->getDbName() . "." . $nomeTabela . " where " . $campoId . " = '" . $id . "'");
+                $valorCampo = mysql_fetch_array($consultaUpdate);
+                $comando = "update&campoId=" . $campoId . "&id=" . $id;
+            } else {
+                $id = "";
+                $comando = "insert";
+            }
+            //$campos = json_encode(mysql_fetch_array($query));
+            ?>
             <fieldset id="panel" class="pui-menu">
-                <legend><?php echo "Cadastro de " . $nomeTabela ?></legend>
-                <form id="formInsert" action="update.php?comando=<?php echo $comando?>" method="post">
+                <legend><?php echo $_SESSION["tituloForm"] ?></legend>
+                <form id="formInsert" action="update.php?comando=<?php echo $comando ?>" method="post">
                     <table id='hor-minimalist-a'>
                         <tbody>
                             <?php
@@ -108,14 +101,14 @@ $update = new Update();
                                 }
 
                                 echo $update->label($campo);
-                                $update->montarCampo($campo,$valor);
+                                $update->montarCampo($campo, $valor);
 
                                 //echo "<td><label class='error' generated='true' for='" . $campo['coluna'] . "'></label></td></tr>";
                                 $contador += 1;
                             }
                             echo "<tr><td>&nbsp;</td>";
-                            echo "<td>" . $update->button("salvar", "submit","Salvar","");
-                            echo $update->button("cancelar","button", "Cancelar", "onclick='window.location=\"list.php\"'") . "</td></tr>";
+                            echo "<td>".$update->button("salvar","submit","Salvar","","ui-icon-disk");
+                            echo $update->button("cancelar","button","Cancelar","onclick='window.location=\"list.php\"'","ui-icon-circle-close") . "</td></tr>";
                             ?>
                         </tbody>
                     </table>
@@ -129,11 +122,15 @@ $update = new Update();
             <?php echo $update->retornaJS(); ?>
         });
     </script>
+    <?php
+    //echo $update->retornaQueryTabela();
+    ?>
 </html>
 <?php
 $valores = "";
 
 foreach ($_POST as $post) {
+    $qtdAi = 0;
     if ($valores == "") {
         if ($qtdAi > 0) {
             $valores .= "\"null\", '" . $post . "'";
@@ -146,15 +143,15 @@ foreach ($_POST as $post) {
 };
 
 if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "insert") {  // caso nao seja passado o id via GET cadastra
-//    if ($qtdArq > 0) {
-//        include 'upload.php';
-//        $up = new Upload();
-//        $up->inserir($arquivo);
-//    }
-    echo $update->retornaColuna() ." - " .$valores;
+    //if ($qtdArq > 0) {
+    //include 'upload.php';
+    //$up = new Upload();
+    //$up->inserir($arquivo);
+    //}
+    //echo $update->retornaColuna() . " - " . $valores;
     $crud = new crud($nomeTabela);
     $crud->inserir($update->retornaColuna(), $valores);
-    header("Location: list.php");
+    print "<script>location='list.php';</script>";
 }
 
 if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso nao seja passado o id via GET cadastra
@@ -175,9 +172,8 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso 
         $contador += 1;
     }
     $crud = new crud($nomeTabela);
-    $crud->atualizar($comandoUpdate, $campoId . " = '" . $id . "' ",true);
+    $crud->atualizar($comandoUpdate, $campoId . " = '" . $id . "' ", true);
     print "<script>location='list.php';</script>";
 }
 
 $con->disconnect();
-?>

@@ -12,8 +12,6 @@ if (!isset($_SESSION["usuario"])){header('location:index.php');}
             require_once 'lib/Conexao.class.php';
             require_once 'lib/Crud.class.php';
 
-            die($_SESSION['idOperacao']);
-            
             $con = new conexao();
             $con->connect();
             $campoId = "id";
@@ -38,8 +36,8 @@ if (!isset($_SESSION["usuario"])){header('location:index.php');}
                 die("Informe o parametro nomeTabela.");
             }
             
-            if (isset($_POST["id"])) {
-                $id = $_POST["id"];
+            if (isset($_REQUEST["id"])) {
+                $id = $_REQUEST["id"];
             } else{
                 $id = $_SESSION["id"];
             }
