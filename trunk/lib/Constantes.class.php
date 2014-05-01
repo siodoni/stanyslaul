@@ -16,6 +16,10 @@ class Contantes {
     const COLUMN_USER = 'usuario';
     const COLUMN_PASS = 'senha';
     
+    // Mensagens
+    const GRAVAR = 'Registro gravado com sucesso.';
+    const ATUALIZAR = 'Registro atualizado com sucesso.';
+    
     //Menu
     const QUERY_MENU = "select a.nm_tabela as tabela,
                                a.cod_aplicacao codigo, 

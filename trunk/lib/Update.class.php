@@ -161,7 +161,7 @@ class Update {
     }
 
     function inputDate($id, $name, $size, $maxLength, $value, $enable) {
-        $this->montarJS("$('#" . $id . "').datepicker({dateFormat:'dd/mm/yy'}).puiinputtext();\n");
+        $this->montarJS("$('#" . $id . "').datepicker({dateFormat:'yy-mm-dd'}).puiinputtext();\n");
         return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' class='inputForm' value='$value' $enable /></td>\n";
     }
 
