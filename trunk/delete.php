@@ -12,6 +12,8 @@ if (!isset($_SESSION["usuario"])){header('location:index.php');}
             require_once 'lib/Conexao.class.php';
             require_once 'lib/Crud.class.php';
 
+            die($_SESSION['idOperacao']);
+            
             $con = new conexao();
             $con->connect();
             $campoId = "id";
