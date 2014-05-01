@@ -66,36 +66,44 @@ class DataTable {
     // Tentei colocar a mensagem no growl para quando retornar do update mostrar o resultado da operação mas ainda nao consegui
     private function script(){
         return "\n<script type='text/javascript'>"
-             . "\n$(function() {"
-             . "\n// MENSAGENS"
-             . "\n$('#mensagens').puigrowl(" . (isset($this->mensagemRetorno)) ? ("'show',".$this->mensagemRetorno) : '' . ";"
-             . "\n//TOOLBAR"
-             . "\n$('#toolbar').puimenubar();"
-             . "\n$('#toolbar').parent().puisticky();"
-             . "\n// DATATABLE"
-             . "\n$('#tabela').puidatatable({"
-             . $this->captionDataSource(10)
-             . "\n".$this->dataSource('json.php')
-             . "\n".$this->json->columns()
-             . "\nselectionMode: 'single',"
-             . "\nrowSelect: function(event, data) {"
-             . "\nwindow.open('update.php?id='+data.id,'_self');"
-             //. "\n$('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Selected', detail: ('ID: ' + data.id)}]);"
-             . "\n},"
-             . "\nrowUnselect: function(event, data) {"
-             //. "\n$('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Unselected', detail: ('ID: ' + data.id)}]);"
-             . "\n}"
-             . "\n});"
-             . "\n});"
-             . "\n</script>";       
+            . "\n$(function() {"
+            . "\n// MENSAGENS"
+            . "\n$('#mensagens').puigrowl();"
+// não consegui funcionar ainda
+//            . "\naddMessage = function() {"
+//            . "\n    $(#mensagens).puigrowl('show', '$this->mensagemRetorno');"
+//            . "\n  };"
+            . "\n//TOOLBAR"
+            . "\n$('#toolbar').puimenubar();"
+            . "\n$('#toolbar').parent().puisticky();"
+            . "\n// DATATABLE"
+            . "\n$('#tabela').puidatatable({"
+            . $this->captionDataSource(10)
+            . "\n".$this->dataSource('json.php')
+            . "\n".$this->json->columns()
+            . "\nselectionMode: 'single',"
+            . "\nrowSelect: function(event, data) {"
+            //. "\nwindow.open('update.php?id='+data.id,'_self');"
+            //. "\n$('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Selected', detail: ('ID: ' + data.id)}]);"
+            . "\n},"
+            . "\nrowUnselect: function(event, data) {"
+            //. "\n$('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Unselected', detail: ('ID: ' + data.id)}]);"
+            . "\n}"
+            . "\n});"
+            . "\n});"
+            . "\n"
+            . "\n function excluir(data) {"
+            . " alert(data.id);"
+            . "\n }"
+            . "</script>";       
     }
     
     private function toolbar(){
         return "\n<ul id='toolbar'>"
              . "\n<li><a data-icon='ui-icon-home' onclick=\"window.location = 'menu.php';\" >Menu</a></li>"
              . "\n<li><a data-icon='ui-icon-document' onclick=\"window.location = 'update.php';\">Novo</a></li>"
-             . "\n<li><a data-icon='ui-icon-pencil' onclick=\"window.location = 'update.php';\">Editar</a></li>"
-             . "\n<li><a data-icon='ui-icon-trash' onclick=\"return excluir();\">Excluir</a></li>"
+             . "\n<li><a data-icon='ui-icon-pencil' onclick=\"window.location = 'update.php?id='+data.id';\">Editar</a></li>"
+             . "\n<li><a data-icon='ui-icon-trash' onclick=\"excluir();\">Excluir</a></li>"
              . "\n</ul>";
     }
     
