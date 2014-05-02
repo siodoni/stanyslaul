@@ -4,9 +4,9 @@ class Contantes {
 
     //Conexão Base Dados
     const HOST = 'localhost';
-    const DBNAME = 'newyork';
-    const USER = 'root';
-    const PASSWORD = 'vertrigo';
+    const DBNAME = 'newyork_db';
+    const USER = 'newyork_user';
+    const PASSWORD = 'insterTED7609';
     
     //Estrutura
     const TITLE = 'New York Idiomas - &Aacute;rea Administrativa';
