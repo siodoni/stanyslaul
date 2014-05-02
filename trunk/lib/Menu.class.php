@@ -61,9 +61,10 @@ class Menu extends Contantes {
     
     private function buttons($idModulo = 0){
         $form = "";
-        $query = mysql_query(str_replace("#usuario",$this->usuario,(
-                             str_replace("#idModulo",$idModulo,
-                             parent::QUERY_MENU))));
+        $query = mysql_query(
+                str_replace("#db",parent::DBNAME,(
+                str_replace("#usuario",$this->usuario,(
+                str_replace("#idModulo",$idModulo,parent::QUERY_MENU))))));
         
         while ($j = mysql_fetch_array($query)) {
             $this->qtde++;

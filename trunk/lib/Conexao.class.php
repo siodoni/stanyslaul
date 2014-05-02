@@ -42,5 +42,8 @@ class Conexao extends Contantes {
     public function getDbName() {
         return $this->dbName;
     }
-
+    
+    public function getQueryLogin() {
+        return parent::QUERY_LOGIN;
+    }
 }
