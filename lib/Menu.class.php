@@ -68,7 +68,7 @@ class Menu extends Contantes {
         
         while ($j = mysql_fetch_array($query)) {
             $this->qtde++;
-            $form = $form . "\n<button id='btn" . $this->qtde . "' type='submit' name='nomeTabela' value='" . $j['tabela'] . "' class='st-menu-button'>" . $j['titulo'] . "</button><br/>";
+            $form = $form . "\n<button id='btn" . $this->qtde . "' type='submit' name='nomeTabela' value='" . $j['tabela'] . "' class='st-menu-button'>" . $j["codigo"] . " - " . $j['titulo'] . "</button><br/>";
             $this->button = $this->button . "\n$('#btn" . $this->qtde . "').puibutton({icon: 'ui-icon-newwin'});";
         }
         return $form;
