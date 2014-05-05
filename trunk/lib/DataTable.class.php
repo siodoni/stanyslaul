@@ -30,7 +30,8 @@ class DataTable {
     private function verificaParametro() {
         $sql = mysql_query(
                 "  select a.nm_view as view, "
-                . "       a.nm_menu as titulo"
+                . "       a.nm_menu as titulo, "
+                . "       a.cod_aplicacao codigo "
                 . "  from " . $this->con->getDbName() . ".snb_menu a "
                 . " where a.nm_tabela = '" . $this->tabela . "' ");
         $a = mysql_fetch_assoc($sql);
@@ -39,7 +40,7 @@ class DataTable {
             die("Parametro incorreto, nao sera possivel montar a lista.");
         }
 
-        $this->titulo = $a["titulo"];
+        $this->titulo = $a["codigo"] . " - " . $a["titulo"];
         $this->view = $a["view"];
         $this->tabelaJSON = ($this->view == "" || $this->view == null ? $this->tabela : $this->view);
         $this->json = new JSON($this->tabelaJSON);

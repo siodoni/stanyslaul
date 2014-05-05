@@ -38,7 +38,7 @@ class Crud extends Contantes {
         $this->sql_ins = "insert into " . parent::DBNAME . "." . $this->tabela . " ($campos) values ($valores)";
 
         if (!$this->ins = mysql_query($this->sql_ins)) {
-            die("Erro na inclusão " . '<br>Linha: ' . __LINE__ . "<br>" . mysql_error() . "<br>"
+            die("Erro na inclus&atilde;o " . '<br>Linha: ' . __LINE__ . "<br>" . mysql_error() . "<br>"
                ."comando ". $this->sql_ins . "<br>"
                ."<a href='list.php'>Voltar ao Menu</a>");
         } else {
@@ -56,7 +56,7 @@ class Crud extends Contantes {
         }
 
         if (!$this->upd = mysql_query($this->sql_upd)) {
-            die("<center>Erro na atualizacao " 
+            die("<center>Erro na atualiza&ccedil;&atilde;o " 
               . "<br>Linha: " . __LINE__ . "<br>" 
               . mysql_error() 
               . "<br><a href='list.php'>Voltar ao Menu</a></center>");
@@ -88,13 +88,13 @@ class Crud extends Contantes {
 
         if ($regs > 0) {
             if (!$this->del = mysql_query($this->sql_del)) {
-                die("<center>Erro na exclusão " . '<br>Linha: ' . __LINE__ . "<br>" . mysql_error() . "<br>
+                die("<center>Erro na exclus&atilde;o " . '<br>Linha: ' . __LINE__ . "<br>" . mysql_error() . "<br>
                       <a href='list.php'>Voltar ao Menu</a></center>");
             } else {
                 print "<center>Registro Excluido com Sucesso!<br><a href='list.php'>Voltar ao Menu</a></center>";
             }
         } else {
-            print "<center>Registro Nao Encontrado!<br><a href='menu.php?'>Voltar ao Menu</a></center>";
+            print "<center>Registro N&atilde;o Encontrado!<br><a href='menu.php?'>Voltar ao Menu</a></center>";
         }
     }
 
