@@ -109,6 +109,7 @@ $update = new Update();
                             echo "<tr><td>&nbsp;</td>";
                             echo "<td>".$update->button("salvar","submit","Salvar","","ui-icon-disk");
                             echo $update->button("cancelar","button","Cancelar","onclick='window.location=\"list.php\"'","ui-icon-circle-close") . "</td></tr>";
+                            //echo $update->retornaQueryTabela();
                             ?>
                         </tbody>
                     </table>

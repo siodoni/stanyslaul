@@ -89,7 +89,7 @@ class Update {
             echo $this->inputDate($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
         } elseif (in_array($arrayCampo['tipo_dado'], $campoEnum)) {
             echo $this->selectMenuEnum($arrayCampo['coluna'], $arrayCampo['valor_enum'], $valorCampo);
-        } elseif ($arrayCampo['tipo_chave'] == 'MUL' && $arrayCampo['tabela_ref'] != null) {
+        } elseif (($arrayCampo['tipo_chave'] == 'MUL' || $arrayCampo['tipo_chave'] == 'UNI') && $arrayCampo['tabela_ref'] != null) {
             echo $this->selectMenu($arrayCampo['coluna'], $arrayCampo['coluna'], $arrayCampo['tabela_ref'], $valorCampo);
         } elseif (in_array($arrayCampo['tipo_dado'], $campoNumero)) {
             echo $this->inputNumber($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
@@ -168,9 +168,9 @@ class Update {
         foreach ($array as $i => $value) {
             foreach ($value as $j => $valor) {
                 $selected = ($j == "id" && $valorSelecionado == $value[$j]) ? "selected" : "";
-                $this->i0 = $j == "id" ? $value[$j] : "";
+                $this->i0 = $j == "id" ? utf8_decode($value[$j]) : "";
 
-                $option .= ($j == "id" ? "\n<option $selected value='$value[$j]'>" : "") . $value[$j] . " | ";
+                $option .= ($j == "id" ? "\n<option $selected value='".utf8_decode($value[$j])."'>" : "") . utf8_decode($value[$j]) . " | ";
             }
             $option = trim(substr($option, 0, (strlen($option) - 2))) . "</option>";
         }
