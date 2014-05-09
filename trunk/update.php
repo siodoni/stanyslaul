@@ -130,16 +130,19 @@ $update = new Update();
 <?php
 $valores = "";
 
-foreach ($_POST as $post) {
+foreach ($_POST as $key => $value) {
     $qtdAi = 0;
+    if ($key=="senha"||$key=="password"){
+        $value = sha1(trim($value));
+    }
     if ($valores == "") {
         if ($qtdAi > 0) {
-            $valores .= "\"null\", '" . $post . "'";
+            $valores .= "\"null\", '" . $value . "'";
         } else {
-            $valores .= "'" . $post . "'";
+            $valores .= "'" . $value . "'";
         }
     } else {
-        $valores .= ",'" . $post . "'";
+        $valores .= ",'" . $value . "'";
     }
 };
 
