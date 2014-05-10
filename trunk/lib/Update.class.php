@@ -42,8 +42,8 @@ class Update {
                        a.is_nullable nulo,
                        if(a.column_name='senha','password',a.data_type) tipo_dado,
                        a.numeric_precision numerico,
-                       if(a.data_type='date',14,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,
-                       if(a.data_type='date',14,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres,
+                       if(a.data_type='date' or a.data_type='time',14,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,
+                       if(a.data_type='date' or a.data_type='time',14,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres,
                        replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum,
                        a.column_type enum,
                        if (a.extra = 'auto_increment',1,null) auto_increment,
@@ -61,7 +61,7 @@ class Update {
     }
 
     function montarCampo($arrayCampo, $valorCampo) {
-        $campoNumero = array("int", "bigint");
+        $campoNumero = array("int","bigint","decimal","double","smallint","float");
         $campoSenha = array("password");
         $campoArquivo = array("file");
         $campoTextArea = array("longtext");

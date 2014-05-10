@@ -80,7 +80,7 @@ $update = new Update();
             }
             //$campos = json_encode(mysql_fetch_array($query));
             ?>
-            <fieldset id="panel" class="pui-menu">
+            <fieldset id="panel" class="pui-menu st-fieldset">
                 <legend><?php echo $_SESSION["tituloForm"] ?></legend>
                 <form id="formInsert" action="update.php?comando=<?php echo $comando ?>" method="post">
                     <table id='hor-minimalist-a'>
@@ -144,6 +144,7 @@ foreach ($_POST as $key => $value) {
     } else {
         $valores .= ",'" . $value . "'";
     }
+    $valores = str_replace("''", "null", $valores);
 }
 
 if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "insert") {  // caso nao seja passado o id via GET cadastra

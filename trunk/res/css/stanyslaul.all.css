@@ -61,6 +61,10 @@
     width:165px;
 }
 
+.st-fieldset{
+    width: 99%;
+}
+
 /* PRIME */
 .pui-menubar {
     margin-bottom: 5px;
