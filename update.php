@@ -144,7 +144,7 @@ foreach ($_POST as $key => $value) {
     } else {
         $valores .= ",'" . $value . "'";
     }
-};
+}
 
 if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "insert") {  // caso nao seja passado o id via GET cadastra
     //if ($qtdArq > 0) {
@@ -153,7 +153,7 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "insert") {  // caso 
     //$up->inserir($arquivo);
     //}
     //echo $update->retornaColuna() . " - " . $valores;
-    $crud = new crud($nomeTabela);
+    $crud = new crud($nomeTabela,true);
     $crud->inserir($update->retornaColuna(), $valores);
     print "<script>location='list.php';</script>";
 }
@@ -175,7 +175,7 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso 
         }
         $contador += 1;
     }
-    $crud = new crud($nomeTabela);
+    $crud = new crud($nomeTabela,true);
     $crud->atualizar($comandoUpdate, $campoId . " = '" . $id . "' ", true);
     print "<script>location='list.php';</script>";
 }
