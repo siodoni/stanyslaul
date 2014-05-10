@@ -31,7 +31,7 @@ if (!isset($_SESSION["usuario"])){header('location:index.php');}
             }
             
             if ($nomeTabela != ""){
-                $crud = new Crud($nomeTabela);
+                $crud = new Crud($nomeTabela,true);
             } else {
                 die("Informe o parametro nomeTabela.");
             }

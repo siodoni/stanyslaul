@@ -133,7 +133,7 @@ class Menu extends Contantes {
     private function alteraSenhaUsuario(){
         $senha1 = isset($_POST["senha1"]) ? sha1($_POST["senha1"]) : "";
         $senha2 = isset($_POST["senha2"]) ? sha1($_POST["senha2"]) : "";
-        $crud = new Crud(parent::TABLE_USER);
+        $crud = new Crud(parent::TABLE_USER,true);
         
         if (!empty($_POST["senha1"]) && !empty($_POST["senha2"])) {
             if ($senha1 == $senha2){

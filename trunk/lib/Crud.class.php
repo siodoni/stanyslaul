@@ -12,6 +12,7 @@ class Crud extends Contantes {
     private $sql_ins = "";
     private $tabela = "";
     private $sql_sel = "";
+    private $redireciona = true;
 
     // Caso pretendamos que esta classe seja herdada por outras, então alguns atributos podem ser protected
 
@@ -21,8 +22,9 @@ class Crud extends Contantes {
      * @return $this->tabela
      */
     // construtor, nome da tabela como parametro
-    public function __construct($tabela) {
+    public function __construct($tabela,$redireciona=true) {
         $this->tabela = $tabela;
+        $this->redireciona = $redireciona;
         return $this->tabela;
     }
 
@@ -40,10 +42,10 @@ class Crud extends Contantes {
         if (!$this->ins = mysql_query($this->sql_ins)) {
             die("Erro na inclus&atilde;o " . '<br>Linha: ' . __LINE__ . "<br>" . mysql_error() . "<br>"
                ."comando ". $this->sql_ins . "<br>"
-               ."<a href='list.php'>Voltar ao Menu</a>");
+               . ($this->redireciona ? "<a href='list.php'>Voltar ao Menu</a>" : ""));
         } else {
             $_SESSION['mensagemRetorno'] = parent::GRAVAR;
-            print "<script>location='list.php';</script>";
+            print ($this->redireciona ? "<script>location='list.php';</script>" : "");
         }
     }
 
@@ -59,11 +61,11 @@ class Crud extends Contantes {
             die("<center>Erro na atualiza&ccedil;&atilde;o " 
               . "<br>Linha: " . __LINE__ . "<br>" 
               . mysql_error() 
-              . "<br><a href='list.php'>Voltar ao Menu</a></center>");
+              . ($this->redireciona ? "<br><a href='list.php'>Voltar ao Menu</a>" : "" ) . "</center>");
         } else {
             if ($mostrarMensagem) {
                 $_SESSION['mensagemRetorno'] = parent::ATUALIZAR;
-                print "<center>Registro Atualizado com Sucesso!<br><a href='list.php'>Voltar ao Menu</a></center>";
+                print ($this->redireciona ? "<center>Registro Atualizado com Sucesso!<br><a href='list.php'>Voltar ao Menu</a></center>" : "");
             }
         }
     }
@@ -88,14 +90,13 @@ class Crud extends Contantes {
 
         if ($regs > 0) {
             if (!$this->del = mysql_query($this->sql_del)) {
-                die("<center>Erro na exclus&atilde;o " . '<br>Linha: ' . __LINE__ . "<br>" . mysql_error() . "<br>
-                      <a href='list.php'>Voltar ao Menu</a></center>");
+                die("<center>Erro na exclus&atilde;o " . '<br>Linha: ' . __LINE__ . "<br>" . mysql_error() . "<br>"
+                  . ($this->redireciona ? "<a href='list.php'>Voltar ao Menu</a>" : "" ) . "</center>");
             } else {
-                print "<center>Registro Excluido com Sucesso!<br><a href='list.php'>Voltar ao Menu</a></center>";
+                print ($this->redireciona ? "<center>Registro Excluido com Sucesso!<br><a href='list.php'>Voltar ao Menu</a></center>" : "");
             }
         } else {
-            print "<center>Registro N&atilde;o Encontrado!<br><a href='menu.php?'>Voltar ao Menu</a></center>";
+            print "<center>Registro N&atilde;o Encontrado!<br>".($this->redireciona ? "<a href='menu.php?'>Voltar ao Menu</a>": "") . "</center>";
         }
     }
-
 }
