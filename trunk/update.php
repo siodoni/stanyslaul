@@ -128,6 +128,24 @@ $update = new Update();
     ?>
 </html>
 <?php
+
+function verificaCampoDeData($campo) {
+    $tipoDado = "";
+    $query = mysql_query(
+            " select a.data_type tipo_dado
+                from information_schema.columns a
+               where a.table_schema = 'newyork'
+                 and a.table_name   = 'snb_curso_periodo' 
+                 and a.column_name  = 'dt_inicio'");
+    $tipoDado = mysql_fetch_array($query);
+    
+    return $tipoDado[0];
+}
+
+function formataData($dataOriginal) {
+    return implode("-", array_reverse(explode('/', str_replace("'", "", $dataOriginal)) ) );
+}
+
 $valores = "";
 
 foreach ($_POST as $key => $value) {
@@ -155,6 +173,7 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "insert") {  // caso 
     //}
     //echo $update->retornaColuna() . " - " . $valores;
     $crud = new crud($nomeTabela,true);
+    die ($update->retornaColuna() . " - " . $valores);
     $crud->inserir($update->retornaColuna(), $valores);
     print "<script>location='list.php';</script>";
 }
@@ -172,11 +191,16 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso 
                 $comandoUpdate .= $x . " = " . $valoresUpdate[$contador] . " ";
             }
         } else {
-            $comandoUpdate .= ", " . $x . " = " . $valoresUpdate[$contador] . " ";
+            if (verificaCampoDeData($x) == 'date') {
+                $comandoUpdate .= ", " . $x . " = '" . formataData($valoresUpdate[$contador]) . "' ";
+            } else {
+                $comandoUpdate .= ", " . $x . " = " . $valoresUpdate[$contador] . " ";
+            }
         }
         $contador += 1;
     }
     $crud = new crud($nomeTabela,true);
+//    die ($comandoUpdate);
     $crud->atualizar($comandoUpdate, $campoId . " = '" . $id . "' ", true);
     print "<script>location='list.php';</script>";
 }

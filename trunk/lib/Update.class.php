@@ -34,6 +34,10 @@ class Update {
     public function retornaJS() {
         return $this->javaScript;
     }
+    
+    public function verificaSeEhData($nomeCampo) {
+        return (in_array($nomeCampo, $this->camposDeData)) ? true : false;
+    }
 
     public function retornaQueryTabela() {
         //if(a.column_name='senha','password,a.data_type) tipo_dado,
@@ -141,7 +145,7 @@ class Update {
     }
 
     function inputDate($id, $name, $size, $maxLength, $value, $enable) {
-        $this->montarJS("$('#" . $id . "').datepicker({dateFormat:'yy-mm-dd'}).puiinputtext();\n");
+        $this->montarJS("$('#" . $id . "').datepicker({dateFormat:'dd/mm/yy'}).puiinputtext();\n");
         return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable /></td>\n";
     }
 
@@ -194,6 +198,17 @@ class Update {
         } else {
             return $tabelaRef;
         }
+    }
+    
+    public function verificaCampoDeData($campo) {
+        $query = mysql_query(
+                " select a.data_type tipo_dado
+                    from information_schema.columns a
+                   where a.table_schema = '$this->schema'
+                     and a.table_name   = '$this->tabela' 
+                     and a.column_name  = '$campo'");
+        $tipoDado = mysql_fetch_array($query);
+        return $tipoDado[0];
     }
 
 }
