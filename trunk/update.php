@@ -129,17 +129,28 @@ $update = new Update();
 </html>
 <?php
 
-function verificaCampoDeData($campo) {
-    $tipoDado = "";
+/*
+ * Por enquanto criei esse método de verificação para converter as datas. Mas a idéia é que
+ * essa informação seja buscada através do array em JSON que foi recuperado com as informações da tabela
+ * OBS: As informações de nome de tabela e schema devem ser recuperados da sessão */
+function verificaCampoDeData($nomeTabela, $campo) {
     $query = mysql_query(
             " select a.data_type tipo_dado
                 from information_schema.columns a
                where a.table_schema = 'newyork'
-                 and a.table_name   = 'snb_curso_periodo' 
-                 and a.column_name  = 'dt_inicio'");
+                 and a.table_name   = '$nomeTabela' 
+                 and a.column_name  = '$campo'");
     $tipoDado = mysql_fetch_array($query);
     
     return $tipoDado[0];
+}
+
+function verificaSeValorEhData($texto) {
+    if (strlen($texto) == 10 && strpos($texto, "/") == 2 && strrpos($texto, "/") == 5) {
+        return TRUE;
+    } else {
+        return FALSE;
+    }
 }
 
 function formataData($dataOriginal) {
@@ -160,7 +171,11 @@ foreach ($_POST as $key => $value) {
             $valores .= "'" . $value . "'";
         }
     } else {
-        $valores .= ",'" . $value . "'";
+        if (verificaSeValorEhData($value)) {
+            $valores .= ",'" . formataData($value) . "'";
+        } else {
+            $valores .= ",'" . $value . "'";
+        }
     }
     $valores = str_replace("''", "null", $valores);
 }
@@ -173,7 +188,6 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "insert") {  // caso 
     //}
     //echo $update->retornaColuna() . " - " . $valores;
     $crud = new crud($nomeTabela,true);
-    die ($update->retornaColuna() . " - " . $valores);
     $crud->inserir($update->retornaColuna(), $valores);
     print "<script>location='list.php';</script>";
 }
@@ -191,7 +205,7 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso 
                 $comandoUpdate .= $x . " = " . $valoresUpdate[$contador] . " ";
             }
         } else {
-            if (verificaCampoDeData($x) == 'date') {
+            if (verificaCampoDeData($nomeTabela, $x) == 'date') {
                 $comandoUpdate .= ", " . $x . " = '" . formataData($valoresUpdate[$contador]) . "' ";
             } else {
                 $comandoUpdate .= ", " . $x . " = " . $valoresUpdate[$contador] . " ";
