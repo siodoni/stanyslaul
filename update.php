@@ -25,6 +25,13 @@ $update = new Update();
                 //TOOLBAR
                 $('#toolbar').puimenubar();
                 $('#toolbar').parent().puisticky();
+                
+                //DIALOG
+                /*
+                $('#dlgRedirect').puidialog({modal:true,resizable:false,width:220});
+                $('#btnConfRedirect').puibutton({icon:'ui-icon-circle-check'});
+                $('#btnCancRedirect').puibutton({icon:'ui-icon-circle-close'});
+                */
             });
         </script>
         <div id="mensagens"></div>
@@ -55,7 +62,7 @@ $update = new Update();
             <?php
             $con = new conexao();
             $con->connect();
-
+            
             if ($con->connect() == false) {
                 die('Não conectado. Erro: ' . mysql_error());
             }
@@ -106,6 +113,8 @@ $update = new Update();
                                 //echo "<td><label class='error' generated='true' for='" . $campo['coluna'] . "'></label></td></tr>";
                                 $contador += 1;
                             }
+                            //$onclickSalvar = (isset($_SESSION["proxMenu"]) && $_SESSION["proxMenu"] != null ? 'onclick="$(\'#dlgRedirect\').puidialog(\'show\');"' : "");
+                            
                             echo "<tr><td>&nbsp;</td>";
                             echo "<td>".$update->button("salvar","submit","Salvar","","ui-icon-disk");
                             echo $update->button("cancelar","button","Cancelar","onclick='window.location=\"list.php\"'","ui-icon-circle-close") . "</td></tr>";
@@ -116,6 +125,15 @@ $update = new Update();
                 </form>
             </fieldset>
         </div>
+        <!--
+        <div id='dlgRedirect' title='Redirecionar'>
+            <p>Deseja ir para o pr&oacute;ximo cadastro?</p>
+            <p>
+                <button id='btnConfRedirect' type='button'>Sim</button>
+                <button id='btnCancRedirect' type='button'>N&atilde;o</button>
+            </p>
+        </div>
+        -->
     </body>
     <script type="text/javascript">
         $(function() {
@@ -123,12 +141,8 @@ $update = new Update();
             <?php echo $update->retornaJS(); ?>
         });
     </script>
-    <?php
-    //echo $update->retornaQueryTabela();
-    ?>
 </html>
 <?php
-
 /*
  * Por enquanto criei esse método de verificação para converter as datas. Mas a idéia é que
  * essa informação seja buscada através do array em JSON que foi recuperado com as informações da tabela
@@ -137,7 +151,7 @@ function verificaCampoDeData($nomeTabela, $campo) {
     $query = mysql_query(
             " select a.data_type tipo_dado
                 from information_schema.columns a
-               where a.table_schema = 'newyork'
+               where a.table_schema = '".$_SESSION["schema"]."'
                  and a.table_name   = '$nomeTabela' 
                  and a.column_name  = '$campo'");
     $tipoDado = mysql_fetch_array($query);
@@ -147,9 +161,9 @@ function verificaCampoDeData($nomeTabela, $campo) {
 
 function verificaSeValorEhData($texto) {
     if (strlen($texto) == 10 && strpos($texto, "/") == 2 && strrpos($texto, "/") == 5) {
-        return TRUE;
+        return true;
     } else {
-        return FALSE;
+        return false;
     }
 }
 
@@ -189,7 +203,7 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "insert") {  // caso 
     //echo $update->retornaColuna() . " - " . $valores;
     $crud = new crud($nomeTabela,true);
     $crud->inserir($update->retornaColuna(), $valores);
-    print "<script>location='list.php';</script>";
+    redirectProxMenu();
 }
 
 if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso nao seja passado o id via GET cadastra
@@ -214,9 +228,32 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso 
         $contador += 1;
     }
     $crud = new crud($nomeTabela,true);
-//    die ($comandoUpdate);
+    //die ($comandoUpdate);
     $crud->atualizar($comandoUpdate, $campoId . " = '" . $id . "' ", true);
-    print "<script>location='list.php';</script>";
+    redirectProxMenu();
+}
+
+function redirectProxMenu(){
+    if (isset($_SESSION["proxMenu"]) && $_SESSION["proxMenu"] != null){
+        $sql = mysql_query(
+                "  select a.nm_view as view, "
+                . "       a.nm_menu as titulo, "
+                . "       a.cod_aplicacao codigo, "
+                . "       a.id_menu_proximo prox_menu, "
+                . "       a.nm_tabela as tabela "
+                . "  from " . $_SESSION["schema"] . ".snb_menu a "
+                . " where a.id = " . $_SESSION["proxMenu"] );
+        $a = mysql_fetch_assoc($sql);
+
+        $_SESSION["nomeTabela"] = $a["tabela"];
+        $_SESSION["nomeTabelaJSON"] = ($a["view"] == "" || $a["view"] == null ? $a["tabela"] : $a["view"]);
+        $_SESSION["tituloForm"] = $a["codigo"] . " - " . $a["titulo"];
+        $_SESSION["proxMenu"] = $a["prox_menu"];
+
+        print "<script>location='update.php';</script>";
+    } else {
+        print "<script>location='list.php';</script>";
+    }
 }
 
 $con->disconnect();
