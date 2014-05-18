@@ -22,3 +22,4 @@
 - desenvolver o esqueci minha senha (esse vamos avaliar neh?)
 - terminar o insert/update (esta funcionando, so falta o upload, mas eh pro proximo modulo)
 - usar a criptografia SHA1 na gravacao e geracao da senha
+- ao salvar perguntar ao usuário se deseja ir para o próximo cadastro

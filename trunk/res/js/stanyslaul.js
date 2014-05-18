@@ -1,9 +1,8 @@
-function excluir(){
+function excluir() {
     var decisao = confirm("Deseja excluir o registro?");
-    if (decisao){
+    if (decisao) {
         return true;
     } else {
         return false;
     }
 }
-

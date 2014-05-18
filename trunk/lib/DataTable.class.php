@@ -14,6 +14,7 @@ class DataTable {
     private $view;
     private $tabelaJSON;
     private $mensagemRetorno;
+    private $proximoMenu;
 
     public function __construct($tabela) {
         $this->tabela = $tabela;
@@ -31,7 +32,8 @@ class DataTable {
         $sql = mysql_query(
                 "  select a.nm_view as view, "
                 . "       a.nm_menu as titulo, "
-                . "       a.cod_aplicacao codigo "
+                . "       a.cod_aplicacao codigo, "
+                . "       a.id_menu_proximo prox_menu "
                 . "  from " . $this->con->getDbName() . ".snb_menu a "
                 . " where a.nm_tabela = '" . $this->tabela . "' ");
         $a = mysql_fetch_assoc($sql);
@@ -42,12 +44,14 @@ class DataTable {
 
         $this->titulo = $a["codigo"] . " - " . $a["titulo"];
         $this->view = $a["view"];
+        $this->proximoMenu = $a["prox_menu"];
         $this->tabelaJSON = ($this->view == "" || $this->view == null ? $this->tabela : $this->view);
         $this->json = new JSON($this->tabelaJSON);
 
         $_SESSION["nomeTabela"] = $this->tabela;
         $_SESSION["nomeTabelaJSON"] = $this->tabelaJSON;
         $_SESSION["tituloForm"] = $this->titulo;
+        $_SESSION["proxMenu"] = $this->proximoMenu;
     }
 
     private function buildDataTable() {
@@ -125,5 +129,9 @@ class DataTable {
                 . "\n}"
                 . "\n});"
                 . "\n},";
+    }
+    
+    public function getProxMenu(){
+        return $this->proximoMenu;
     }
 }
