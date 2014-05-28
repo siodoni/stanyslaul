@@ -60,7 +60,9 @@ class Menu extends Contantes {
     }
     
     private function buttons($idModulo = 0){
-        $form = "";
+        $form  = "";
+        $valor = "";
+        $tipo  = "";
         $query = mysql_query(
                 str_replace("#db",parent::DBNAME,(
                 str_replace("#usuario",$this->usuario,(
@@ -68,7 +70,9 @@ class Menu extends Contantes {
         
         while ($j = mysql_fetch_array($query)) {
             $this->qtde++;
-            $form = $form . "\n<button id='btn" . $this->qtde . "' type='submit' name='nomeTabela' value='" . $j['tabela'] . "' class='st-menu-button'>" . $j["codigo"] . " - " . $j['titulo'] . "</button><br/>";
+            $valor = $j['tabela'] != null ? "value='".$j['tabela']."'" : "onclick='window.location=\"pages/".$j['pagina']."\"'";
+            $tipo  = $j['tabela'] != null ? "submit" : "button";
+            $form = $form . "\n<button id='btn" . $this->qtde . "' type='$tipo' name='nomeTabela' " . $valor . " class='st-menu-button'>" . $j["codigo"] . " - " . $j['titulo'] . "</button><br/>";
             $this->button = $this->button . "\n$('#btn" . $this->qtde . "').puibutton({icon: 'ui-icon-newwin'});";
         }
         return $form;

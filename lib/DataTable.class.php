@@ -99,6 +99,7 @@ class DataTable {
         return "\n<ul id='toolbar'>"
                 . "\n<li><a data-icon='ui-icon-home'     onclick=\"window.location = 'menu.php';\"   title='Voltar ao menu'>Menu</a></li>"
                 . "\n<li><a data-icon='ui-icon-document' onclick=\"window.location = 'update.php';\" title='Novo'>Novo</a></li>"
+                . "\n<li><a data-icon='ui-icon-close'    href='logout.php'>Sair</a></li>"
                 . "\n</ul>";
     }
 
