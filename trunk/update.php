@@ -57,6 +57,11 @@ $update = new Update();
                         Excluir
                     </a>
                 </li>
+                <li>
+                    <a data-icon='ui-icon-close' href='logout.php'>
+                        Sair
+                    </a>
+                </li>
             </ul>
             <div id="tabela"></div>
             <?php

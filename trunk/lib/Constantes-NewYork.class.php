@@ -24,7 +24,8 @@ class Contantes {
     const QUERY_MENU = "select a.nm_tabela as tabela,
                                a.cod_aplicacao codigo, 
                                a.nm_menu titulo,
-                               a.nm_view view
+                               a.nm_view view,
+                               a.nm_pagina pagina
                           from #db.snb_menu a 
                          where a.fg_ativa  = 'S' 
                            and a.id_modulo = #idModulo 
