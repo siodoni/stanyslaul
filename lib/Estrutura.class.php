@@ -4,6 +4,12 @@ include_once 'Constantes.class.php';
 
 class Estrutura extends Contantes {
 
+    private $diretorio = "";
+    
+    public function __construct($dir = "") {
+        $this->diretorio = $dir;
+    }
+
     public function head() {
         return "\n<head>" .
                $this->title() .
@@ -41,6 +47,6 @@ class Estrutura extends Contantes {
     }
 
     private function nomeArquivo($file){
-        return file_exists($file) ? $file."?st=".filemtime($file) : "";
+        return file_exists($this->diretorio.$file) ? $this->diretorio.$file."?st=".filemtime($this->diretorio.$file) : "";
     }
 }
