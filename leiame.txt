@@ -1,2 +1,3 @@
-Ao copiar o stanyslaul para o site verifique se a vers„o do PHP È a 5.3, em versıes anteriores o sistema n„o funciona.
-Altere o arquivo "lib/Constantes.class.php" e inclua o logo na pasta "res/img" com o nome "topo.png" 
+Ao copiar o stanyslaul para o site verifique se a vers√£o do PHP √© a 5.3, em vers√µes anteriores o sistema n√£o funciona.
+Altere o arquivo "lib/Constantes.class.php" com as informa√ß√µes do banco de dados
+Inclua o logo na pasta "res/images" com o nome "topo.png" 
