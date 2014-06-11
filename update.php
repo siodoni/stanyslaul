@@ -185,15 +185,15 @@ foreach ($_POST as $key => $value) {
     }
     if ($valores == "") {
         if ($qtdAi > 0) {
-            $valores .= "\"null\", '" . $value . "'";
+            $valores .= "\"null\"§ '" . $value . "'";
         } else {
             $valores .= "'" . $value . "'";
         }
     } else {
         if (verificaSeValorEhData($value)) {
-            $valores .= ",'" . formataData($value) . "'";
+            $valores .= "§'" . formataData($value) . "'";
         } else {
-            $valores .= ",'" . $value . "'";
+            $valores .= "§'" . $value . "'";
         }
     }
     $valores = str_replace("''", "null", $valores);
@@ -213,7 +213,7 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "insert") {  // caso 
 
 if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso nao seja passado o id via GET cadastra
     $camposUpdate = explode(",", $update->retornaColuna());
-    $valoresUpdate = explode(",", $valores);
+    $valoresUpdate = explode("§", $valores);
     $comandoUpdate = "";
 
     $contador = 0;

@@ -89,7 +89,7 @@ class Update {
         } elseif (in_array($arrayCampo['tipo_dado'], $campoArquivo)) {
             echo $this->inputFile($arrayCampo['coluna'], $arrayCampo['coluna'], $valorCampo);
         } elseif (in_array($arrayCampo['tipo_dado'], $campoTextArea)) {
-            echo $this->inputTextArea($arrayCampo['coluna'], $arrayCampo['coluna']);
+            echo $this->inputTextArea($arrayCampo['coluna'], $arrayCampo['coluna'], $valorCampo);
         } elseif (in_array($arrayCampo['tipo_dado'], $campoData)) {
             echo $this->inputDate($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
         } elseif (in_array($arrayCampo['tipo_dado'], $campoEnum)) {
@@ -139,9 +139,9 @@ class Update {
         return "<td><input type='file' id='$id' name='$name' value='$valor' /></td>\n";
     }
 
-    function inputTextArea($id, $name) {
+    function inputTextArea($id, $name, $valor) {
         $this->montarJS("$('#" . $id . "').puiinputtextarea();\n");
-        return "<td><textarea id='$id' rows=\"10\" cols=\"30\" name='$name' style=\"width:100%;height:440px\" ></textarea></td>\n";
+        return "<td><textarea id='$id' rows=\"10\" cols=\"30\" name='$name' style=\"width:100%;height:440px\" >$valor</textarea></td>\n";
     }
 
     function inputDate($id, $name, $size, $maxLength, $value, $enable) {
