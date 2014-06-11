@@ -59,8 +59,10 @@ class Crud extends Contantes {
 
         if (!$this->upd = mysql_query($this->sql_upd)) {
             die("<center>Erro na atualiza&ccedil;&atilde;o " 
-              . "<br>Linha: " . __LINE__ . "<br>" 
-              . mysql_error() 
+              . "<br>Linha:  " . __LINE__ 
+              . "<br>Erro:   " . mysql_error() 
+              . "<br>Campos: " . $camposvalores 
+              . "<br>Where:  " . $where
               . ($this->redireciona ? "<br><a href='list.php'>Voltar ao Menu</a>" : "" ) . "</center>");
         } else {
             if ($mostrarMensagem) {

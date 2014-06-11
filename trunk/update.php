@@ -207,7 +207,7 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "insert") {  // caso 
     //}
     //echo $update->retornaColuna() . " - " . $valores;
     $crud = new crud($nomeTabela,true);
-    $crud->inserir($update->retornaColuna(), $valores);
+    $crud->inserir($update->retornaColuna(),str_replace("§",",",$valores));
     redirectProxMenu();
 }
 
