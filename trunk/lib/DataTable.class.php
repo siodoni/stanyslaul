@@ -1,9 +1,5 @@
 <?php
 
-include_once 'Estrutura.class.php';
-include_once 'Conexao.class.php';
-include_once 'JSON.class.php';
-
 class DataTable {
 
     private $estrutura;

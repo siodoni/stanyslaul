@@ -9,6 +9,7 @@ if (!isset($_SESSION["usuario"])){header('location:index.php');}
     <body id="admin">
         <form id="insert" action="" method="get">
             <?php 
+            require_once 'common/Constantes.class.php';
             require_once 'lib/Conexao.class.php';
             require_once 'lib/Crud.class.php';
 

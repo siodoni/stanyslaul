@@ -1,5 +1,4 @@
 <?php
-include_once 'common/Constantes.class.php';
 
 class Estrutura extends Constantes {
 

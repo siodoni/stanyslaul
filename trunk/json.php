@@ -2,6 +2,7 @@
 session_start();
 if (!isset($_SESSION["usuario"])){header('location:index.php');}
 
+require_once 'common/Constantes.class.php';
 require_once 'lib/JSON.class.php';
 $tabela = "";
 if (isset($_SESSION["nomeTabelaJSON"])){

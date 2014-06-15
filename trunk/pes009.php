@@ -8,7 +8,7 @@ if (!isset($_SESSION["usuario"])) {header('location:index.php');}
  * ************************************************************************************* *
  */
 
-//include_once 'lib/Constantes.class.php';
+include_once 'common/Constantes.class.php';
 include_once 'lib/Conexao.class.php';
 include_once 'lib/Estrutura.class.php';
 
