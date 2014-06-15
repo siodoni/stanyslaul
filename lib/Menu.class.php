@@ -1,11 +1,10 @@
 <?php
+include_once 'Estrutura.class.php';
+include_once 'Conexao.class.php';
+include_once 'common/Constantes.class.php';
+include_once 'Crud.class.php';
 
-include_once 'lib/Estrutura.class.php';
-include_once 'lib/Conexao.class.php';
-include_once 'lib/Constantes.class.php';
-include_once 'lib/Crud.class.php';
-
-class Menu extends Contantes {
+class Menu extends Constantes {
 
     private $estrutura;
     private $con;
@@ -70,7 +69,7 @@ class Menu extends Contantes {
         
         while ($j = mysql_fetch_array($query)) {
             $this->qtde++;
-            $valor = $j['tabela'] != null ? "value='".$j['tabela']."'" : "onclick='window.location=\"pages/".$j['pagina']."\"'";
+            $valor = $j['tabela'] != null ? "value='".$j['tabela']."'" : "onclick='window.location=\"".$j['pagina']."\"'";
             $tipo  = $j['tabela'] != null ? "submit" : "button";
             $form = $form . "\n<button id='btn" . $this->qtde . "' type='$tipo' name='nomeTabela' " . $valor . " class='st-menu-button'>" . $j["codigo"] . " - " . $j['titulo'] . "</button><br/>";
             $this->button = $this->button . "\n$('#btn" . $this->qtde . "').puibutton({icon: 'ui-icon-newwin'});";
@@ -81,7 +80,7 @@ class Menu extends Contantes {
     private function menuBar(){
         
         return "\n<ul id='toolbar'>"
-             . "\n<li><a><img src='res/images/topo.png' alt='".parent::TITLE."' class='st-img-logo'/></a></li>"
+             . "\n<li><a><img src='common/topo.png' alt='".parent::TITLE."' class='st-img-logo'/></a></li>"
              . "\n<li><a data-icon='ui-icon-person'>Bem vindo ".$this->nomeUsuario."</a></li>"
              . "\n<li><a data-icon='ui-icon-key' onclick='$(\"#dlgChangePass\").puidialog(\"show\");'>Alterar Senha</a></li>"
              . "\n<li><a data-icon='ui-icon-close' href='logout.php'>Sair</a></li>"  

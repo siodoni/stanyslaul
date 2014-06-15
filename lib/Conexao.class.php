@@ -1,7 +1,7 @@
 <?php
-include_once 'Constantes.class.php';
+include_once 'common/Constantes.class.php';
 
-class Conexao extends Contantes {
+class Conexao extends Constantes {
 
     private $dbHost = parent::HOST;
     private $dbUser = parent::USER;

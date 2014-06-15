@@ -1,5 +1,5 @@
 <?php
-include_once 'Constantes.class.php';
+include_once 'common/Constantes.class.php';
 
 /** Classe CRUD - Create, Recovery, Update and Delete
  * @author - Rodolfo Leonardo Medeiros
@@ -7,7 +7,7 @@ include_once 'Constantes.class.php';
  * Arquivo - codigo.class.php
  * @package crud
  */
-class Crud extends Contantes {
+class Crud extends Constantes {
 
     private $sql_ins = "";
     private $tabela = "";
@@ -38,6 +38,8 @@ class Crud extends Contantes {
     // funçao de inserçao, campos e seus respectivos valores como parametros
     public function inserir($campos, $valores) {
         $this->sql_ins = "insert into " . parent::DBNAME . "." . $this->tabela . " ($campos) values ($valores)";
+        
+        //die($this->sql_ins);
 
         if (!$this->ins = mysql_query($this->sql_ins)) {
             die("Erro na inclus&atilde;o " . '<br>Linha: ' . __LINE__ . "<br>" . mysql_error() . "<br>"
@@ -57,6 +59,8 @@ class Crud extends Contantes {
             $this->sql_upd = "update " . parent::DBNAME . "." . $this->tabela . " set $camposvalores";
         }
 
+        //die($this->sql_upd);
+        
         if (!$this->upd = mysql_query($this->sql_upd)) {
             die("<center>Erro na atualiza&ccedil;&atilde;o " 
               . "<br>Linha:  " . __LINE__ 
