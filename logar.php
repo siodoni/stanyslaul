@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+require_once 'common/Constantes.class.php';
 require_once 'lib/Conexao.class.php';
 
 $con = new Conexao();

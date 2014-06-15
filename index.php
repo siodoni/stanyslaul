@@ -1,4 +1,5 @@
 <?php
+require_once 'common/Constantes.class.php';
 require_once 'lib/Estrutura.class.php';
 $estrutura = new Estrutura();
 ?>

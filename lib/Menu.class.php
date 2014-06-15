@@ -1,8 +1,4 @@
 <?php
-include_once 'Estrutura.class.php';
-include_once 'Conexao.class.php';
-include_once 'common/Constantes.class.php';
-include_once 'Crud.class.php';
 
 class Menu extends Constantes {
 

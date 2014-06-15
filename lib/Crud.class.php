@@ -1,5 +1,4 @@
 <?php
-include_once 'common/Constantes.class.php';
 
 /** Classe CRUD - Create, Recovery, Update and Delete
  * @author - Rodolfo Leonardo Medeiros
