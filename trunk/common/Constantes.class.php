@@ -1,6 +1,6 @@
 <?php
 
-class Contantes {
+class Constantes {
 
     //Conexão Base Dados
     const HOST = 'localhost';
@@ -9,7 +9,7 @@ class Contantes {
     const PASSWORD = 'vertrigo';
     
     //Estrutura
-    const TITLE = 'New York Idiomas - &Aacute;rea Administrativa';
+    const TITLE = 'Stanyslaul';
     
     //Login
     const TABLE_USER = 'snb_usuario';
@@ -36,11 +36,11 @@ class Contantes {
                                                                 from #db.snb_usuario c 
                                                                where c.usuario = '#usuario')) 
                          order by a.sequencia ";
+    
     const QUERY_LOGIN = "select b.nome 
                            from #db.snb_pessoa b, 
                                 #db.snb_usuario a 
                           where a.usuario = '#usuario'
                             and a.senha   = '#senha'
                             and b.id      = a.id_pessoa ";
-
 }

@@ -46,8 +46,8 @@ class Update {
                        a.is_nullable nulo,
                        if(a.column_name='senha','password',a.data_type) tipo_dado,
                        a.numeric_precision numerico,
-                       if(a.data_type='date' or a.data_type='time',14,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,
-                       if(a.data_type='date' or a.data_type='time',14,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres,
+                       if(a.data_type='date',14,0) + if(a.data_type='time',10,0) + if(a.data_type='datetime',20,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,
+                       if(a.data_type='date',14,0) + if(a.data_type='time',10,0) + if(a.data_type='datetime',20,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres,
                        replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum,
                        a.column_type enum,
                        if (a.extra = 'auto_increment',1,null) auto_increment,
@@ -69,7 +69,7 @@ class Update {
         $campoSenha = array("password");
         $campoArquivo = array("file");
         $campoTextArea = array("longtext");
-        $campoData = array("date");
+        $campoData = array("date","datetime","time");
         $campoEnum = array("enum");
         $ai = "";
         if ($arrayCampo['tamanho_campo'] > 100) {
@@ -91,7 +91,7 @@ class Update {
         } elseif (in_array($arrayCampo['tipo_dado'], $campoTextArea)) {
             echo $this->inputTextArea($arrayCampo['coluna'], $arrayCampo['coluna'], $valorCampo);
         } elseif (in_array($arrayCampo['tipo_dado'], $campoData)) {
-            echo $this->inputDate($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
+            echo $this->inputDate($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai, $arrayCampo['tipo_dado']);
         } elseif (in_array($arrayCampo['tipo_dado'], $campoEnum)) {
             echo $this->selectMenuEnum($arrayCampo['coluna'], $arrayCampo['valor_enum'], $valorCampo);
         } elseif (($arrayCampo['tipo_chave'] == 'MUL' || $arrayCampo['tipo_chave'] == 'UNI') && $arrayCampo['tabela_ref'] != null) {
@@ -144,8 +144,14 @@ class Update {
         return "<td><textarea id='$id' rows=\"10\" cols=\"30\" name='$name' style=\"width:100%;height:440px\" >$valor</textarea></td>\n";
     }
 
-    function inputDate($id, $name, $size, $maxLength, $value, $enable) {
-        $this->montarJS("$('#" . $id . "').datepicker({dateFormat:'dd/mm/yy'}).puiinputtext();\n");
+    function inputDate($id, $name, $size, $maxLength, $value, $enable, $tipoDado) {
+        if ($tipoDado == "date") {
+            $this->montarJS("$('#" . $id . "').datepicker({dateFormat:'dd/mm/yy'}).puiinputtext();\n");
+        } else if ($tipoDado == "datetime") {
+            $this->montarJS("$('#" . $id . "').datetimepicker({dateFormat:'dd/mm/yy',timeFormat:'HH:mm'}).puiinputtext();\n");
+        } else if ($tipoDado == "time") {
+            $this->montarJS("$('#" . $id . "').timepicker({timeFormat:'HH:mm'}).puiinputtext();\n");
+        }
         return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable /></td>\n";
     }
 

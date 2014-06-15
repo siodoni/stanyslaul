@@ -1,7 +1,7 @@
 <?php
-include_once 'Constantes.class.php';
+include_once 'common/Constantes.class.php';
 
-class JSON extends Contantes {
+class JSON extends Constantes {
 
     private $tabela = "";
     private $columns = "";

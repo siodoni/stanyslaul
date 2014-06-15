@@ -206,8 +206,26 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "insert") {  // caso 
     //$up->inserir($arquivo);
     //}
     //echo $update->retornaColuna() . " - " . $valores;
+    $camposUpdate = explode(",", $update->retornaColuna());
+    $valoresUpdate = explode("§", $valores);
+    $valores = "";
+
+    $contador = 0;
+    foreach ($camposUpdate as $x) {
+        if (verificaCampoDeData($nomeTabela, $x) == 'date') {
+            $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'%d/%m/%Y'),";
+        } else if (verificaCampoDeData($nomeTabela, $x) == 'datetime') {
+            $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'%d/%m/%Y %k:%i'),";
+        } else if (verificaCampoDeData($nomeTabela, $x) == 'time') {
+            $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'%k:%i'),";
+        } else {
+            $valores .= " " . $valoresUpdate[$contador] . ",";
+        }
+        $contador += 1;
+        //echo $nomeTabela . " " . $x . " " . verificaCampoDeData($nomeTabela, $x) ."<br>";
+    }
     $crud = new crud($nomeTabela,true);
-    $crud->inserir($update->retornaColuna(),str_replace("§",",",$valores));
+    $crud->inserir($update->retornaColuna(),substr($valores,0,(strlen($valores)-1)));
     redirectProxMenu();
 }
 
@@ -218,23 +236,23 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso 
 
     $contador = 0;
     foreach ($camposUpdate as $x) {
-
-        if ($comandoUpdate == "") {
-            if ($x != $campoId) {
-                $comandoUpdate .= $x . " = " . $valoresUpdate[$contador] . " ";
-            }
-        } else {
+        if ($x != $campoId) {
             if (verificaCampoDeData($nomeTabela, $x) == 'date') {
-                $comandoUpdate .= ", " . $x . " = '" . formataData($valoresUpdate[$contador]) . "' ";
+                $comandoUpdate .= " " . $x . " = str_to_date(" . $valoresUpdate[$contador] . ",'%d/%m/%Y' ),";
+            } else if (verificaCampoDeData($nomeTabela, $x) == 'datetime') {
+                $comandoUpdate .= " " . $x . " = str_to_date(" . $valoresUpdate[$contador] . ",'%d/%m/%Y %k:%i' ),";
+            } else if (verificaCampoDeData($nomeTabela, $x) == 'time') {
+                $comandoUpdate .= " " . $x . " = str_to_date(" . $valoresUpdate[$contador] . ",'%k:%i' ),";
             } else {
-                $comandoUpdate .= ", " . $x . " = " . $valoresUpdate[$contador] . " ";
+                $comandoUpdate .= " " . $x . " = " . $valoresUpdate[$contador] . ",";
             }
         }
         $contador += 1;
+        //echo $nomeTabela . " " . $x . " " . verificaCampoDeData($nomeTabela, $x) ."<br>";
     }
     $crud = new crud($nomeTabela,true);
-    //die ($comandoUpdate);
-    $crud->atualizar($comandoUpdate, $campoId . " = '" . $id . "' ", true);
+    //die (substr($comandoUpdate,0,(strlen($comandoUpdate)-1)));
+    $crud->atualizar(substr($comandoUpdate,0,(strlen($comandoUpdate)-1)), $campoId . " = '" . $id . "' ", true);
     redirectProxMenu();
 }
 

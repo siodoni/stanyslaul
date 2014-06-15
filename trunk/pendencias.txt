@@ -23,3 +23,4 @@
 - terminar o insert/update (esta funcionando, so falta o upload, mas eh pro proximo modulo)
 - usar a criptografia SHA1 na gravacao e geracao da senha
 - ao salvar perguntar ao usuário se deseja ir para o próximo cadastro
+- incluir a pagina pes009.php na pasta common. Corrigindo o problema dos includes
