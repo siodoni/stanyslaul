@@ -11,6 +11,7 @@ require_once 'lib/Update.class.php';
 
 $estrutura = new Estrutura();
 $update = new Update();
+$const = new Constantes();
 ?>
 <!DOCTYPE html>
 <html>
@@ -165,18 +166,6 @@ function verificaCampoDeData($nomeTabela, $campo) {
     return $tipoDado[0];
 }
 
-function verificaSeValorEhData($texto) {
-    if (strlen($texto) == 10 && strpos($texto, "/") == 2 && strrpos($texto, "/") == 5) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function formataData($dataOriginal) {
-    return implode("-", array_reverse(explode('/', str_replace("'", "", $dataOriginal)) ) );
-}
-
 $valores = "";
 
 foreach ($_POST as $key => $value) {
@@ -191,11 +180,7 @@ foreach ($_POST as $key => $value) {
             $valores .= "'" . $value . "'";
         }
     } else {
-        if (verificaSeValorEhData($value)) {
-            $valores .= "§'" . formataData($value) . "'";
-        } else {
-            $valores .= "§'" . $value . "'";
-        }
+        $valores .= "§'" . $value . "'";
     }
     $valores = str_replace("''", "null", $valores);
 }
@@ -214,11 +199,11 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "insert") {  // caso 
     $contador = 0;
     foreach ($camposUpdate as $x) {
         if (verificaCampoDeData($nomeTabela, $x) == 'date') {
-            $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'%d/%m/%Y'),";
+            $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateFormat()."'),";
         } else if (verificaCampoDeData($nomeTabela, $x) == 'datetime') {
-            $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'%d/%m/%Y %k:%i'),";
+            $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateTimeFormat()."'),";
         } else if (verificaCampoDeData($nomeTabela, $x) == 'time') {
-            $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'%k:%i'),";
+            $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getTimeFormat()."'),";
         } else {
             $valores .= " " . $valoresUpdate[$contador] . ",";
         }
@@ -239,11 +224,11 @@ if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso 
     foreach ($camposUpdate as $x) {
         if ($x != $campoId) {
             if (verificaCampoDeData($nomeTabela, $x) == 'date') {
-                $comandoUpdate .= " " . $x . " = str_to_date(" . $valoresUpdate[$contador] . ",'%d/%m/%Y' ),";
+                $comandoUpdate .= " " . $x . " = str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateFormat()."' ),";
             } else if (verificaCampoDeData($nomeTabela, $x) == 'datetime') {
-                $comandoUpdate .= " " . $x . " = str_to_date(" . $valoresUpdate[$contador] . ",'%d/%m/%Y %k:%i' ),";
+                $comandoUpdate .= " " . $x . " = str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateTimeFormat()."' ),";
             } else if (verificaCampoDeData($nomeTabela, $x) == 'time') {
-                $comandoUpdate .= " " . $x . " = str_to_date(" . $valoresUpdate[$contador] . ",'%k:%i' ),";
+                $comandoUpdate .= " " . $x . " = str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getTimeFormat()."' ),";
             } else {
                 $comandoUpdate .= " " . $x . " = " . $valoresUpdate[$contador] . ",";
             }

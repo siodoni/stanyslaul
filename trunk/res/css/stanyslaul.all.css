@@ -84,3 +84,7 @@
 .pui-growl-image-warn{background-position:0 -396px;}
 .pui-growl-image-error{background-position:0 0;}
 .pui-growl-image-fatal{background-position:0 -228px;}
+
+.pui-datatable tbody td {
+    white-space: normal;
+}
