@@ -1,6 +1,6 @@
 <?php
 
-class Update {
+class Update extends Constantes {
 
     private $coluna;
     private $tabela;
@@ -91,6 +91,13 @@ class Update {
         } elseif (in_array($arrayCampo['tipo_dado'], $campoTextArea)) {
             echo $this->inputTextArea($arrayCampo['coluna'], $arrayCampo['coluna'], $valorCampo);
         } elseif (in_array($arrayCampo['tipo_dado'], $campoData)) {
+            if ($arrayCampo['tipo_dado'] == 'date') {
+                $valorCampo = date(str_replace("%","",parent::DATE_FORMAT), strtotime($valorCampo));
+            } else if ($arrayCampo['tipo_dado'] == 'datetime') {
+                $valorCampo = date(str_replace("%","",parent::DATETIME_FORMAT), strtotime($valorCampo));
+            } else if ($arrayCampo['tipo_dado'] == 'time') {
+                $valorCampo = date(str_replace("%","",parent::TIME_FORMAT), strtotime($valorCampo));
+            }
             echo $this->inputDate($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai, $arrayCampo['tipo_dado']);
         } elseif (in_array($arrayCampo['tipo_dado'], $campoEnum)) {
             echo $this->selectMenuEnum($arrayCampo['coluna'], $arrayCampo['valor_enum'], $valorCampo);
@@ -217,4 +224,15 @@ class Update {
         return $tipoDado[0];
     }
 
+    function getDateFormat(){
+        return parent::DATE_FORMAT;
+    }
+
+    function getDateTimeFormat(){
+        return parent::DATETIME_FORMAT;
+    }
+
+    function getTimeFormat(){
+        return parent::TIME_FORMAT;
+    }    
 }

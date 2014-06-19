@@ -27,7 +27,7 @@ class JSON extends Constantes {
 
             $orderBy = " order by 1";
             $query = mysql_query(
-                    "select column_name " .
+                    "select column_name, lower(data_type) data_type " .
                     "  from information_schema.columns " .
                     " where table_schema = '".parent::DBNAME."' " .
                     "   and table_name   = '".$this->tabela."' ");
@@ -57,7 +57,7 @@ class JSON extends Constantes {
         }
 
         $query = mysql_query(
-                "select column_name " .
+                "select column_name, lower(data_type) data_type " .
                 "  from information_schema.columns " .
                 " where table_schema = '".parent::DBNAME."' " .
                 "   and table_name   = '".$this->tabela."' ");
@@ -78,11 +78,23 @@ class JSON extends Constantes {
     private function montarColunas($query) {
 
         while ($campo = mysql_fetch_array($query)) {
+            $dataType = "";
+            
+            if ($campo['data_type'] == 'date') {
+                $dataType = "date_format(".$campo['column_name'].",'".parent::DATE_FORMAT."') as ".$campo['column_name'];
+            } else if ($campo['data_type'] == 'datetime') {
+                $dataType = "date_format(".$campo['column_name'].",'".parent::DATETIME_FORMAT."') as ".$campo['column_name'];
+            } else if ($campo['data_type'] == 'time') {
+                $dataType = "date_format(".$campo['column_name'].",'".parent::TIME_FORMAT."') as ".$campo['column_name'];
+            } else {
+                $dataType = $campo['column_name'];
+            }
+
             if ($this->sqlTabela == null) {
-                $this->sqlTabela = $campo['column_name'];
+                $this->sqlTabela = $dataType;
                 $this->columns = "{field: '" . $campo['column_name'] . "', headerText: '" . ucfirst(str_replace("_", " ", $campo['column_name'])) . "', sortable: true}\n";
             } else {
-                $this->sqlTabela .= ", " . $campo['column_name'];
+                $this->sqlTabela .= ", " . $dataType;
                 $this->columns = $this->columns . ",{field: '" . $campo['column_name'] . "', headerText: '" . ucfirst(str_replace("_", " ", $campo['column_name'])) . "', sortable: true}\n";
             }
         }

@@ -4,12 +4,17 @@ class Constantes {
 
     //Conexão Base Dados
     const HOST = 'localhost';
-    const DBNAME = 'newyork';
+    const DBNAME = 'maismilagres';
     const USER = 'root';
     const PASSWORD = 'vertrigo';
     
     //Estrutura
     const TITLE = 'Stanyslaul';
+    
+    //Formato Data
+    const DATE_FORMAT = '%d/%m/%Y';
+    const DATETIME_FORMAT = '%d/%m/%Y %H:%i';
+    const TIME_FORMAT = '%k:%i';
     
     //Login
     const TABLE_USER = 'snb_usuario';
@@ -27,7 +32,7 @@ class Constantes {
                                a.nm_view view,
                                a.nm_pagina pagina
                           from #db.snb_menu a 
-                         where a.fg_ativa  = 'S' 
+                         where upper(a.fg_ativa) in ('S','SIM') 
                            and a.id_modulo = #idModulo 
                            and exists (select 1 
                                          from #db.snb_autorizacao b 
