@@ -4,7 +4,7 @@ class Constantes {
 
     //Conexão Base Dados
     const HOST = 'localhost';
-    const DBNAME = 'maismilagres';
+    const DBNAME = 'newyork';
     const USER = 'root';
     const PASSWORD = 'vertrigo';
     

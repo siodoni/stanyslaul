@@ -6,6 +6,7 @@ class Update extends Constantes {
     private $tabela;
     private $schema;
     private $javaScript;
+    private $inputFile;
 
     public function __construct() {
         $this->tabela = $_SESSION["nomeTabela"];
@@ -44,7 +45,7 @@ class Update extends Constantes {
         return "select a.ordinal_position id_coluna,
                        a.column_name coluna,
                        a.is_nullable nulo,
-                       if(a.column_name='senha','password',a.data_type) tipo_dado,
+                       if(a.column_name='senha','password',if(a.column_name like 'img_%','file',a.data_type)) tipo_dado,
                        a.numeric_precision numerico,
                        if(a.data_type='date',14,0) + if(a.data_type='time',10,0) + if(a.data_type='datetime',20,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,
                        if(a.data_type='date',14,0) + if(a.data_type='time',10,0) + if(a.data_type='datetime',20,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres,
@@ -72,6 +73,7 @@ class Update extends Constantes {
         $campoData = array("date","datetime","time");
         $campoEnum = array("enum");
         $ai = "";
+
         if ($arrayCampo['tamanho_campo'] > 100) {
             $tamCampo = 80;
         } else {
@@ -143,7 +145,15 @@ class Update extends Constantes {
     }
 
     function inputFile($id, $name, $valor) {
-        return "<td><input type='file' id='$id' name='$name' value='$valor' /></td>\n";
+        if ($this->inputFile == null) {
+            $this->inputFile = $id;
+        } else {
+            $this->inputFile .= $this->inputFile . "," . $id;
+        }
+        $this->montarJS("$('#" . $id . "').puiinputtext();\n");
+        return "<td><input type='file' id='$id' name='$name' value='$valor' />".
+               ($valor != null ? " <a href='$valor' target='blank'>$valor</a>" : "").
+               " </td>\n";
     }
 
     function inputTextArea($id, $name, $valor) {
@@ -235,4 +245,8 @@ class Update extends Constantes {
     function getTimeFormat(){
         return parent::TIME_FORMAT;
     }    
+    
+    function getInputFile(){
+        return $this->inputFile;
+    }
 }
