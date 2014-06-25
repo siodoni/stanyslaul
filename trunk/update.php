@@ -8,10 +8,12 @@ require_once 'lib/Crud.class.php';
 require_once 'lib/Estrutura.class.php';
 require_once 'lib/JSON.class.php';
 require_once 'lib/Update.class.php';
+require_once 'lib/Upload.class.php';
 
 $estrutura = new Estrutura();
 $update = new Update();
 $const = new Constantes();
+$valores = "";
 ?>
 <!DOCTYPE html>
 <html>
@@ -96,7 +98,7 @@ $const = new Constantes();
             ?>
             <fieldset id="panel" class="pui-menu st-fieldset">
                 <legend><?php echo $_SESSION["tituloForm"] ?></legend>
-                <form id="formInsert" action="update.php?comando=<?php echo $comando ?>" method="post">
+                <form id="formInsert" action="update.php?comando=<?php echo $comando ?>" method="post" enctype="multipart/form-data">
                     <table id='hor-minimalist-a'>
                         <tbody>
                             <?php
@@ -166,79 +168,82 @@ function verificaCampoDeData($nomeTabela, $campo) {
     return $tipoDado[0];
 }
 
-$valores = "";
+if (isset($_REQUEST['comando'])
+&&       ($_REQUEST['comando'] == "insert"
+||        $_REQUEST['comando'] == "update")) {
 
-foreach ($_POST as $key => $value) {
-    $qtdAi = 0;
-    if ($key=="senha"||$key=="password"){
-        $value = sha1(trim($value));
-    }
-    if ($valores == "") {
-        if ($qtdAi > 0) {
-            $valores .= "\"null\"§ '" . $value . "'";
-        } else {
-            $valores .= "'" . $value . "'";
-        }
-    } else {
-        $valores .= "§'" . $value . "'";
-    }
-    $valores = str_replace("''", "null", $valores);
-}
-
-if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "insert") {  // caso nao seja passado o id via GET cadastra
-    //if ($qtdArq > 0) {
-    //include 'upload.php';
-    //$up = new Upload();
-    //$up->inserir($arquivo);
-    //}
-    //echo $update->retornaColuna() . " - " . $valores;
-    $camposUpdate = explode(",", $update->retornaColuna());
-    $valoresUpdate = explode("§", $valores);
-    $valores = "";
-
-    $contador = 0;
-    foreach ($camposUpdate as $x) {
-        if (verificaCampoDeData($nomeTabela, $x) == 'date') {
-            $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateFormat()."'),";
-        } else if (verificaCampoDeData($nomeTabela, $x) == 'datetime') {
-            $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateTimeFormat()."'),";
-        } else if (verificaCampoDeData($nomeTabela, $x) == 'time') {
-            $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getTimeFormat()."'),";
-        } else {
-            $valores .= " " . $valoresUpdate[$contador] . ",";
-        }
-        $contador += 1;
-        //echo $nomeTabela . " " . $x . " " . verificaCampoDeData($nomeTabela, $x) ."<br>";
-    }
-    $crud = new crud($nomeTabela,true);
-    $crud->inserir($update->retornaColuna(),substr($valores,0,(strlen($valores)-1)));
-    redirectProxMenu();
-}
-
-if (isset($_REQUEST['comando']) && $_REQUEST['comando'] == "update") {  // caso nao seja passado o id via GET cadastra
-    $camposUpdate = explode(",", $update->retornaColuna());
-    $valoresUpdate = explode("§", $valores);
-    $comandoUpdate = "";
-
-    $contador = 0;
-    foreach ($camposUpdate as $x) {
-        if ($x != $campoId) {
-            if (verificaCampoDeData($nomeTabela, $x) == 'date') {
-                $comandoUpdate .= " " . $x . " = str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateFormat()."' ),";
-            } else if (verificaCampoDeData($nomeTabela, $x) == 'datetime') {
-                $comandoUpdate .= " " . $x . " = str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateTimeFormat()."' ),";
-            } else if (verificaCampoDeData($nomeTabela, $x) == 'time') {
-                $comandoUpdate .= " " . $x . " = str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getTimeFormat()."' ),";
+    if ($update->getInputFile() != null) {
+        $arquivos = explode(",", $update->getInputFile());
+        $upload = new Upload();
+        foreach ($arquivos as $x) {
+            if ($_FILES["$x"]["name"] != null) {
+                $upload->inserir($_FILES["$x"]["name"],"$x",null,true);
+                $_POST["$x"] = $upload->getNomeFinal();
             } else {
-                $comandoUpdate .= " " . $x . " = " . $valoresUpdate[$contador] . ",";
+                $_POST["$x"] = "";
             }
         }
-        $contador += 1;
-        //echo $nomeTabela . " " . $x . " " . verificaCampoDeData($nomeTabela, $x) ."<br>";
     }
+    
+    foreach ($_POST as $key => $value) {
+        $qtdAi = 0;
+        if ($key=="senha"||$key=="password"){
+            $value = sha1(trim($value));
+        }
+        if ($valores == "") {
+            if ($qtdAi > 0) {
+                $valores .= "\"null\"".chr(38)." '" . $value . "'";
+            } else {
+                $valores .= "'" . $value . "'";
+            }
+        } else {
+            $valores .= "".chr(38)."'" . $value . "'";
+        }
+        $valores = str_replace("''", "null", $valores);
+    }
+
+    $camposUpdate = explode(",", $update->retornaColuna());
+    $valoresUpdate = explode(chr(38), $valores);
+
+    $contador = 0;
+    $valores = "";
+    $comandoUpdate = "";
     $crud = new crud($nomeTabela,true);
-    //die (substr($comandoUpdate,0,(strlen($comandoUpdate)-1)));
-    $crud->atualizar(substr($comandoUpdate,0,(strlen($comandoUpdate)-1)), $campoId . " = '" . $id . "' ", true);
+
+    if ($_REQUEST['comando'] == "insert") {
+        foreach ($camposUpdate as $x) {
+            if (verificaCampoDeData($nomeTabela, $x) == 'date') {
+                $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateFormat()."'),";
+            } else if (verificaCampoDeData($nomeTabela, $x) == 'datetime') {
+                $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateTimeFormat()."'),";
+            } else if (verificaCampoDeData($nomeTabela, $x) == 'time') {
+                $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getTimeFormat()."'),";
+            } else {
+                $valores .= " " . $valoresUpdate[$contador] . ",";
+            }
+            $contador += 1;
+        }
+
+        $crud->inserir($update->retornaColuna(),substr($valores,0,(strlen($valores)-1)));
+
+    } else if ($_REQUEST['comando'] == "update") {
+        foreach ($camposUpdate as $x) {
+            if ($x != $campoId) {
+                if (verificaCampoDeData($nomeTabela, $x) == 'date') {
+                    $comandoUpdate .= " " . $x . " = str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateFormat()."' ),";
+                } else if (verificaCampoDeData($nomeTabela, $x) == 'datetime') {
+                    $comandoUpdate .= " " . $x . " = str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateTimeFormat()."' ),";
+                } else if (verificaCampoDeData($nomeTabela, $x) == 'time') {
+                    $comandoUpdate .= " " . $x . " = str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getTimeFormat()."' ),";
+                } else {
+                    $comandoUpdate .= " " . $x . " = " . $valoresUpdate[$contador] . ",";
+                }
+            }
+            $contador += 1;
+        }
+
+        $crud->atualizar(substr($comandoUpdate,0,(strlen($comandoUpdate)-1)), $campoId . " = '" . $id . "' ", true);
+    }
     redirectProxMenu();
 }
 

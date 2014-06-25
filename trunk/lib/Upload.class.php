@@ -3,6 +3,7 @@
 class Upload {
 
     private $nomeFinal;
+    private $pasta;
     
     /**
      * @method inserir arquivo
@@ -24,6 +25,8 @@ class Upload {
         } else {
             $_UP['pasta'] = $pasta;
         }
+        
+        $this->pasta = $_UP['pasta'];
 
         // Array com os tipos de erros de upload do PHP
         $_UP['erros'][0] = 'N&atilde;o houve erro';
@@ -81,6 +84,6 @@ class Upload {
     }
 
     public function getNomeFinal(){
-        return $this->nomeFinal;
+        return $this->pasta . $this->nomeFinal;
     }
 }
