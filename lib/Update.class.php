@@ -41,7 +41,6 @@ class Update extends Constantes {
     }
 
     public function retornaQueryTabela() {
-        //if(a.column_name='senha','password,a.data_type) tipo_dado,
         return "select a.ordinal_position id_coluna,
                        a.column_name coluna,
                        a.is_nullable nulo,
@@ -137,11 +136,14 @@ class Update extends Constantes {
 
     function inputPassword($id, $name, $size, $maxLength, $value, $enable) {
         $this->montarJS("$('#" . $id . "').puipassword({inline:true,promptLabel:'Informe a nova senha', weakLabel:'fraca',mediumLabel:'media',goodLabel:'media',strongLabel:'forte'});\n");
-        return "<td><input type='password' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable /></td>\n";
+        return "<td>"
+             . "<input type='password' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable />"
+             . $this->inputHidden("_$id", "_$name", $value)
+             . "</td>\n";
     }
 
-    function inputHidden($valor) {
-        return "<td><input hidden='comando' value='$valor' /></td>\n";
+    function inputHidden($id, $name, $valor) {
+        return "<input id='$id' name='$name' type='hidden' value='$valor'/>\n";
     }
 
     function inputFile($id, $name, $valor) {

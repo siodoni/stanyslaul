@@ -171,7 +171,6 @@ function verificaCampoDeData($nomeTabela, $campo) {
 if (isset($_REQUEST['comando'])
 &&       ($_REQUEST['comando'] == "insert"
 ||        $_REQUEST['comando'] == "update")) {
-
     if ($update->getInputFile() != null) {
         $arquivos = explode(",", $update->getInputFile());
         $upload = new Upload();
@@ -191,8 +190,14 @@ if (isset($_REQUEST['comando'])
         $vlr = (isset($_POST[$y]) ? $_POST[$y] : "");
 
         if ($y=="senha"||$y=="password"){
-            $vlr = sha1(trim($vlr));
+            $_vlr = (isset($_POST["_".$y]) ? $_POST["_".$y] : "");
+            if ($_vlr == $vlr){
+                $vlr = $_vlr;
+            } else {
+                $vlr = sha1(trim($vlr));
+            }
         }
+
         if ($valores == "") {
             if ($qtdAi > 0) {
                 $valores .= "\"null\"".chr(38)." '" . $vlr . "'";
