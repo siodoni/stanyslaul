@@ -4,7 +4,6 @@
 - desenvolver o login
 - desenvolver o logout
 - incluir o controle de permissao no menu
-- usar a criptografia SHA1 no login.
 - alterar o list.php para usarem as views quando as mesmas existirem.
 - transformar o list.php em classe
 - montar as views para melhorar a visualização dos dados
@@ -21,6 +20,5 @@
 - ainda faltam visões mas as principais estão prontas
 - desenvolver o esqueci minha senha (esse vamos avaliar neh?)
 - terminar o insert/update (esta funcionando, so falta o upload, mas eh pro proximo modulo)
-- usar a criptografia SHA1 na gravacao e geracao da senha
 - ao salvar perguntar ao usuário se deseja ir para o próximo cadastro
 - incluir a pagina pes009.php na pasta common. Corrigindo o problema dos includes
