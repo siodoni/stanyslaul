@@ -72,6 +72,7 @@ class Update extends Constantes {
         $campoData = array("date","datetime","time");
         $campoEnum = array("enum");
         $ai = "";
+        $required = "";
 
         if ($arrayCampo['tamanho_campo'] > 100) {
             $tamCampo = 80;
@@ -84,13 +85,22 @@ class Update extends Constantes {
         } else {
             $this->adicionarColuna($arrayCampo['coluna']);
         }
+        
+        if ($arrayCampo['nulo'] == "NO"){
+            $required = "required";
+        } else {
+            $required = "";
+        }
 
         if (in_array($arrayCampo['tipo_dado'], $campoSenha)) {
-            echo $this->inputPassword($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
+            echo $this->inputPassword($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai, $required);
+
         } elseif (in_array($arrayCampo['tipo_dado'], $campoArquivo)) {
             echo $this->inputFile($arrayCampo['coluna'], $arrayCampo['coluna'], $valorCampo);
+        
         } elseif (in_array($arrayCampo['tipo_dado'], $campoTextArea)) {
-            echo $this->inputTextArea($arrayCampo['coluna'], $arrayCampo['coluna'], $valorCampo);
+            echo $this->inputTextArea($arrayCampo['coluna'], $arrayCampo['coluna'], $valorCampo, $required);
+
         } elseif (in_array($arrayCampo['tipo_dado'], $campoData)) {
             if ($arrayCampo['tipo_dado'] == 'date') {
                 $valorCampo = date(str_replace("%","",parent::DATE_FORMAT), strtotime($valorCampo));
@@ -99,15 +109,19 @@ class Update extends Constantes {
             } else if ($arrayCampo['tipo_dado'] == 'time') {
                 $valorCampo = date(str_replace("%","",parent::TIME_FORMAT), strtotime($valorCampo));
             }
-            echo $this->inputDate($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai, $arrayCampo['tipo_dado']);
+            echo $this->inputDate($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai, $arrayCampo['tipo_dado'], $required);
+        
         } elseif (in_array($arrayCampo['tipo_dado'], $campoEnum)) {
-            echo $this->selectMenuEnum($arrayCampo['coluna'], $arrayCampo['valor_enum'], $valorCampo);
+            echo $this->selectMenuEnum($arrayCampo['coluna'], $arrayCampo['valor_enum'], $valorCampo, $required);
+
         } elseif (($arrayCampo['tipo_chave'] == 'MUL' || $arrayCampo['tipo_chave'] == 'UNI') && $arrayCampo['tabela_ref'] != null) {
-            echo $this->selectMenu($arrayCampo['coluna'], $arrayCampo['coluna'], $arrayCampo['tabela_ref'], $valorCampo);
+            echo $this->selectMenu($arrayCampo['coluna'], $arrayCampo['coluna'], $arrayCampo['tabela_ref'], $valorCampo, $required);
+
         } elseif (in_array($arrayCampo['tipo_dado'], $campoNumero)) {
-            echo $this->inputNumber($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
+            echo $this->inputNumber($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai, $required);
+
         } else {
-            echo $this->inputText($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai);
+            echo $this->inputText($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai, $required);
         }
     }
 
@@ -123,21 +137,21 @@ class Update extends Constantes {
         return "<button id='$id' type='$tipo' $acao >$valor</button>\n";
     }
 
-    function inputText($id, $name, $size, $maxLength, $value, $enable) {
+    function inputText($id, $name, $size, $maxLength, $value, $enable, $required) {
         $this->montarJS("$('#" . $id . "').puiinputtext();\n");
-        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable /></td>\n";
+        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable $required /></td>\n";
     }
 
-    function inputNumber($id, $name, $size, $maxLength, $value, $enable) {
+    function inputNumber($id, $name, $size, $maxLength, $value, $enable, $required) {
         $size = $size + 2;
         $this->montarJS("$('#" . $id . "').puispinner();\n");
-        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable /></td>\n";
+        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable $required /></td>\n";
     }
 
-    function inputPassword($id, $name, $size, $maxLength, $value, $enable) {
+    function inputPassword($id, $name, $size, $maxLength, $value, $enable, $required) {
         $this->montarJS("$('#" . $id . "').puipassword({inline:true,promptLabel:'Informe a nova senha', weakLabel:'fraca',mediumLabel:'media',goodLabel:'media',strongLabel:'forte'});\n");
         return "<td>"
-             . "<input type='password' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable />"
+             . "<input type='password' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable $required/>"
              . $this->inputHidden("_$id", "_$name", $value)
              . "</td>\n";
     }
@@ -158,12 +172,12 @@ class Update extends Constantes {
                " </td>\n";
     }
 
-    function inputTextArea($id, $name, $valor) {
+    function inputTextArea($id, $name, $valor, $required) {
         $this->montarJS("$('#" . $id . "').puiinputtextarea();\n");
-        return "<td><textarea id='$id' rows=\"10\" cols=\"30\" name='$name' style=\"width:100%;height:440px\" >$valor</textarea></td>\n";
+        return "<td><textarea id='$id' rows=\"10\" cols=\"30\" name='$name' style=\"width:100%;height:440px\" $required>$valor</textarea></td>\n";
     }
 
-    function inputDate($id, $name, $size, $maxLength, $value, $enable, $tipoDado) {
+    function inputDate($id, $name, $size, $maxLength, $value, $enable, $tipoDado, $required) {
         if ($tipoDado == "date") {
             $this->montarJS("$('#" . $id . "').datepicker({dateFormat:'dd/mm/yy'}).puiinputtext();\n");
         } else if ($tipoDado == "datetime") {
@@ -171,12 +185,12 @@ class Update extends Constantes {
         } else if ($tipoDado == "time") {
             $this->montarJS("$('#" . $id . "').timepicker({timeFormat:'HH:mm'}).puiinputtext();\n");
         }
-        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable /></td>\n";
+        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable $required/></td>\n";
     }
 
-    function selectMenuEnum($id, $valoresSelect, $valorSelecionado) {
+    function selectMenuEnum($id, $valoresSelect, $valorSelecionado, $required) {
         $enum = explode(',', $valoresSelect);
-        $selectMenu = "\n<td><select id='$id' name='$id'>";
+        $selectMenu = "\n<td><select id='$id' name='$id' $required>";
         foreach ($enum as $enum) {
             $selected = ($valorSelecionado == $enum) ? "selected" : "";
             $selectMenu .= "\n<option value='$enum' $selected >" . ucfirst($enum) . "</option>";
@@ -186,9 +200,9 @@ class Update extends Constantes {
         return $selectMenu;
     }
 
-    function selectMenu($id, $name, $tabelaRef, $valorSelecionado) {
+    function selectMenu($id, $name, $tabelaRef, $valorSelecionado, $required) {
 
-        $selectMenu = "\n<td><select id='$id' name='$name'>\n";
+        $selectMenu = "\n<td><select id='$id' name='$name' $required>\n";
         $selectMenu .= "\n<option value='' >Escolha...</option>\n";
 
         $json = new JSON($this->retornaView($tabelaRef));
