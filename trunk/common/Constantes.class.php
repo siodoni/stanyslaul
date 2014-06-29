@@ -16,6 +16,11 @@ class Constantes {
     const DATETIME_FORMAT = '%d/%m/%Y %H:%i';
     const TIME_FORMAT = '%k:%i';
     
+    //Upload
+    const FILE_SIZE = 204800; //200Kb
+    const FILE_FOLDER = "upload/";
+    const FILE_EXTENSION = "png,jpg";
+    
     //Login
     const TABLE_USER = 'snb_usuario';
     const COLUMN_USER = 'usuario';

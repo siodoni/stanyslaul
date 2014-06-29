@@ -1,9 +1,10 @@
 <?php
 
-class Upload {
+class Upload extends Constantes {
 
     private $nomeFinal;
     private $pasta;
+    private $msgErro = "";
     
     /**
      * @method inserir arquivo
@@ -16,12 +17,12 @@ class Upload {
         $_FILES['$nomeCampo'] = $arquivo;
         $fName = $_FILES["$nomeCampo"]['name'];
         
-        $_UP['tamanho']  = 1024 * 1024;                   //Tamanho máximo do arquivo (em Bytes)
-        $_UP['extensao'] = array(0 => 'png', 1 => 'jpg'); // Array com as extensões permitidas
-        $_UP['renomeia'] = $renomeia;                     // Renomeia o arquivo? (Se true, o arquivo será salvo com a hora do sistema mais a extensão).
+        $_UP['tamanho']  = parent::FILE_SIZE;                   //Tamanho máximo do arquivo (em Bytes)
+        $_UP['extensao'] = explode(",",parent::FILE_EXTENSION); // Array com as extensões permitidas
+        $_UP['renomeia'] = $renomeia;                           // Renomeia o arquivo? (Se true, o arquivo será salvo com a hora do sistema mais a extensão).
 
         if ($pasta == "") {
-            $_UP['pasta'] = "upload/";
+            $_UP['pasta'] = parent::FILE_FOLDER;
         } else {
             $_UP['pasta'] = $pasta;
         }
@@ -38,7 +39,7 @@ class Upload {
 
         // Verifica se houve algum erro com o upload. Se sim, exibe a mensagem do erro
         if ($_FILES["$nomeCampo"]['error'] != 0) {
-            echo "N&atilde;o foi poss&iacute;vel fazer o upload, erro:<br />" . $_UP['erros'][$_FILES["$nomeCampo"]['error']];
+            $this->msgErro .= "N&atilde;o foi poss&iacute;vel fazer o upload, erro:<br />" . $_UP['erros'][$_FILES["$nomeCampo"]['error']];
             return false;
         }
 
@@ -48,14 +49,12 @@ class Upload {
         $extensao = strtolower(end($extensaoArray));
 
         if (array_search($extensao, $_UP['extensao']) === false) {
-            echo "Por favor, envie arquivos com as seguintes extens&otilde;es: " . json_encode($_UP['extensao']);
+            $this->msgErro .= "Por favor, envie arquivos com as seguintes extens&otilde;es: " . json_encode($_UP['extensao']);
             return false;
         } 
         
         if ($_FILES["$nomeCampo"]['size'] > $_UP['tamanho']) {
-            echo "O arquivo enviado &eacute; muito grande (".
-                    round($_FILES["$nomeCampo"]['size']/1024,0).
-                    "Kb), envie arquivos de at&eacute; " . ($_UP['tamanho']/1024) . "Kb.";
+            $this->msgErro .= "O arquivo enviado &eacute; muito grande (".round($_FILES["$nomeCampo"]['size']/1024,0). "Kb), envie arquivos de at&eacute; " . ($_UP['tamanho']/1024) . "Kb.";
             return false;
         }
 
@@ -63,7 +62,7 @@ class Upload {
 
         // teste para verificar se o arquivo existe
         if (file_exists($_UP['pasta'] . $this->nomeFinal)) {
-            echo "Erro " . $_UP['erros'][5];
+            $this->msgErro .= "Erro " . $_UP['erros'][5];
             return false;
         }
 
@@ -74,16 +73,20 @@ class Upload {
 
         // Depois verifica se é possível mover o arquivo para a pasta escolhida
         if (move_uploaded_file($_FILES["$nomeCampo"]['tmp_name'], $_UP['pasta'] . $this->nomeFinal)) {
-            echo "Upload efetuado com sucesso!";
+            $this->msgErro .= "Upload efetuado com sucesso!";
             return true;
         } else {
-            echo "N&atilde;o foi poss&iacute;vel enviar o arquivo, tente novamente";
-            echo "Erro " . $_UP['erro'][$_FILES["$nomeCampo"]['error']];
+            $this->msgErro .= "N&atilde;o foi poss&iacute;vel enviar o arquivo, tente novamente";
+            $this->msgErro .= "Erro " . $_UP['erro'][$_FILES["$nomeCampo"]['error']];
             return false;
         }
     }
 
     public function getNomeFinal(){
-        return $this->pasta . $this->nomeFinal;
+        return $this->nomeFinal;
+    }
+
+    public function getMsgErro(){
+        return $this->msgErro;
     }
 }
