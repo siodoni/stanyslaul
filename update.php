@@ -171,19 +171,23 @@ function verificaCampoDeData($nomeTabela, $campo) {
 if (isset($_REQUEST['comando'])
 &&       ($_REQUEST['comando'] == "insert"
 ||        $_REQUEST['comando'] == "update")) {
+    
     if ($update->getInputFile() != null) {
         $arquivos = explode(",", $update->getInputFile());
         $upload = new Upload();
         foreach ($arquivos as $x) {
             if ($_FILES["$x"]["name"] != null) {
-                $upload->inserir($_FILES["$x"]["name"],"$x",null,true);
+                $retorno = $upload->inserir($_FILES["$x"]["name"],"$x",null,true);
+                if (!$retorno){
+                    die ($upload->getMsgErro());
+                }
                 $_POST[$x] = $upload->getNomeFinal();
             } else {
-                $_POST[$x] = "";
+                $_POST[$x] = $_POST["_".$x];
             }
         }
     }
-
+    
     $camposUpdate = explode(",", $update->retornaColuna());
     foreach ($camposUpdate as $y) {
         $qtdAi = 0;

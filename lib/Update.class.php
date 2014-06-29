@@ -18,9 +18,6 @@ class Update extends Constantes {
             $this->coluna .= $coluna;
         } else {
             $this->coluna .= "," . $coluna;
-            //if (substr($colunaAtual, 0, 3) == "fi_") {
-            //$arquivo = isset($_FILES[$campo['coluna']]);
-            //}
         }
     }
 
@@ -168,7 +165,8 @@ class Update extends Constantes {
         }
         $this->montarJS("$('#" . $id . "').puiinputtext();\n");
         return "<td><input type='file' id='$id' name='$name' value='$valor' />".
-               ($valor != null ? " <a href='$valor' target='blank'>$valor</a>" : "").
+               ($valor != null ? " <a href='".parent::FILE_FOLDER.$valor."' target='blank'>Arquivo: $valor</a>" : "").
+               $this->inputHidden("_".$id, "_".$name, $valor) .
                " </td>\n";
     }
 
