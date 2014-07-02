@@ -12,13 +12,11 @@
 - verificar porque ao postar com os campos nulo no alterar senha ele considera como se os mesmos estivessem preenchidos
 - melhorar a forma como as lovs sao montadas (verificar se eh possivel utilizar a view)
 - melhorar a forma como as lovs sao montadas (utilizar JSon) (por enquanto funciona, depiamos discutir isso junto com a estrutura do sistema de forma geral)
+- terminar o insert/update (esta funcionando, so falta o upload, mas eh pro proximo modulo)
 
 ===================
 ===  Pendentes  ===
 ===================
 - melhorar o delete
-- ainda faltam visões mas as principais estão prontas
 - desenvolver o esqueci minha senha (esse vamos avaliar neh?)
-- terminar o insert/update (esta funcionando, so falta o upload, mas eh pro proximo modulo)
 - ao salvar perguntar ao usuário se deseja ir para o próximo cadastro
-- incluir a pagina pes009.php na pasta common. Corrigindo o problema dos includes
