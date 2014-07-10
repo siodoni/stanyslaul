@@ -1,4 +1,4 @@
-===================
+﻿===================
 === Finalizadas ===
 ===================
 - desenvolver o login
@@ -20,3 +20,4 @@
 - melhorar o delete
 - desenvolver o esqueci minha senha (esse vamos avaliar neh?)
 - ao salvar perguntar ao usuário se deseja ir para o próximo cadastro
+- teste
