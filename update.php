@@ -143,6 +143,9 @@ $valores = "";
             </p>
         </div>
         -->
+        <?php
+        echo $estrutura->dialogAguarde();
+        ?>
     </body>
     <script type="text/javascript">
         $(function() {

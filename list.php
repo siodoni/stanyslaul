@@ -12,6 +12,6 @@ if (isset($_POST["nomeTabela"])) {
 require_once 'common/Constantes.class.php';
 include_once 'lib/Estrutura.class.php';
 include_once 'lib/ConexaoPDO.class.php';
-include_once 'lib/JSONv2.class.php';
-require_once 'lib/DataTablev2.class.php';
+include_once 'lib/JSON.class.php';
+require_once 'lib/DataTable.class.php';
 new DataTable($tabela);
