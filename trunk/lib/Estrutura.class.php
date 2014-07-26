@@ -45,6 +45,12 @@ class Estrutura extends Constantes {
                "\n<link href='".$this->nomeArquivo("res/css/themes/redmond/theme.css") . "' rel='stylesheet'>";
     }
 
+    public function dialogAguarde(){
+        return "\n<div id='dlgCarregando' title='Carregando...' class='st-dlg-carregando'>"
+             . "\n<img src='res/images/ico-loading.gif'/>"
+             . "</div>";
+    }
+
     private function nomeArquivo($file){
         return file_exists($this->diretorio.$file) ? $this->diretorio.$file."?st=".filemtime($this->diretorio.$file) : "";
     }

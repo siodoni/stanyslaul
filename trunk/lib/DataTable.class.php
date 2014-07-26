@@ -3,7 +3,6 @@
 class DataTable {
 
     private $estrutura;
-    private $con;
     private $json;
     private $tabela;
     private $titulo;
@@ -11,38 +10,35 @@ class DataTable {
     private $tabelaJSON;
     private $mensagemRetorno;
     private $proximoMenu;
+    private $sqlParam = "select a.nm_view as view, a.nm_menu as titulo, a.cod_aplicacao codigo, a.id_menu_proximo prox_menu from #db.snb_menu a where a.nm_tabela = ? ";
 
     public function __construct($tabela) {
         $this->tabela = $tabela;
         $this->estrutura = new Estrutura();
-        $this->con = new Conexao();
-
-        $this->con->connect();
         $this->verificaParametro();
         $this->buildDataTable();
-        $this->con->disconnect();
         $this->mensagemRetorno = isset($_SESSION['mensagemRetorno']) ? $_SESSION['mensagemRetorno'] : "";
     }
 
     private function verificaParametro() {
-        $sql = mysql_query(
-                "  select a.nm_view as view, "
-                . "       a.nm_menu as titulo, "
-                . "       a.cod_aplicacao codigo, "
-                . "       a.id_menu_proximo prox_menu "
-                . "  from " . $this->con->getDbName() . ".snb_menu a "
-                . " where a.nm_tabela = '" . $this->tabela . "' ");
-        $a = mysql_fetch_assoc($sql);
-
+        $pdo = new ConexaoPDO();
+        $con = $pdo->connect();
+        $rs = $con->prepare(str_replace("#db",Constantes::DBNAME,$this->sqlParam));
+        $tabela = $this->tabela;
+        $rs->bindParam(1, $tabela);
+        $rs->execute();
+        $a = $rs->fetch(PDO::FETCH_OBJ);
+        $pdo->disconnect();
+        
         if (empty($a)) {
             die("Parametro incorreto, nao sera possivel montar a lista.");
         }
 
-        $this->titulo = $a["codigo"] . " - " . $a["titulo"];
-        $this->view = $a["view"];
-        $this->proximoMenu = $a["prox_menu"];
+        $this->titulo = $a->codigo . " - " . $a->titulo;
+        $this->view = $a->view;
+        $this->proximoMenu = $a->prox_menu;
         $this->tabelaJSON = ($this->view == "" || $this->view == null ? $this->tabela : $this->view);
-        $this->json = new JSON($this->tabelaJSON);
+        $this->json = new JSONv2($this->tabelaJSON);
 
         $_SESSION["nomeTabela"] = $this->tabela;
         $_SESSION["nomeTabelaJSON"] = $this->tabelaJSON;
@@ -57,6 +53,7 @@ class DataTable {
         echo "\n<body id='admin'>";
         echo $this->script();
         echo $this->divMain();
+        echo $this->estrutura->dialogAguarde();
         echo "\n</body>";
         echo "\n</html>";
     }
@@ -78,7 +75,7 @@ class DataTable {
                 . "\n$('#tabela').puidatatable({"
                 . $this->captionDataSource(10)
                 . "\n" . $this->dataSource('json.php')
-                . "\n" . $this->json->columns(true)
+                . "\n" . $this->json->columns()
                 . "\nselectionMode: 'single',"
                 . "\nrowSelect: function(event, data) {"
                 . "\nwindow.open('update.php?id='+data.id,'_self');"

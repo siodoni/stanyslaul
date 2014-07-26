@@ -74,6 +74,10 @@
     margin-bottom: 5px;
 }
 
+.st-dlg-carregando {
+    text-align: center;
+}
+
 .pui-menuitem-link.ui-corner-all.ui-state-hover {
     font-weight: normal;
 }

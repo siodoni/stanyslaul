@@ -164,8 +164,9 @@ class Update extends Constantes {
             $this->inputFile .= $this->inputFile . "," . $id;
         }
         $this->montarJS("$('#" . $id . "').puiinputtext();\n");
-        return "<td><input type='file' id='$id' name='$name' value='$valor' />".
-               ($valor != null ? " <a href='".parent::FILE_FOLDER.$valor."' target='blank'>Arquivo: $valor</a>" : "").
+        return "<td><input type='file' id='$id' name='$name' value='$valor'/>".
+                //$this->button("up".$id, "button", "Escolher...", "onclick=\"\"", "ui-icon-circle-plus") .
+               ($valor != null ? $this->button("btn".$id, "button", "Visualizar", "onclick=\"window.open('".parent::FILE_FOLDER.$valor."');\"", "ui-icon-search") : "") .
                $this->inputHidden("_".$id, "_".$name, $valor) .
                " </td>\n";
     }
