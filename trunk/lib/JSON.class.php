@@ -1,6 +1,6 @@
 <?php
 
-class JSONv2 extends Constantes {
+class JSON extends Constantes {
 
     private $tabela = "";
     private $columns = "";

@@ -38,7 +38,7 @@ class DataTable {
         $this->view = $a->view;
         $this->proximoMenu = $a->prox_menu;
         $this->tabelaJSON = ($this->view == "" || $this->view == null ? $this->tabela : $this->view);
-        $this->json = new JSONv2($this->tabelaJSON);
+        $this->json = new JSON($this->tabelaJSON);
 
         $_SESSION["nomeTabela"] = $this->tabela;
         $_SESSION["nomeTabelaJSON"] = $this->tabelaJSON;
