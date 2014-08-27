@@ -1,6 +1,6 @@
 <?php
 
-class Upload extends Constantes {
+class Upload {
 
     private $nomeFinal;
     private $pasta;
@@ -17,12 +17,12 @@ class Upload extends Constantes {
         $_FILES['$nomeCampo'] = $arquivo;
         $fName = $_FILES["$nomeCampo"]['name'];
         
-        $_UP['tamanho']  = parent::FILE_SIZE;                   //Tamanho máximo do arquivo (em Bytes)
-        $_UP['extensao'] = explode(",",parent::FILE_EXTENSION); // Array com as extensões permitidas
-        $_UP['renomeia'] = $renomeia;                           // Renomeia o arquivo? (Se true, o arquivo será salvo com a hora do sistema mais a extensão).
+        $_UP['tamanho']  = Constantes::FILE_SIZE;                   //Tamanho máximo do arquivo (em Bytes)
+        $_UP['extensao'] = explode(",",Constantes::FILE_EXTENSION); // Array com as extensões permitidas
+        $_UP['renomeia'] = $renomeia;                               // Renomeia o arquivo? (Se true, o arquivo será salvo com a hora do sistema mais a extensão).
 
         if ($pasta == "") {
-            $_UP['pasta'] = parent::FILE_FOLDER;
+            $_UP['pasta'] = Constantes::FILE_FOLDER;
         } else {
             $_UP['pasta'] = $pasta;
         }

@@ -1,6 +1,6 @@
 <?php
 
-class Estrutura extends Constantes {
+class Estrutura {
 
     private $diretorio = "";
     
@@ -18,7 +18,7 @@ class Estrutura extends Constantes {
     }
 
     public function title() {
-        return "\n<title>" . parent::TITLE . "</title>";
+        return "\n<title>" . Constantes::TITLE . "</title>";
     }
     
     public function meta(){
