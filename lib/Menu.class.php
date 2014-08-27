@@ -133,11 +133,12 @@ class Menu {
     }
 
     private function alteraSenhaUsuario() {
-        $con = new conexao();
-        $con->connect();
+        
+		$this->con = $this->pdo->connect();
+		
         $senha1 = isset($_POST["senha1"]) ? sha1($_POST["senha1"]) : "";
         $senha2 = isset($_POST["senha2"]) ? sha1($_POST["senha2"]) : "";
-        $crud = new Crud(Constantes::TABLE_USER, true);
+        $crud = new CrudPDO($this->con, Constantes::TABLE_USER, true);
 
         if (!empty($_POST["senha1"]) && !empty($_POST["senha2"])) {
             if ($senha1 == $senha2) {
@@ -155,7 +156,7 @@ class Menu {
             }
         }
 
-        $con->disconnect();
+        $this->pdo->disconnect();
     }
 
     private function onLoad() {
