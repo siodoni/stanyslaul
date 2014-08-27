@@ -1,6 +1,6 @@
 <?php
 
-class Update extends Constantes {
+class Update {
 
     private $coluna;
     private $tabela;
@@ -100,11 +100,11 @@ class Update extends Constantes {
 
         } elseif (in_array($arrayCampo['tipo_dado'], $campoData)) {
             if ($arrayCampo['tipo_dado'] == 'date') {
-                $valorCampo = date(str_replace("%","",parent::DATE_FORMAT), strtotime($valorCampo));
+                $valorCampo = date(str_replace("%","",Constantes::DATE_FORMAT), strtotime($valorCampo));
             } else if ($arrayCampo['tipo_dado'] == 'datetime') {
-                $valorCampo = date(str_replace("%","",parent::DATETIME_FORMAT), strtotime($valorCampo));
+                $valorCampo = date(str_replace("%","",Constantes::DATETIME_FORMAT), strtotime($valorCampo));
             } else if ($arrayCampo['tipo_dado'] == 'time') {
-                $valorCampo = date(str_replace("%","",parent::TIME_FORMAT), strtotime($valorCampo));
+                $valorCampo = date(str_replace("%","",Constantes::TIME_FORMAT), strtotime($valorCampo));
             }
             echo $this->inputDate($arrayCampo['coluna'], $arrayCampo['coluna'], $tamCampo, $arrayCampo['qtde_caracteres'], $valorCampo, $ai, $arrayCampo['tipo_dado'], $required);
         
@@ -166,7 +166,7 @@ class Update extends Constantes {
         $this->montarJS("$('#" . $id . "').puiinputtext();\n");
         return "<td><input type='file' id='$id' name='$name' value='$valor'/>".
                 //$this->button("up".$id, "button", "Escolher...", "onclick=\"\"", "ui-icon-circle-plus") .
-               ($valor != null ? $this->button("btn".$id, "button", "Visualizar", "onclick=\"window.open('".parent::FILE_FOLDER.$valor."');\"", "ui-icon-search") : "") .
+               ($valor != null ? $this->button("btn".$id, "button", "Visualizar", "onclick=\"window.open('".Constantes::FILE_FOLDER.$valor."');\"", "ui-icon-search") : "") .
                $this->inputHidden("_".$id, "_".$name, $valor) .
                " </td>\n";
     }
@@ -250,15 +250,15 @@ class Update extends Constantes {
     }
 
     function getDateFormat(){
-        return parent::DATE_FORMAT;
+        return Constantes::DATE_FORMAT;
     }
 
     function getDateTimeFormat(){
-        return parent::DATETIME_FORMAT;
+        return Constantes::DATETIME_FORMAT;
     }
 
     function getTimeFormat(){
-        return parent::TIME_FORMAT;
+        return Constantes::TIME_FORMAT;
     }    
     
     function getInputFile(){

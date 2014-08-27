@@ -6,7 +6,7 @@
  * Arquivo - codigo.class.php
  * @package crud
  */
-class Crud extends Constantes {
+class Crud {
 
     private $sql_ins = "";
     private $tabela = "";
@@ -36,7 +36,7 @@ class Crud extends Constantes {
      */
     // funçao de inserçao, campos e seus respectivos valores como parametros
     public function inserir($campos, $valores) {
-        $this->sql_ins = "insert into " . parent::DBNAME . "." . $this->tabela . " ($campos) values ($valores)";
+        $this->sql_ins = "insert into " . Constantes::DBNAME . "." . $this->tabela . " ($campos) values ($valores)";
         
         //die($this->sql_ins);
 
@@ -45,7 +45,7 @@ class Crud extends Constantes {
                ."comando ". $this->sql_ins . "<br>"
                . ($this->redireciona ? "<a href='list.php'>Voltar ao Menu</a>" : ""));
         } else {
-            $_SESSION['mensagemRetorno'] = parent::GRAVAR;
+            $_SESSION['mensagemRetorno'] = Constantes::GRAVAR;
             print ($this->redireciona ? "<script>location='list.php';</script>" : "");
         }
     }
@@ -53,9 +53,9 @@ class Crud extends Constantes {
     // funçao de ediçao, campos com seus respectivos valores e o campo id que define a linha a ser editada como parametros
     public function atualizar($camposvalores, $where = NULL, $mostrarMensagem = false) {
         if ($where) {
-            $this->sql_upd = "update " . parent::DBNAME . "." . $this->tabela . " set $camposvalores where $where";
+            $this->sql_upd = "update " . Constantes::DBNAME . "." . $this->tabela . " set $camposvalores where $where";
         } else {
-            $this->sql_upd = "update " . parent::DBNAME . "." . $this->tabela . " set $camposvalores";
+            $this->sql_upd = "update " . Constantes::DBNAME . "." . $this->tabela . " set $camposvalores";
         }
 
         //die($this->sql_upd);
@@ -66,10 +66,11 @@ class Crud extends Constantes {
               . "<br>Erro:   " . mysql_error() 
               . "<br>Campos: " . $camposvalores 
               . "<br>Where:  " . $where
+              . "<br>" . $mostrarMensagem ? $this->sql_upd : ""
               . ($this->redireciona ? "<br><a href='list.php'>Voltar ao Menu</a>" : "" ) . "</center>");
         } else {
             if ($mostrarMensagem) {
-                $_SESSION['mensagemRetorno'] = parent::ATUALIZAR;
+                $_SESSION['mensagemRetorno'] = Constantes::ATUALIZAR;
                 print ($this->redireciona ? "<center>Registro Atualizado com Sucesso!<br><a href='list.php'>Voltar ao Menu</a></center>" : "");
             }
         }
@@ -84,11 +85,11 @@ class Crud extends Constantes {
     // funçao de exclusao, campo que define a linha a ser editada como parametro
     public function excluir($where = NULL) {
         if ($where) {
-            $this->sql_sel = "select * from " . parent::DBNAME . "." . $this->tabela . " where $where";
-            $this->sql_del = "delete from " . parent::DBNAME . "." . $this->tabela . " where $where";
+            $this->sql_sel = "select * from " . Constantes::DBNAME . "." . $this->tabela . " where $where";
+            $this->sql_del = "delete from " . Constantes::DBNAME . "." . $this->tabela . " where $where";
         } else {
-            $this->sql_sel = "select * from " . parent::DBNAME . "." . $this->tabela;
-            $this->sql_del = "delete from " . parent::DBNAME . "." . $this->tabela;
+            $this->sql_sel = "select * from " . Constantes::DBNAME . "." . $this->tabela;
+            $this->sql_del = "delete from " . Constantes::DBNAME . "." . $this->tabela;
         }
         $sel = mysql_query($this->sql_sel);
         $regs = mysql_num_rows($sel);

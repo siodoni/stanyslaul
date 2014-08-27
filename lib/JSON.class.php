@@ -1,6 +1,6 @@
 <?php
 
-class JSON extends Constantes {
+class JSON {
 
     private $tabela = "";
     private $columns = "";
@@ -25,7 +25,7 @@ class JSON extends Constantes {
             }
 
             $this->montarColunas();
-            $sql = "select " . $this->sqlTabela . " from " . parent::DBNAME . "." . $this->tabela . " order by 1";
+            $sql = "select " . $this->sqlTabela . " from " . Constantes::DBNAME . "." . $this->tabela . " order by 1";
             $rs = $this->con->prepare($sql);
             $rs->execute();
             $linha = array();
@@ -48,7 +48,7 @@ class JSON extends Constantes {
     }
 
     private function montarColunas() {
-        $banco = parent::DBNAME;
+        $banco = Constantes::DBNAME;
         $tab = $this->tabela;
         $rs = $this->con->prepare($this->sqlColumn);
         $rs->bindParam(1, $banco);
@@ -59,11 +59,11 @@ class JSON extends Constantes {
                 $dataType = "";
 
                 if ($row->data_type == 'date') {
-                    $dataType = "date_format(" . $row->column_name . ",'" . parent::DATE_FORMAT . "') as " . $row->column_name;
+                    $dataType = "date_format(" . $row->column_name . ",'" . Constantes::DATE_FORMAT . "') as " . $row->column_name;
                 } else if ($row->data_type == 'datetime') {
-                    $dataType = "date_format(" . $row->column_name . ",'" . parent::DATETIME_FORMAT . "') as " . $row->column_name;
+                    $dataType = "date_format(" . $row->column_name . ",'" . Constantes::DATETIME_FORMAT . "') as " . $row->column_name;
                 } else if ($row->data_type == 'time') {
-                    $dataType = "date_format(" . $row->column_name . ",'" . parent::TIME_FORMAT . "') as " . $row->column_name;
+                    $dataType = "date_format(" . $row->column_name . ",'" . Constantes::TIME_FORMAT . "') as " . $row->column_name;
                 } else {
                     $dataType = $row->column_name;
                 }

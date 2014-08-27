@@ -1,11 +1,11 @@
 <?php
 
-class Conexao extends Constantes {
+class Conexao {
 
-    private $dbHost = parent::HOST;
-    private $dbUser = parent::USER;
-    private $dbPass = parent::PASSWORD;
-    private $dbName = parent::DBNAME;
+    private $dbHost = Constantes::HOST;
+    private $dbUser = Constantes::USER;
+    private $dbPass = Constantes::PASSWORD;
+    private $dbName = Constantes::DBNAME;
     private $con = false;
 
     public function connect() { // estabelece conexao
@@ -43,6 +43,6 @@ class Conexao extends Constantes {
     }
     
     public function getQueryLogin() {
-        return parent::QUERY_LOGIN;
+        return Constantes::QUERY_LOGIN;
     }
 }

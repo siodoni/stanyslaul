@@ -1,13 +1,13 @@
 <?php
 
 //http://code.tutsplus.com/pt/tutorials/pdo-vs-mysqli-which-should-you-use--net-24059
-class ConexaoPDO extends Constantes {
+class ConexaoPDO {
 
     private $con;
 
     public function connect() {
         try {
-            $this->con = new PDO("mysql:host=" . parent::HOST . ";dbname=" . parent::DBNAME, parent::USER, parent::PASSWORD);
+            $this->con = new PDO("mysql:host=" . Constantes::HOST . ";dbname=" . Constantes::DBNAME, Constantes::USER, Constantes::PASSWORD);
             return $this->con;
         } catch (PDOException $e) {
             print "<code>" . $e->getMessage() . "</code>";

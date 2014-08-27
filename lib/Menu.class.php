@@ -1,6 +1,6 @@
 <?php
 
-class Menu extends Constantes {
+class Menu {
 
     private $estrutura;
     private $button = "";
@@ -62,7 +62,7 @@ class Menu extends Constantes {
         $valor = "";
         $tipo = "";
 
-        $rs = $this->con->prepare(str_replace("#db", parent::DBNAME, parent::QUERY_MENU));
+        $rs = $this->con->prepare(str_replace("#db", Constantes::DBNAME, Constantes::QUERY_MENU));
         $rs->bindParam(1, $idModulo);
         $rs->bindParam(2, $this->usuario);
         $rs->execute();
@@ -79,7 +79,7 @@ class Menu extends Constantes {
     private function menuBar() {
 
         return "\n<ul id='toolbar'>"
-                . "\n<li><a><img src='common/topo.png' alt='" . parent::TITLE . "' class='st-img-logo'/></a></li>"
+                . "\n<li><a><img src='common/topo.png' alt='" . Constantes::TITLE . "' class='st-img-logo'/></a></li>"
                 . "\n<li><a data-icon='ui-icon-person'>Bem vindo " . $this->nomeUsuario . "</a></li>"
                 . "\n<li><a data-icon='ui-icon-key' onclick='$(\"#dlgChangePass\").puidialog(\"show\");'>Alterar Senha</a></li>"
                 . "\n<li><a data-icon='ui-icon-close' href='logout.php'>Sair</a></li>"
@@ -133,14 +133,18 @@ class Menu extends Constantes {
     }
 
     private function alteraSenhaUsuario() {
+        $con = new conexao();
+        $con->connect();
         $senha1 = isset($_POST["senha1"]) ? sha1($_POST["senha1"]) : "";
         $senha2 = isset($_POST["senha2"]) ? sha1($_POST["senha2"]) : "";
-        $crud = new Crud(parent::TABLE_USER, true);
+        $crud = new Crud(Constantes::TABLE_USER, true);
 
         if (!empty($_POST["senha1"]) && !empty($_POST["senha2"])) {
             if ($senha1 == $senha2) {
                 $crud->atualizar(
-                        parent::COLUMN_PASS . " = '" . $senha1 . "'", parent::COLUMN_USER . " = '" . $this->usuario . "'", false);
+                        Constantes::COLUMN_PASS . " = '" . $senha1 . "'",
+                        Constantes::COLUMN_USER . " = '" . $this->usuario . "'",
+                        true);
                 unset($_POST["senha1"]);
                 unset($_POST["senha2"]);
                 $_SESSION["returnPass"] = "info";
@@ -150,6 +154,8 @@ class Menu extends Constantes {
                 print "<script>location='menu.php';</script>";
             }
         }
+
+        $con->disconnect();
     }
 
     private function onLoad() {
