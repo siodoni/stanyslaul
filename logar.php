@@ -7,7 +7,7 @@ require_once 'lib/ConexaoPDO.class.php';
 $usuario = $_POST["usuario"];
 $senha   = sha1($_POST["senha"]);
 
-$pdo = new ConexaoPDO();
+$pdo = new ConexaoPDO("logar.php");
 $con = $pdo->connect();
 $rs = $con->prepare(str_replace("#db",Constantes::DBNAME,Constantes::QUERY_LOGIN));
 $rs->bindParam(1, $usuario);

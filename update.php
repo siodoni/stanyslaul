@@ -10,11 +10,10 @@ require_once 'lib/JSON.class.php';
 require_once 'lib/Update.class.php';
 require_once 'lib/Upload.class.php';
 
-$pdo = new ConexaoPDO();
+$pdo = new ConexaoPDO("update.php");
 $con = $pdo->connect();
 $estrutura = new Estrutura();
 $update = new Update($con);
-$const = new Constantes();
 $valores = "";
 ?>
 <!DOCTYPE html>

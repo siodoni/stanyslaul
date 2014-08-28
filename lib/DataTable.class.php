@@ -21,7 +21,7 @@ class DataTable {
     }
 
     private function verificaParametro() {
-        $pdo = new ConexaoPDO();
+        $pdo = new ConexaoPDO("DataTable.class.php");
         $con = $pdo->connect();
         $rs = $con->prepare(str_replace("#db",Constantes::DBNAME,$this->sqlParam));
         $tabela = $this->tabela;

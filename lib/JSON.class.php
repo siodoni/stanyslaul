@@ -10,7 +10,7 @@ class JSON {
     private $con;
 
     public function __construct($tabela) {
-        $this->pdo = new ConexaoPDO();
+        $this->pdo = new ConexaoPDO("JSON.class.php");
         $this->con = $this->pdo->connect();
         $this->tabela = $tabela;
         $this->sqlTabela = null;
@@ -77,11 +77,13 @@ class JSON {
                 }
             }
         }
-        $this->pdo->disconnect();
     }
 
     public function getTabela() {
         return $this->tabela;
     }
-
+    
+    public function __destruct() {
+        $this->pdo->disconnect();
+    }
 }

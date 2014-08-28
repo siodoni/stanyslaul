@@ -2,7 +2,7 @@
 require_once '../common/Constantes.class.php';
 require_once '../lib/ConexaoPDO.class.php';
 
-$pdo = new ConexaoPDO();
+$pdo = new ConexaoPDO("testepdo.php");
 $con = $pdo->connect();
 
 $rs = $con->prepare("select id, nome from snb_unid_fed where nome like ? and nome like ? ");
