@@ -16,7 +16,7 @@ class Menu {
         $this->onLoad();
         $this->setNomeUsuario($nome);
         $this->setUsuario($usuario);
-        $this->pdo = new ConexaoPDO();
+        $this->pdo = new ConexaoPDO("Menu.class.php");
         $this->con = $this->pdo->connect();
         $this->estrutura = new Estrutura();
         $this->buildMenu();

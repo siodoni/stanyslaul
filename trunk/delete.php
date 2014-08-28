@@ -13,7 +13,7 @@ if (!isset($_SESSION["usuario"])){header('location:index.php');}
             require_once 'lib/ConexaoPDO.class.php';
             require_once 'lib/CrudPDO.class.php';
 
-            $pdo = new ConexaoPDO();
+            $pdo = new ConexaoPDO("delete.php");
             $con = $pdo->connect();
             $campoId = "id";
             $nomeTabela = "";
