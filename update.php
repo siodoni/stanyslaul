@@ -2,17 +2,18 @@
 session_start();
 if (!isset($_SESSION["usuario"])) {header('location:index.php');}
 
-include_once 'common/Constantes.class.php';
-require_once 'lib/Conexao.class.php';
+require_once 'common/Constantes.class.php';
 require_once 'lib/ConexaoPDO.class.php';
-require_once 'lib/Crud.class.php';
+require_once 'lib/CrudPDO.class.php';
 require_once 'lib/Estrutura.class.php';
 require_once 'lib/JSON.class.php';
 require_once 'lib/Update.class.php';
 require_once 'lib/Upload.class.php';
 
+$pdo = new ConexaoPDO();
+$con = $pdo->connect();
 $estrutura = new Estrutura();
-$update = new Update();
+$update = new Update($con);
 $const = new Constantes();
 $valores = "";
 ?>
@@ -70,13 +71,6 @@ $valores = "";
             </ul>
             <div id="tabela"></div>
             <?php
-            $con = new conexao();
-            $con->connect();
-            
-            if ($con->connect() == false) {
-                die('Não conectado. Erro: ' . mysql_error());
-            }
-
             if (isset($_SESSION["nomeTabela"])) {
                 $nomeTabela = $_SESSION["nomeTabela"];
             } else {
@@ -88,14 +82,20 @@ $valores = "";
                 $id = $_REQUEST["id"];
                 $_SESSION["id"] = $id;
                 $campoId = "id";
-                $consultaUpdate = mysql_query("select * from " . $con->getDbName() . "." . $nomeTabela . " where " . $campoId . " = '" . $id . "'");
-                $valorCampo = mysql_fetch_array($consultaUpdate);
+                
+                $sql = "select * "
+                     . " from " . Constantes::DBNAME . "." . $nomeTabela
+                     ." where " . $campoId . " = '" . $id . "'";
+                
+                $rs = $con->prepare($sql);
+                $rs->execute();
+                $valorCampo = $rs->fetch(PDO::FETCH_NUM);
+
                 $comando = "update&campoId=" . $campoId . "&id=" . $id;
             } else {
                 $id = "";
                 $comando = "insert";
             }
-            //$campos = json_encode(mysql_fetch_array($query));
             ?>
             <fieldset id="panel" class="pui-menu st-fieldset">
                 <legend><?php echo $_SESSION["tituloForm"] ?></legend>
@@ -105,13 +105,15 @@ $valores = "";
                             <?php
                             $contador = 0;
 
-                            $q = mysql_query($update->retornaQueryTabela());
-                            while ($campo = mysql_fetch_array($q)) {
+                            $q = $con->prepare($update->retornaQueryTabela());
+                            $q->execute();
+                            
+                            while ($campo = $q->fetch(PDO::FETCH_ASSOC)) {
 
                                 $valor = "";
 
-                                $required = ($campo['nulo'] == "NO") ? "required=\"required\"" : "";
-                                $tabelaRef = ($campo['tabela_ref'] != null) ? $campo['tabela_ref'] : null;
+                                $required = ($campo["nulo"] == "NO") ? "required=\"required\"" : "";
+                                $tabelaRef = ($campo["tabela_ref"] != null) ? $campo["tabela_ref"] : null;
 
                                 if (isset($valorCampo)) {
                                     $valor = $valorCampo[$contador];
@@ -128,7 +130,6 @@ $valores = "";
                             echo "<tr><td>&nbsp;</td>";
                             echo "<td>".$update->button("salvar","submit","Salvar","","ui-icon-disk");
                             echo $update->button("cancelar","button","Cancelar","onclick='window.location=\"list.php\"'","ui-icon-circle-close") . "</td></tr>";
-                            //echo $update->retornaQueryTabela();
                             ?>
                         </tbody>
                     </table>
@@ -160,15 +161,19 @@ $valores = "";
  * Por enquanto criei esse método de verificação para converter as datas. Mas a idéia é que
  * essa informação seja buscada através do array em JSON que foi recuperado com as informações da tabela
  * OBS: As informações de nome de tabela e schema devem ser recuperados da sessão */
-function verificaCampoDeData($nomeTabela, $campo) {
-    $query = mysql_query(
-            " select a.data_type tipo_dado
-                from information_schema.columns a
-               where a.table_schema = '".$_SESSION["schema"]."'
-                 and a.table_name   = '$nomeTabela' 
-                 and a.column_name  = '$campo'");
-    $tipoDado = mysql_fetch_array($query);
-    
+function verificaCampoDeData($con, $nomeTabela, $campo) {
+    $schema = Constantes::DBNAME;
+    $rs = $con->prepare(
+            " select a.data_type tipo_dado "
+            . " from information_schema.columns a "
+            ." where a.table_schema = ? "
+            .  " and a.table_name   = ? "
+            .  " and a.column_name  = ? ");
+    $rs->bindParam(1, $schema);
+    $rs->bindParam(2, $nomeTabela);
+    $rs->bindParam(3, $campo);
+    $rs->execute();
+    $tipoDado = $rs->fetch(PDO::FETCH_NUM);
     return $tipoDado[0];
 }
 
@@ -222,15 +227,16 @@ if (isset($_REQUEST['comando'])
     $contador = 0;
     $valores = "";
     $comandoUpdate = "";
-    $crud = new crud($nomeTabela,true);
+
+    $crud = new CrudPDO($con,$nomeTabela,true);
     
     if ($_REQUEST['comando'] == "insert") {
         foreach ($camposUpdate as $z) {
-            if (verificaCampoDeData($nomeTabela, $z) == 'date') {
+            if (verificaCampoDeData($con, $nomeTabela, $z) == 'date') {
                 $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateFormat()."'),";
-            } else if (verificaCampoDeData($nomeTabela, $z) == 'datetime') {
+            } else if (verificaCampoDeData($con, $nomeTabela, $z) == 'datetime') {
                 $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateTimeFormat()."'),";
-            } else if (verificaCampoDeData($nomeTabela, $z) == 'time') {
+            } else if (verificaCampoDeData($con, $nomeTabela, $z) == 'time') {
                 $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getTimeFormat()."'),";
             } else {
                 $valores .= " " . $valoresUpdate[$contador] . ",";
@@ -243,11 +249,11 @@ if (isset($_REQUEST['comando'])
     } else if ($_REQUEST['comando'] == "update") {
         foreach ($camposUpdate as $y) {
             if ($y != $campoId) {
-                if (verificaCampoDeData($nomeTabela, $y) == 'date') {
+                if (verificaCampoDeData($con, $nomeTabela, $y) == 'date') {
                     $comandoUpdate .= " " . $y . " = str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateFormat()."' ),";
-                } else if (verificaCampoDeData($nomeTabela, $y) == 'datetime') {
+                } else if (verificaCampoDeData($con, $nomeTabela, $y) == 'datetime') {
                     $comandoUpdate .= " " . $y . " = str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateTimeFormat()."' ),";
-                } else if (verificaCampoDeData($nomeTabela, $y) == 'time') {
+                } else if (verificaCampoDeData($con, $nomeTabela, $y) == 'time') {
                     $comandoUpdate .= " " . $y . " = str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getTimeFormat()."' ),";
                 } else {
                     $comandoUpdate .= " " . $y . " = " . $valoresUpdate[$contador] . ",";
@@ -258,25 +264,28 @@ if (isset($_REQUEST['comando'])
         //die("<br><br>update<br>comando " . substr($comandoUpdate,0,(strlen($comandoUpdate)-1)) . "<br>id " . $campoId . " = '" . $id . "' ");
         $crud->atualizar(substr($comandoUpdate,0,(strlen($comandoUpdate)-1)), $campoId . " = '" . $id . "' ", true);
     }
-    redirectProxMenu();
+    redirectProxMenu($con);
 }
 
-function redirectProxMenu(){
+function redirectProxMenu($con){
     if (isset($_SESSION["proxMenu"]) && $_SESSION["proxMenu"] != null){
-        $sql = mysql_query(
+        $proxMenu = $_SESSION["proxMenu"];
+        $rs = $con->prepare(
                 "  select a.nm_view as view, "
                 . "       a.nm_menu as titulo, "
                 . "       a.cod_aplicacao codigo, "
                 . "       a.id_menu_proximo prox_menu, "
                 . "       a.nm_tabela as tabela "
-                . "  from " . $_SESSION["schema"] . ".snb_menu a "
-                . " where a.id = " . $_SESSION["proxMenu"] );
-        $a = mysql_fetch_assoc($sql);
+                . "  from " . Constantes::DBNAME . ".snb_menu a "
+                . " where a.id = ? ");
+        $rs->bindParam(1, $proxMenu);
+        $rs->execute();
+        $a = $rs->fetch(PDO::FETCH_OBJ);
 
-        $_SESSION["nomeTabela"] = $a["tabela"];
-        $_SESSION["nomeTabelaJSON"] = ($a["view"] == "" || $a["view"] == null ? $a["tabela"] : $a["view"]);
-        $_SESSION["tituloForm"] = $a["codigo"] . " - " . $a["titulo"];
-        $_SESSION["proxMenu"] = $a["prox_menu"];
+        $_SESSION["nomeTabela"] = $a->tabela;
+        $_SESSION["nomeTabelaJSON"] = ($a->view == "" || $a->view == null ? $a->tabela : $a->view);
+        $_SESSION["tituloForm"] = $a->codigo . " - " . $a->titulo;
+        $_SESSION["proxMenu"] = $a->prox_menu;
 
         print "<script>location='update.php';</script>";
     } else {
@@ -284,4 +293,4 @@ function redirectProxMenu(){
     }
 }
 
-$con->disconnect();
+$pdo->disconnect();

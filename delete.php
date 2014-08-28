@@ -10,20 +10,14 @@ if (!isset($_SESSION["usuario"])){header('location:index.php');}
         <form id="insert" action="" method="get">
             <?php 
             require_once 'common/Constantes.class.php';
-            require_once 'lib/Conexao.class.php';
-            require_once 'lib/Crud.class.php';
+            require_once 'lib/ConexaoPDO.class.php';
+            require_once 'lib/CrudPDO.class.php';
 
-            $con = new conexao();
-            $con->connect();
+            $pdo = new ConexaoPDO();
+            $con = $pdo->connect();
             $campoId = "id";
             $nomeTabela = "";
             $id = "";
-
-            if($con->connect() == true) {
-                echo "";
-            }else {
-                die('Não conectado. Erro: '.mysql_error());
-            }
 
             if (isset($_POST["nomeTabela"])) {
                 $nomeTabela = $_POST["nomeTabela"];
@@ -32,7 +26,7 @@ if (!isset($_SESSION["usuario"])){header('location:index.php');}
             }
             
             if ($nomeTabela != ""){
-                $crud = new Crud($nomeTabela,true);
+                $crud = new CrudPDO($con,$nomeTabela,true);
             } else {
                 die("Informe o parametro nomeTabela.");
             }
@@ -48,7 +42,7 @@ if (!isset($_SESSION["usuario"])){header('location:index.php');}
             }
 
             $crud->excluir("".$campoId." = '".$id."'");
-            $con->disconnect();
+            $pdo->disconnect();
             print "<script>location='list.php';</script>";
             ?>
         </form>

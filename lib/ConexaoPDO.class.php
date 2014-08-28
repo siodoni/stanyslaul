@@ -8,6 +8,7 @@ class ConexaoPDO {
     public function connect() {
         try {
             $this->con = new PDO("mysql:host=" . Constantes::HOST . ";dbname=" . Constantes::DBNAME, Constantes::USER, Constantes::PASSWORD);
+            $this->con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $this->con;
         } catch (PDOException $e) {
             print "<code>" . $e->getMessage() . "</code>";
