@@ -7,10 +7,12 @@ class Update {
     private $schema;
     private $javaScript;
     private $inputFile;
+    private $con;
 
-    public function __construct() {
+    public function __construct($con) {
         $this->tabela = $_SESSION["nomeTabela"];
         $this->schema = $_SESSION["schema"];
+        $this->con = $con;
     }
 
     public function adicionarColuna($coluna) {
@@ -204,7 +206,7 @@ class Update {
         $selectMenu = "\n<td><select id='$id' name='$name' $required>\n";
         $selectMenu .= "\n<option value='' >Escolha...</option>\n";
 
-        $json = new JSON($this->retornaView($tabelaRef));
+        $json = new JSON($this->retornaView($this->con,$tabelaRef));
         $array = json_decode($json->json(false, false), true);
         $option = "";
 
@@ -223,32 +225,25 @@ class Update {
         return $selectMenu;
     }
 
-    private function retornaView($tabelaRef) {
-        $view = mysql_query(
+    private function retornaView($con, $tabelaRef) {
+        $view = "v".$tabelaRef;
+        $rs = $con->prepare(
                 "  select 1 ret "
                 . "  from information_schema.views a "
-                . " where a.table_schema = '" . $this->schema . "'"
-                . "   and a.table_name   = 'v" . $tabelaRef . "'");
-        $ret = mysql_fetch_row($view);
+                . " where a.table_schema = ? "
+                . "   and a.table_name   = ? ");
+        $rs->bindParam(1, $this->schema);
+        $rs->bindParam(2, $view);
+        $rs->execute();
+        $ret = $rs->fetch(PDO::FETCH_NUM);
 
         if ($ret[0] == 1) {
-            return "v" . $tabelaRef;
+            return $view;
         } else {
             return $tabelaRef;
         }
     }
     
-    public function verificaCampoDeData($campo) {
-        $query = mysql_query(
-                " select a.data_type tipo_dado
-                    from information_schema.columns a
-                   where a.table_schema = '$this->schema'
-                     and a.table_name   = '$this->tabela' 
-                     and a.column_name  = '$campo'");
-        $tipoDado = mysql_fetch_array($query);
-        return $tipoDado[0];
-    }
-
     function getDateFormat(){
         return Constantes::DATE_FORMAT;
     }

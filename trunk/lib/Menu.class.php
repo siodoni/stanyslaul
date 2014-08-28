@@ -21,6 +21,9 @@ class Menu {
         $this->estrutura = new Estrutura();
         $this->buildMenu();
         $this->alteraSenhaUsuario();
+    }
+
+    public function __destruct() {
         $this->pdo->disconnect();
     }
 
@@ -133,9 +136,6 @@ class Menu {
     }
 
     private function alteraSenhaUsuario() {
-        
-		$this->con = $this->pdo->connect();
-		
         $senha1 = isset($_POST["senha1"]) ? sha1($_POST["senha1"]) : "";
         $senha2 = isset($_POST["senha2"]) ? sha1($_POST["senha2"]) : "";
         $crud = new CrudPDO($this->con, Constantes::TABLE_USER, true);
@@ -143,9 +143,7 @@ class Menu {
         if (!empty($_POST["senha1"]) && !empty($_POST["senha2"])) {
             if ($senha1 == $senha2) {
                 $crud->atualizar(
-                        Constantes::COLUMN_PASS . " = '" . $senha1 . "'",
-                        Constantes::COLUMN_USER . " = '" . $this->usuario . "'",
-                        true);
+                        Constantes::COLUMN_PASS . " = '" . $senha1 . "'", Constantes::COLUMN_USER . " = '" . $this->usuario . "'", true);
                 unset($_POST["senha1"]);
                 unset($_POST["senha2"]);
                 $_SESSION["returnPass"] = "info";
@@ -155,8 +153,6 @@ class Menu {
                 print "<script>location='menu.php';</script>";
             }
         }
-
-        $this->pdo->disconnect();
     }
 
     private function onLoad() {
