@@ -29,14 +29,14 @@ class Estrutura {
         return "\n<script type='text/javascript' src='".$this->nomeArquivo("res/jquery-1.11.0.min.js")                ."'></script>".
                "\n<script type='text/javascript' src='".$this->nomeArquivo("res/jquery-ui.min.js")                    ."'></script>".
                "\n<script type='text/javascript' src='".$this->nomeArquivo("res/js/jquery.ui.timepicker.addon.min.js")."'></script>".
-               "\n<script type='text/javascript' src='".$this->nomeArquivo("res/primeui-1.0-min.js")                  ."'></script>".
+               "\n<script type='text/javascript' src='".$this->nomeArquivo("res/primeui-1.1-min.js")                  ."'></script>".
              //"\n<script type='text/javascript' src='".$this->nomeArquivo("res/js/jquery.validation.js")             ."'></script>".
              //"\n<script type='text/javascript' src='".$this->nomeArquivo("res/js/jquery.validation.ajax.js")        ."'></script>".
                "\n<script type='text/javascript' src='".$this->nomeArquivo("res/js/stanyslaul.js")                    ."'></script>";
     }
 
     public function css() {
-        return "\n<link href='".$this->nomeArquivo("res/primeui-1.0-min.css")          . "' rel='stylesheet'>".
+        return "\n<link href='".$this->nomeArquivo("res/primeui-1.1-min.css")          . "' rel='stylesheet'>".
                "\n<link href='".$this->nomeArquivo("res/jquery-ui.min.css")            . "' rel='stylesheet'>".
                "\n<link href='".$this->nomeArquivo("res/css/primeui.all.css")          . "' rel='stylesheet'>".
                "\n<link href='".$this->nomeArquivo("res/css/stanyslaul.css")           . "' rel='stylesheet'>".

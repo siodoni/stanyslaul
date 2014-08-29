@@ -42,8 +42,12 @@ class CrudPDO {
             $rs = $this->con->prepare($this->sql_ins);
             $rs->execute();
             $_SESSION['mensagemRetorno'] = Constantes::GRAVAR;
+            $_SESSION["returnCrud"] = "info";
             print ($this->redireciona ? "<script>location='list.php';</script>" : "");
         } catch (PDOException $e) {
+            $_SESSION['mensagemRetorno'] = "Erro na inclus&atilde;o ($e->getMessage())";
+            $_SESSION["returnCrud"] = "error";
+            
             die("Erro na inclus&atilde;o " .
             '<br>Linha: ' . __LINE__ . "<br>" . $e->getMessage() . "<br>"
             . "comando " . $this->sql_ins . "<br>"
@@ -64,9 +68,13 @@ class CrudPDO {
 
             if ($mostrarMensagem) {
                 $_SESSION['mensagemRetorno'] = Constantes::ATUALIZAR;
+                $_SESSION["returnCrud"] = "info";
                 print ($this->redireciona ? "<center>Registro Atualizado com Sucesso!<br><a href='list.php'>Voltar ao Menu</a></center>" : "");
             }
         } catch (PDOException $e) {
+            $_SESSION['mensagemRetorno'] = "Erro na atualiza&ccedil;&atilde;o ($e->getMessage())";
+            $_SESSION["returnCrud"] = "error";
+            
             die("<center>Erro na atualiza&ccedil;&atilde;o "
                     . "<br>Linha:  " . __LINE__
                     . "<br>Erro:   " . $e->getMessage()
@@ -95,12 +103,16 @@ class CrudPDO {
             $rs = $this->con->prepare($this->sql_del);
             $rs->execute();
 
+            $_SESSION['mensagemRetorno'] = "Registro excluido com sucesso.";
+            $_SESSION["returnCrud"] = "info";
+
             print ($this->redireciona ? "<center>Registro Excluido com Sucesso!<br><a href='list.php'>Voltar ao Menu</a></center>" : "");
             //print "<center>Registro N&atilde;o Encontrado!<br>".($this->redireciona ? "<a href='menu.php?'>Voltar ao Menu</a>": "") . "</center>";
         } catch (PDOException $e) {
+            $_SESSION['mensagemRetorno'] = "Erro na exclus&atilde;o ($e->getMessage())";
+            $_SESSION["returnCrud"] = "error";
             die("<center>Erro na exclus&atilde;o " . '<br>Linha: ' . __LINE__ . "<br>" . $e->getMessage() . "<br>"
                     . ($this->redireciona ? "<a href='list.php'>Voltar ao Menu</a>" : "" ) . "</center>");
         }
     }
-
 }

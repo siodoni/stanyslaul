@@ -11,8 +11,10 @@ class DataTable {
     private $mensagemRetorno;
     private $proximoMenu;
     private $sqlParam = "select a.nm_view as view, a.nm_menu as titulo, a.cod_aplicacao codigo, a.id_menu_proximo prox_menu from #db.snb_menu a where a.nm_tabela = ? ";
+    private $onload = "";
 
     public function __construct($tabela) {
+        $this->onLoad();
         $this->tabela = $tabela;
         $this->estrutura = new Estrutura();
         $this->verificaParametro();
@@ -28,7 +30,6 @@ class DataTable {
         $rs->bindParam(1, $tabela);
         $rs->execute();
         $a = $rs->fetch(PDO::FETCH_OBJ);
-        $pdo->disconnect();
         
         if (empty($a)) {
             die("Parametro incorreto, nao sera possivel montar a lista.");
@@ -38,19 +39,21 @@ class DataTable {
         $this->view = $a->view;
         $this->proximoMenu = $a->prox_menu;
         $this->tabelaJSON = ($this->view == "" || $this->view == null ? $this->tabela : $this->view);
-        $this->json = new JSON($this->tabelaJSON);
+        $this->json = new JSON($this->tabelaJSON,$con);
 
         $_SESSION["nomeTabela"] = $this->tabela;
         $_SESSION["nomeTabelaJSON"] = $this->tabelaJSON;
         $_SESSION["tituloForm"] = $this->titulo;
         $_SESSION["proxMenu"] = $this->proximoMenu;
+        
+        $pdo->disconnect();
     }
 
     private function buildDataTable() {
         echo "<!DOCTYPE html>";
         echo "\n<html>";
         echo $this->estrutura->head();
-        echo "\n<body id='admin'>";
+        echo "\n<body id='admin' $this->onload>";
         echo $this->script();
         echo $this->divMain();
         echo $this->estrutura->dialogAguarde();
@@ -58,16 +61,11 @@ class DataTable {
         echo "\n</html>";
     }
 
-    // Tentei colocar a mensagem no growl para quando retornar do update mostrar o resultado da operação mas ainda nao consegui
     private function script() {
         return "\n<script type='text/javascript'>"
                 . "\n$(function() {"
                 . "\n// MENSAGENS"
                 . "\n$('#mensagens').puigrowl();"
-                // não consegui funcionar ainda
-                //. "\naddMessage = function() {"
-                //. "\n$(#mensagens).puigrowl('show', '$this->mensagemRetorno');"
-                //. "\n};"
                 . "\n//TOOLBAR"
                 . "\n$('#toolbar').puimenubar();"
                 . "\n$('#toolbar').parent().puisticky();"
@@ -128,4 +126,17 @@ class DataTable {
     public function getProxMenu(){
         return $this->proximoMenu;
     }
+
+    private function onLoad() {
+        if (isset($_SESSION["returnCrud"]) && $_SESSION["returnCrud"] == "error") {
+            $this->onload = "onload=\"$('#mensagens').puigrowl('show', [{severity: 'error', summary: 'Erro', detail: '".$_SESSION['mensagemRetorno']."'}]);\"";
+        } else if (isset($_SESSION["returnCrud"]) && $_SESSION["returnCrud"] == "info") {
+            $this->onload = "onload=\"$('#mensagens').puigrowl('show', [{severity: 'info', summary: 'Informa&ccedil;&atilde;o', detail: '".$_SESSION['mensagemRetorno']."'}]);\"";
+        } else if (isset($_SESSION["returnCrud"]) && $_SESSION["returnCrud"] == "warn") {
+            $this->onload = "onload=\"$('#mensagens').puigrowl('show', [{severity: 'warn', summary: 'Aten&ccedil;&atilde;o', detail: '".$_SESSION['mensagemRetorno']."'}]);\"";
+        } else {
+            $this->onload = "";
+        }
+        unset($_SESSION["returnCrud"]);
+    }    
 }
