@@ -46,7 +46,7 @@
 .pui-buttonset .pui-button{margin-left:0;margin-right:0;}
 button.pui-button::-moz-focus-inner{border:0;padding:0;}.pui-chkbox{display:inline-block;cursor:pointer;}
 .pui-chkbox .pui-chkbox-box{float:left;width:16px;height:16px;-moz-border-radius:2px;-webkit-border-radius:2px;border-radius:2px;margin-right:3px;}
-.pui-chkbox .pui-chkbox-label{cursor:pointer;display:block;margin:0 3px;outline:medium none;z-index:1;float:left;}.pui-datatable table{border-collapse:collapse;width:100%;}
+.pui-chkbox .pui-chkbox-label{cursor:pointer;display:block;margin:0 3px;outline:medium none;z-index:1;float:left;}.pui-datatable table{border-collapse:collapse;width:100%;table-layout:fixed;}
 .pui-datatable .pui-datatable-header,.pui-datatable .pui-datatable-footer{text-align:center;padding:4px 10px;}
 .pui-datatable .pui-datatable-caption{border-bottom:0 none;text-align:center;padding:4px 10px;}
 .pui-datatable .pui-datatable-footer{border-top:0 none;}
@@ -57,7 +57,9 @@ button.pui-button::-moz-focus-inner{border:0;padding:0;}.pui-chkbox{display:inli
 .pui-datatable .pui-sortable-column-icon{display:inline-block;margin:-3px 0 -3px 2px;}
 .pui-datatable .pui-paginator{border-top:0 none;}
 .pui-datatable .pui-datatable-data tr.ui-state-hover{font-weight:inherit;cursor:pointer;}
-.pui-datatable tr.ui-state-highlight{cursor:pointer;}.pui-dialog{position:fixed;padding:0;overflow:hidden;}
+.pui-datatable tr.ui-state-highlight{cursor:pointer;}
+.pui-datatable-scrollable-header,.pui-datatable-scrollable-footer{border:0 none;overflow:hidden;}
+.pui-datatable-scrollable-body{overflow:auto;}.pui-dialog{position:fixed;padding:0;overflow:hidden;}
 .pui-dialog .pui-dialog-titlebar{padding:.4em .4em .4em 1em;position:relative;border:0;}
 .pui-dialog .pui-dialog-title{float:left;margin:.3em 16px .1em 0;}
 .pui-dialog .pui-dialog-content{position:relative;border:0;padding:.5em 1em;background:none;overflow:auto;zoom:1;}
@@ -280,4 +282,14 @@ button.pui-button::-moz-focus-inner{border:0;padding:0;}.pui-chkbox{display:inli
 .pui-tree .pui-treenode-label.ui-state-hover,.pui-tree .pui-treenode-label.ui-state-highlight{font-weight:normal;border:0 none;}
 .pui-tree .pui-treenode-leaf-icon{width:16px;height:16px;display:inline-block;}
 .pui-tree .ui-chkbox-box{cursor:pointer;width:15px;height:15px;float:left;}
-.pui-tree .ui-chkbox{display:inline-block;zoom:1;}
+.pui-tree .ui-chkbox{display:inline-block;zoom:1;}.pui-treetable table{border-collapse:collapse;width:100%;table-layout:fixed;}
+.pui-treetable .pui-treetable-header,.pui-treetable .pui-treetable-footer{text-align:center;padding:4px 10px;}
+.pui-treetable .pui-treetable-header{border-bottom:0 none;}
+.pui-treetable .pui-treetable-footer{border-top:0 none;}
+.pui-treetable th,.pui-treetable tfoot td{text-align:center;}
+.pui-treetable thead th,.pui-treetable tbody td,.pui-treetable tfoot td{padding:4px 10px;overflow:hidden;white-space:nowrap;border-width:1px;border-style:solid;}
+.pui-treetable tbody td{border-color:inherit;}
+.pui-treetable .pui-treetable-toggler{float:left;margin-top:-2px;cursor:pointer;}
+.pui-treetable .pui-treetable-data tr.ui-state-highlight,.pui-treetable .pui-treetable-data tr.ui-state-hover{cursor:pointer;}
+.pui-treetable .pui-treetable-data tr.ui-state-hover{border-color:inherit;font-weight:inherit;}
+.pui-treetable .pui-treetable-indent{width:16px;height:16px;float:left;}

@@ -9,9 +9,13 @@ class JSON {
     private $pdo;
     private $con;
 
-    public function __construct($tabela) {
+    public function __construct($tabela,$con=null) {
         $this->pdo = new ConexaoPDO("JSON.class.php");
-        $this->con = $this->pdo->connect();
+        if ($con != null) {
+            $this->con = $con;
+        } else {
+            $this->con = $this->pdo->connect();
+        }
         $this->tabela = $tabela;
         $this->sqlTabela = null;
     }
