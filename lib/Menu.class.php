@@ -80,9 +80,9 @@ class Menu {
     }
 
     private function menuBar() {
-
+        $base64 = new Base64();
         return "\n<ul id='toolbar'>"
-                . "\n<li><a><img src='common/topo.png' alt='" . Constantes::TITLE . "' class='st-img-logo'/></a></li>"
+                . "\n<li><a><img src='".$base64->base64img("common/topo.png")."' alt='" . Constantes::TITLE . "' class='st-img-logo'/></a></li>"
                 . "\n<li><a data-icon='ui-icon-person'>Bem vindo " . $this->nomeUsuario . "</a></li>"
                 . "\n<li><a data-icon='ui-icon-key' onclick='$(\"#dlgChangePass\").puidialog(\"show\");'>Alterar Senha</a></li>"
                 . "\n<li><a data-icon='ui-icon-close' href='logout.php'>Sair</a></li>"
