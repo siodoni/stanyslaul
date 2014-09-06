@@ -22,11 +22,11 @@ class ConexaoPDO {
                 static::$cont++;
                 static::$time = time();
             }
-
+            /*
             $file = fopen("conexao.log", "a");
             fwrite($file,"qtde ".static::$cont." linha " . static::$linha . " time " . static::$time . " local " . $this->local . " \r\n");
             fclose($file);
-
+            */
             return static::$con;
         } catch (PDOException $e) {
             print "<code>" . $e->getMessage() . "</code>";
