@@ -214,8 +214,8 @@ class Update {
             foreach ($value as $j => $valor) {
                 $selected = ($j == "id" && $valorSelecionado == $value[$j]) ? "selected" : "";
                 $this->i0 = $j == "id" ? utf8_decode($value[$j]) : "";
-
-                $option .= ($j == "id" ? "\n<option $selected value='".utf8_decode($value[$j])."'>" : "") . utf8_decode($value[$j]) . " | ";
+                $valor = utf8_decode(strlen($value[$j])>50?substr($value[$j],0,30)."...":$value[$j]);
+                $option .= ($j == "id" ? "\n<option $selected value='".$value[$j]."'>" : "").$valor. " | ";
             }
             $option = trim(substr($option, 0, (strlen($option) - 2))) . "</option>";
         }
