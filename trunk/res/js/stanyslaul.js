@@ -12,11 +12,11 @@ $(function() {
 });
 
 $(document).ready(function() {
-    console.log("ready...");
+    //console.log("ready...");
     $('#dlgCarregando').puidialog('show');
 });
 
 $(window).load(function() {
-    console.log("load...");
+    //console.log("load...");
     $('#dlgCarregando').puidialog('hide');
 });

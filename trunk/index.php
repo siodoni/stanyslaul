@@ -1,6 +1,7 @@
 <?php
-require_once 'common/Constantes.class.php';
-require_once 'lib/Estrutura.class.php';
+require_once 'config/Config.class.php';
+require_once 'util/Constantes.class.php';
+require_once 'view/Estrutura.class.php';
 $estrutura = new Estrutura();
 ?>
 <!DOCTYPE html>
@@ -33,6 +34,9 @@ $estrutura = new Estrutura();
             }
             ?>
         </form>
+        <footer style="position:fixed;bottom:5px;left:5px">
+            Desenvolvido por <a href="http://www.snbsolucoes.com.br">SNB Solu&ccedil;&otilde;es</a>
+        </footer>
     </body>
     <script type="text/javascript">
         $(function() {

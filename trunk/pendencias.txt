@@ -1,23 +1,8 @@
-﻿===================
-=== Finalizadas ===
-===================
-- desenvolver o login
-- desenvolver o logout
-- incluir o controle de permissao no menu
-- alterar o list.php para usarem as views quando as mesmas existirem.
-- transformar o list.php em classe
-- montar as views para melhorar a visualização dos dados
-- desenvolver o alterar senha
-- melhorar as mensagens de sucesso/erro na alteração da senha
-- verificar porque ao postar com os campos nulo no alterar senha ele considera como se os mesmos estivessem preenchidos
-- melhorar a forma como as lovs sao montadas (verificar se eh possivel utilizar a view)
-- melhorar a forma como as lovs sao montadas (utilizar JSon) (por enquanto funciona, depiamos discutir isso junto com a estrutura do sistema de forma geral)
-- terminar o insert/update (esta funcionando, so falta o upload, mas eh pro proximo modulo)
-
 ===================
 ===  Pendentes  ===
 ===================
+- em caso de erro ao inserir ou atualizar, recuperar as informações e colocá-las nos campos
+- quebrar a pasta "lib" em outras pastas, para organizar melhor o projeto
 - melhorar o delete
-- desenvolver o esqueci minha senha (esse vamos avaliar neh?)
+- desenvolver o esqueci minha senha
 - ao salvar perguntar ao usuário se deseja ir para o próximo cadastro
-- teste

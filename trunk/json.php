@@ -14,8 +14,10 @@ if (isset($_SESSION["nomeTabelaJSON"])){
     $tabela = $_REQUEST["nomeTabelaJSON"];
 }
 
-require_once 'common/Constantes.class.php';
-require_once 'lib/ConexaoPDO.class.php';
-require_once 'lib/JSON.class.php';
+require_once 'config/Config.class.php';
+require_once 'util/Constantes.class.php';
+require_once 'conexao/ConexaoPDO.class.php';
+require_once 'crud/JSON.class.php';
+
 $json = new JSON($tabela);
 echo preg_replace('/,\s*"[^"]+":null|"[^"]+":null,?/', '', $json->json());

@@ -29,7 +29,7 @@ class JSON {
             }
 
             $this->montarColunas();
-            $sql = "select " . $this->sqlTabela . " from " . Constantes::DBNAME . "." . $this->tabela . " order by 1";
+            $sql = "select " . $this->sqlTabela . " from " . Config::DBNAME . "." . $this->tabela . " order by 1";
             $rs = $this->con->prepare($sql);
             $rs->execute();
             $linha = array();
@@ -52,7 +52,7 @@ class JSON {
     }
 
     private function montarColunas() {
-        $banco = Constantes::DBNAME;
+        $banco = Config::DBNAME;
         $tab = $this->tabela;
         $rs = $this->con->prepare($this->sqlColumn);
         $rs->bindParam(1, $banco);

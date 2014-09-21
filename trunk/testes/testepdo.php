@@ -1,6 +1,7 @@
 <?php
-require_once '../common/Constantes.class.php';
-require_once '../lib/ConexaoPDO.class.php';
+require_once '../config/Config.class.php';
+require_once '../util/Constantes.class.php';
+require_once '../conexao/ConexaoPDO.class.php';
 
 $pdo = new ConexaoPDO("testepdo.php");
 $con = $pdo->connect();

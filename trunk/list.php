@@ -9,9 +9,10 @@ if (isset($_POST["nomeTabela"])) {
     $tabela = $_SESSION["nomeTabela"];
 }
 
-require_once 'common/Constantes.class.php';
-require_once 'lib/Estrutura.class.php';
-require_once 'lib/ConexaoPDO.class.php';
-require_once 'lib/JSON.class.php';
-require_once 'lib/DataTable.class.php';
+require_once 'config/Config.class.php';
+require_once 'util/Constantes.class.php';
+require_once 'view/Estrutura.class.php';
+require_once 'conexao/ConexaoPDO.class.php';
+require_once 'crud/JSON.class.php';
+require_once 'view/DataTable.class.php';
 new DataTable($tabela);
