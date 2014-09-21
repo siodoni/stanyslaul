@@ -2,19 +2,21 @@
 session_start();
 if (!isset($_SESSION["usuario"])) {header('location:index.php');}
 
-require_once 'common/Constantes.class.php';
-require_once 'lib/ConexaoPDO.class.php';
-require_once 'lib/CrudPDO.class.php';
-require_once 'lib/Estrutura.class.php';
-require_once 'lib/JSON.class.php';
-require_once 'lib/Update.class.php';
-require_once 'lib/Upload.class.php';
+require_once 'config/Config.class.php';
+require_once 'util/Constantes.class.php';
+require_once 'conexao/ConexaoPDO.class.php';
+require_once 'crud/CrudPDO.class.php';
+require_once 'view/Estrutura.class.php';
+require_once 'crud/JSON.class.php';
+require_once 'view/Update.class.php';
+require_once 'util/Upload.class.php';
 
 $pdo = new ConexaoPDO("update.php");
 $con = $pdo->connect();
 $estrutura = new Estrutura();
 $update = new Update($con);
 $valores = "";
+$dbName = Config::DBNAME;
 ?>
 <!DOCTYPE html>
 <html>
@@ -83,7 +85,7 @@ $valores = "";
                 $campoId = "id";
                 
                 $sql = "select * "
-                     . " from " . Constantes::DBNAME . "." . $nomeTabela
+                     . " from " . $dbName . "." . $nomeTabela
                      ." where " . $campoId . " = '" . $id . "'";
                 
                 $rs = $con->prepare($sql);
@@ -105,8 +107,10 @@ $valores = "";
                             $contador = 0;
 
                             $q = $con->prepare($update->retornaQueryTabela());
+                            $q->bindParam(1, $dbName);
+                            $q->bindParam(2, $nomeTabela);
                             $q->execute();
-                            
+
                             while ($campo = $q->fetch(PDO::FETCH_ASSOC)) {
 
                                 $valor = "";
@@ -161,7 +165,7 @@ $valores = "";
  * essa informação seja buscada através do array em JSON que foi recuperado com as informações da tabela
  * OBS: As informações de nome de tabela e schema devem ser recuperados da sessão */
 function verificaCampoDeData($con, $nomeTabela, $campo) {
-    $schema = Constantes::DBNAME;
+    $schema = Config::DBNAME;
     $rs = $con->prepare(
             " select a.data_type tipo_dado "
             . " from information_schema.columns a "
@@ -269,14 +273,7 @@ if (isset($_REQUEST['comando'])
 function redirectProxMenu($con){
     if (isset($_SESSION["proxMenu"]) && $_SESSION["proxMenu"] != null){
         $proxMenu = $_SESSION["proxMenu"];
-        $rs = $con->prepare(
-                "  select a.nm_view as view, "
-                . "       a.nm_menu as titulo, "
-                . "       a.cod_aplicacao codigo, "
-                . "       a.id_menu_proximo prox_menu, "
-                . "       a.nm_tabela as tabela "
-                . "  from " . Constantes::DBNAME . ".snb_menu a "
-                . " where a.id = ? ");
+        $rs = $con->prepare(str_replace("#db",Config::DBNAME,Constantes::QUERY_PROX_MENU));
         $rs->bindParam(1, $proxMenu);
         $rs->execute();
         $a = $rs->fetch(PDO::FETCH_OBJ);

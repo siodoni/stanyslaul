@@ -17,7 +17,7 @@ class ConexaoPDO {
         try {
             static::$linha++;
             if (static::$con == null) {
-                static::$con = new PDO("mysql:host=" . Constantes::HOST . ";dbname=" . Constantes::DBNAME, Constantes::USER, Constantes::PASSWORD);
+                static::$con = new PDO("mysql:host=" . Config::HOST . ";dbname=" . Config::DBNAME, Config::USER, Config::PASSWORD);
                 static::$con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 static::$cont++;
                 static::$time = time();

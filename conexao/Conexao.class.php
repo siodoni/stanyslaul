@@ -2,10 +2,10 @@
 
 class Conexao {
 
-    private $dbHost = Constantes::HOST;
-    private $dbUser = Constantes::USER;
-    private $dbPass = Constantes::PASSWORD;
-    private $dbName = Constantes::DBNAME;
+    private $dbHost = Config::HOST;
+    private $dbUser = Config::USER;
+    private $dbPass = Config::PASSWORD;
+    private $dbName = Config::DBNAME;
     private $con = false;
 
     public function connect() { // estabelece conexao

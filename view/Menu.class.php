@@ -43,7 +43,7 @@ class Menu {
         $form = "\n<div class='st-div-main'>"
                 . "\n<form name='form' method='post' action='list.php'>"
                 . $this->menuBar();
-        $rs = $this->con->prepare(str_replace("#db", Constantes::DBNAME, Constantes::QUERY_MODULE));
+        $rs = $this->con->prepare(str_replace("#db", Config::DBNAME, Constantes::QUERY_MODULE));
         $rs->bindParam(1, $this->usuario);
         $rs->execute();
         while ($i = $rs->fetch(PDO::FETCH_OBJ)) {
@@ -65,7 +65,7 @@ class Menu {
         $valor = "";
         $tipo = "";
 
-        $rs = $this->con->prepare(str_replace("#db", Constantes::DBNAME, Constantes::QUERY_MENU));
+        $rs = $this->con->prepare(str_replace("#db", Config::DBNAME, Constantes::QUERY_MENU));
         $rs->bindParam(1, $idModulo);
         $rs->bindParam(2, $this->usuario);
         $rs->execute();
@@ -80,9 +80,8 @@ class Menu {
     }
 
     private function menuBar() {
-        $base64 = new Base64();
         return "\n<ul id='toolbar'>"
-                . "\n<li><a><img src='".$base64->base64img("common/topo.png")."' alt='" . Constantes::TITLE . "' class='st-img-logo'/></a></li>"
+                . "\n<li><a><img src='".Config::LOGO."' alt='" . Config::TITLE . "' class='st-img-logo'/></a></li>"
                 . "\n<li><a data-icon='ui-icon-person'>Bem vindo " . $this->nomeUsuario . "</a></li>"
                 . "\n<li><a data-icon='ui-icon-key' onclick='$(\"#dlgChangePass\").puidialog(\"show\");'>Alterar Senha</a></li>"
                 . "\n<li><a data-icon='ui-icon-close' href='logout.php'>Sair</a></li>"

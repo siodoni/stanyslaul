@@ -18,7 +18,7 @@ class Estrutura {
     }
 
     public function title() {
-        return "\n<title>" . Constantes::TITLE . "</title>";
+        return "\n<title>" . Config::TITLE . "</title>";
     }
     
     public function meta(){

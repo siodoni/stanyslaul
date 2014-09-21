@@ -38,7 +38,7 @@ class CrudPDO {
     // funçao de inserçao, campos e seus respectivos valores como parametros
     public function inserir($campos, $valores) {
         try {
-            $this->sql_ins = "insert into " . Constantes::DBNAME . "." . $this->tabela . " ($campos) values ($valores)";
+            $this->sql_ins = "insert into " . Config::DBNAME . "." . $this->tabela . " ($campos) values ($valores)";
             $rs = $this->con->prepare($this->sql_ins);
             $rs->execute();
             $_SESSION['mensagemRetorno'] = Constantes::GRAVAR;
@@ -59,9 +59,9 @@ class CrudPDO {
     public function atualizar($camposvalores, $where = NULL, $mostrarMensagem = false) {
         try {
             if ($where) {
-                $this->sql_upd = "update " . Constantes::DBNAME . "." . $this->tabela . " set $camposvalores where $where";
+                $this->sql_upd = "update " . Config::DBNAME . "." . $this->tabela . " set $camposvalores where $where";
             } else {
-                $this->sql_upd = "update " . Constantes::DBNAME . "." . $this->tabela . " set $camposvalores";
+                $this->sql_upd = "update " . Config::DBNAME . "." . $this->tabela . " set $camposvalores";
             }
             $rs = $this->con->prepare($this->sql_upd);
             $rs->execute();
@@ -95,9 +95,9 @@ class CrudPDO {
     public function excluir($where = NULL) {
         try {
             if ($where) {
-                $this->sql_del = "delete from " . Constantes::DBNAME . "." . $this->tabela . " where $where";
+                $this->sql_del = "delete from " . Config::DBNAME . "." . $this->tabela . " where $where";
             } else {
-                $this->sql_del = "delete from " . Constantes::DBNAME . "." . $this->tabela;
+                $this->sql_del = "delete from " . Config::DBNAME . "." . $this->tabela;
             }
 
             $rs = $this->con->prepare($this->sql_del);

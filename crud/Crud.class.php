@@ -36,7 +36,7 @@ class Crud {
      */
     // funçao de inserçao, campos e seus respectivos valores como parametros
     public function inserir($campos, $valores) {
-        $this->sql_ins = "insert into " . Constantes::DBNAME . "." . $this->tabela . " ($campos) values ($valores)";
+        $this->sql_ins = "insert into " . Config::DBNAME . "." . $this->tabela . " ($campos) values ($valores)";
         
         //die($this->sql_ins);
 
@@ -53,9 +53,9 @@ class Crud {
     // funçao de ediçao, campos com seus respectivos valores e o campo id que define a linha a ser editada como parametros
     public function atualizar($camposvalores, $where = NULL, $mostrarMensagem = false) {
         if ($where) {
-            $this->sql_upd = "update " . Constantes::DBNAME . "." . $this->tabela . " set $camposvalores where $where";
+            $this->sql_upd = "update " . Config::DBNAME . "." . $this->tabela . " set $camposvalores where $where";
         } else {
-            $this->sql_upd = "update " . Constantes::DBNAME . "." . $this->tabela . " set $camposvalores";
+            $this->sql_upd = "update " . Config::DBNAME . "." . $this->tabela . " set $camposvalores";
         }
 
         //die($this->sql_upd);
@@ -85,11 +85,11 @@ class Crud {
     // funçao de exclusao, campo que define a linha a ser editada como parametro
     public function excluir($where = NULL) {
         if ($where) {
-            $this->sql_sel = "select * from " . Constantes::DBNAME . "." . $this->tabela . " where $where";
-            $this->sql_del = "delete from " . Constantes::DBNAME . "." . $this->tabela . " where $where";
+            $this->sql_sel = "select * from " . Config::DBNAME . "." . $this->tabela . " where $where";
+            $this->sql_del = "delete from " . Config::DBNAME . "." . $this->tabela . " where $where";
         } else {
-            $this->sql_sel = "select * from " . Constantes::DBNAME . "." . $this->tabela;
-            $this->sql_del = "delete from " . Constantes::DBNAME . "." . $this->tabela;
+            $this->sql_sel = "select * from " . Config::DBNAME . "." . $this->tabela;
+            $this->sql_del = "delete from " . Config::DBNAME . "." . $this->tabela;
         }
         $sel = mysql_query($this->sql_sel);
         $regs = mysql_num_rows($sel);

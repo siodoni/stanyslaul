@@ -40,27 +40,7 @@ class Update {
     }
 
     public function retornaQueryTabela() {
-        return "select a.ordinal_position id_coluna,
-                       a.column_name coluna,
-                       a.is_nullable nulo,
-                       if(a.column_name='senha','password',if(a.column_name like 'img_%','file',a.data_type)) tipo_dado,
-                       a.numeric_precision numerico,
-                       if(a.data_type='date',14,0) + if(a.data_type='time',10,0) + if(a.data_type='datetime',20,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,
-                       if(a.data_type='date',14,0) + if(a.data_type='time',10,0) + if(a.data_type='datetime',20,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtde_caracteres,
-                       replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum,
-                       a.column_type enum,
-                       if (a.extra = 'auto_increment',1,null) auto_increment,
-                       a.column_key tipo_chave,
-                       b.referenced_table_name tabela_ref
-                  from information_schema.columns a 
-                  left join information_schema.key_column_usage b 
-                    on a.table_schema           = b.table_schema
-                   and a.table_name             = b.table_name 
-                   and a.column_name            = b.column_name
-                   and b.referenced_table_name is not null
-                 where a.table_schema           = '" . $this->schema . "'
-                   and a.table_name             = '" . $this->tabela . "' 
-                 order by a.ordinal_position";
+        return Constantes::QUERY_TABLE;
     }
 
     function montarCampo($arrayCampo, $valorCampo) {
@@ -168,7 +148,7 @@ class Update {
         $this->montarJS("$('#" . $id . "').puiinputtext();\n");
         return "<td><input type='file' id='$id' name='$name' value='$valor'/>".
                 //$this->button("up".$id, "button", "Escolher...", "onclick=\"\"", "ui-icon-circle-plus") .
-               ($valor != null ? $this->button("btn".$id, "button", "Visualizar", "onclick=\"window.open('".Constantes::FILE_FOLDER.$valor."');\"", "ui-icon-search") : "") .
+               ($valor != null ? $this->button("btn".$id, "button", "Visualizar", "onclick=\"window.open('".Config::FILE_FOLDER.$valor."');\"", "ui-icon-search") : "") .
                $this->inputHidden("_".$id, "_".$name, $valor) .
                " </td>\n";
     }
