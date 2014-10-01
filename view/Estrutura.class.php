@@ -51,7 +51,7 @@ class Estrutura {
              . "</div>";
     }
 
-    private function nomeArquivo($file){
+    public function nomeArquivo($file){
         return file_exists($this->diretorio.$file) ? $this->diretorio.$file."?st=".filemtime($this->diretorio.$file) : "";
     }
 }
