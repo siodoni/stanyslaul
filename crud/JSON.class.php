@@ -47,7 +47,7 @@ class JSON {
 
     public function columns() {
         $this->montarColunas();
-        $this->columns = "columns:\n[" . $this->columns . "],\n";
+        $this->columns = "\n\t\tcolumns:\n\t\t\t[" . $this->columns . "],\n";
         return $this->columns;
     }
 
@@ -74,10 +74,10 @@ class JSON {
 
                 if ($this->sqlTabela == null) {
                     $this->sqlTabela = $dataType;
-                    $this->columns = "{field: '" . $row->column_name . "', headerText: '" . ucfirst(str_replace("_", " ", $row->column_name)) . "', sortable: true}\n";
+                    $this->columns = "{field: '" . $row->column_name . "', headerText: '" . ucfirst(str_replace("_", " ", $row->column_name)) . "', sortable: true}";
                 } else {
                     $this->sqlTabela .= ", " . $dataType;
-                    $this->columns = $this->columns . ",{field: '" . $row->column_name . "', headerText: '" . ucfirst(str_replace("_", " ", $row->column_name)) . "', sortable: true}\n";
+                    $this->columns = $this->columns . "\n\t\t\t,{field: '" . $row->column_name . "', headerText: '" . ucfirst(str_replace("_", " ", $row->column_name)) . "', sortable: true}";
                 }
             }
         }

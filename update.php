@@ -1,6 +1,8 @@
 <?php
 session_start();
-if (!isset($_SESSION["usuario"])) {header('location:index.php');}
+if (!isset($_SESSION["usuario"])) {
+    header('location:index.php');
+}
 
 require_once 'config/Config.class.php';
 require_once 'util/Constantes.class.php';
@@ -24,23 +26,6 @@ $dbName = Config::DBNAME;
     echo $estrutura->head();
     ?>
     <body id="admin">
-        <script type="text/javascript">
-            $(function() {
-                // MENSAGENS
-                $('#mensagens').puigrowl();
-
-                //TOOLBAR
-                $('#toolbar').puimenubar();
-                $('#toolbar').parent().puisticky();
-                
-                //DIALOG
-                /*
-                $('#dlgRedirect').puidialog({modal:true,resizable:false,width:220});
-                $('#btnConfRedirect').puibutton({icon:'ui-icon-circle-check'});
-                $('#btnCancRedirect').puibutton({icon:'ui-icon-circle-close'});
-                */
-            });
-        </script>
         <div id="mensagens"></div>
         <div class="st-div-main">
             <ul id='toolbar'>
@@ -83,11 +68,11 @@ $dbName = Config::DBNAME;
                 $id = $_REQUEST["id"];
                 $_SESSION["id"] = $id;
                 $campoId = "id";
-                
+
                 $sql = "select * "
-                     . " from " . $dbName . "." . $nomeTabela
-                     ." where " . $campoId . " = '" . $id . "'";
-                
+                        . " from " . $dbName . "." . $nomeTabela
+                        . " where " . $campoId . " = '" . $id . "'";
+
                 $rs = $con->prepare($sql);
                 $rs->execute();
                 $valorCampo = $rs->fetch(PDO::FETCH_NUM);
@@ -129,10 +114,10 @@ $dbName = Config::DBNAME;
                                 $contador += 1;
                             }
                             //$onclickSalvar = (isset($_SESSION["proxMenu"]) && $_SESSION["proxMenu"] != null ? 'onclick="$(\'#dlgRedirect\').puidialog(\'show\');"' : "");
-                            
+
                             echo "<tr><td>&nbsp;</td>";
-                            echo "<td>".$update->button("salvar","submit","Salvar","","ui-icon-disk");
-                            echo $update->button("cancelar","button","Cancelar","onclick='window.location=\"list.php\"'","ui-icon-circle-close") . "</td></tr>";
+                            echo "<td>" . $update->button("salvar", "submit", "Salvar", "", "ui-icon-disk");
+                            echo $update->button("cancelar", "button", "Cancelar", "onclick='window.location=\"list.php\"'", "ui-icon-circle-close") . "</td></tr>";
                             ?>
                         </tbody>
                     </table>
@@ -154,8 +139,23 @@ $dbName = Config::DBNAME;
     </body>
     <script type="text/javascript">
         $(function() {
-            $('#panel').puifieldset();
-            <?php echo $update->retornaJS(); ?>
+            <?php
+            echo "\t// MENSAGENS";
+            echo "\n\t\t$('#mensagens').puigrowl();\n";
+            echo "\n\t\t//TOOLBAR";
+            echo "\n\t\t$('#toolbar').puimenubar();";
+            echo "\n\t\t$('#toolbar').parent().puisticky();\n";
+            /*
+            echo "\n\t\t//DIALOG";
+            echo "\n\t\t$('#dlgRedirect').puidialog({modal:true,resizable:false,width:220});";
+            echo "\n\t\t$('#btnConfRedirect').puibutton({icon:'ui-icon-circle-check'});";
+            echo "\n\t\t$('#btnCancRedirect').puibutton({icon:'ui-icon-circle-close'});\n";
+            */
+            echo "\n\t\t//PANEL";
+            echo "\n\t\t$('#panel').puifieldset();\n";
+            echo "\n\t\t//INPUTS\n";
+            echo $update->retornaJS();
+            ?>
         });
     </script>
 </html>
@@ -164,14 +164,15 @@ $dbName = Config::DBNAME;
  * Por enquanto criei esse método de verificação para converter as datas. Mas a idéia é que
  * essa informação seja buscada através do array em JSON que foi recuperado com as informações da tabela
  * OBS: As informações de nome de tabela e schema devem ser recuperados da sessão */
+
 function verificaCampoDeData($con, $nomeTabela, $campo) {
     $schema = Config::DBNAME;
     $rs = $con->prepare(
             " select a.data_type tipo_dado "
             . " from information_schema.columns a "
-            ." where a.table_schema = ? "
-            .  " and a.table_name   = ? "
-            .  " and a.column_name  = ? ");
+            . " where a.table_schema = ? "
+            . " and a.table_name   = ? "
+            . " and a.column_name  = ? ");
     $rs->bindParam(1, $schema);
     $rs->bindParam(2, $nomeTabela);
     $rs->bindParam(3, $campo);
@@ -180,34 +181,32 @@ function verificaCampoDeData($con, $nomeTabela, $campo) {
     return $tipoDado[0];
 }
 
-if (isset($_REQUEST['comando'])
-&&       ($_REQUEST['comando'] == "insert"
-||        $_REQUEST['comando'] == "update")) {
-    
+if (isset($_REQUEST['comando']) && ($_REQUEST['comando'] == "insert" || $_REQUEST['comando'] == "update")) {
+
     if ($update->getInputFile() != null) {
         $arquivos = explode(",", $update->getInputFile());
         $upload = new Upload();
         foreach ($arquivos as $x) {
             if ($_FILES["$x"]["name"] != null) {
-                $retorno = $upload->inserir($_FILES["$x"]["name"],"$x",null,true);
-                if (!$retorno){
-                    die ($upload->getMsgErro());
+                $retorno = $upload->inserir($_FILES["$x"]["name"], "$x", null, true);
+                if (!$retorno) {
+                    die($upload->getMsgErro());
                 }
                 $_POST[$x] = $upload->getNomeFinal();
             } else {
-                $_POST[$x] = $_POST["_".$x];
+                $_POST[$x] = $_POST["_" . $x];
             }
         }
     }
-    
+
     $camposUpdate = explode(",", $update->retornaColuna());
     foreach ($camposUpdate as $y) {
         $qtdAi = 0;
         $vlr = (isset($_POST[$y]) ? $_POST[$y] : "");
 
-        if ($y=="senha"||$y=="password"){
-            $_vlr = (isset($_POST["_".$y]) ? $_POST["_".$y] : "");
-            if ($_vlr == $vlr){
+        if ($y == "senha" || $y == "password") {
+            $_vlr = (isset($_POST["_" . $y]) ? $_POST["_" . $y] : "");
+            if ($_vlr == $vlr) {
                 $vlr = $_vlr;
             } else {
                 $vlr = sha1(trim($vlr));
@@ -216,12 +215,12 @@ if (isset($_REQUEST['comando'])
 
         if ($valores == "") {
             if ($qtdAi > 0) {
-                $valores .= "\"null\"".chr(38)." '" . $vlr . "'";
+                $valores .= "\"null\"" . chr(38) . " '" . $vlr . "'";
             } else {
                 $valores .= "'" . $vlr . "'";
             }
         } else {
-            $valores .= "".chr(38)."'" . $vlr . "'";
+            $valores .= "" . chr(38) . "'" . $vlr . "'";
         }
         $valores = str_replace("''", "null", $valores);
     }
@@ -231,33 +230,32 @@ if (isset($_REQUEST['comando'])
     $valores = "";
     $comandoUpdate = "";
 
-    $crud = new CrudPDO($con,$nomeTabela,true);
-    
+    $crud = new CrudPDO($con, $nomeTabela, true);
+
     if ($_REQUEST['comando'] == "insert") {
         foreach ($camposUpdate as $z) {
             if (verificaCampoDeData($con, $nomeTabela, $z) == 'date') {
-                $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateFormat()."'),";
+                $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'" . $update->getDateFormat() . "'),";
             } else if (verificaCampoDeData($con, $nomeTabela, $z) == 'datetime') {
-                $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateTimeFormat()."'),";
+                $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'" . $update->getDateTimeFormat() . "'),";
             } else if (verificaCampoDeData($con, $nomeTabela, $z) == 'time') {
-                $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getTimeFormat()."'),";
+                $valores .= " str_to_date(" . $valoresUpdate[$contador] . ",'" . $update->getTimeFormat() . "'),";
             } else {
                 $valores .= " " . $valoresUpdate[$contador] . ",";
             }
             $contador += 1;
         }
         //die("<br><br>insert<br>colunas " . $update->retornaColuna() . "<br>valores " . substr($valores,0,(strlen($valores)-1)));
-        $crud->inserir($update->retornaColuna(),substr($valores,0,(strlen($valores)-1)));
-
+        $crud->inserir($update->retornaColuna(), substr($valores, 0, (strlen($valores) - 1)));
     } else if ($_REQUEST['comando'] == "update") {
         foreach ($camposUpdate as $y) {
             if ($y != $campoId) {
                 if (verificaCampoDeData($con, $nomeTabela, $y) == 'date') {
-                    $comandoUpdate .= " " . $y . " = str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateFormat()."' ),";
+                    $comandoUpdate .= " " . $y . " = str_to_date(" . $valoresUpdate[$contador] . ",'" . $update->getDateFormat() . "' ),";
                 } else if (verificaCampoDeData($con, $nomeTabela, $y) == 'datetime') {
-                    $comandoUpdate .= " " . $y . " = str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getDateTimeFormat()."' ),";
+                    $comandoUpdate .= " " . $y . " = str_to_date(" . $valoresUpdate[$contador] . ",'" . $update->getDateTimeFormat() . "' ),";
                 } else if (verificaCampoDeData($con, $nomeTabela, $y) == 'time') {
-                    $comandoUpdate .= " " . $y . " = str_to_date(" . $valoresUpdate[$contador] . ",'".$update->getTimeFormat()."' ),";
+                    $comandoUpdate .= " " . $y . " = str_to_date(" . $valoresUpdate[$contador] . ",'" . $update->getTimeFormat() . "' ),";
                 } else {
                     $comandoUpdate .= " " . $y . " = " . $valoresUpdate[$contador] . ",";
                 }
@@ -265,15 +263,15 @@ if (isset($_REQUEST['comando'])
             $contador += 1;
         }
         //die("<br><br>update<br>comando " . substr($comandoUpdate,0,(strlen($comandoUpdate)-1)) . "<br>id " . $campoId . " = '" . $id . "' ");
-        $crud->atualizar(substr($comandoUpdate,0,(strlen($comandoUpdate)-1)), $campoId . " = '" . $id . "' ", true);
+        $crud->atualizar(substr($comandoUpdate, 0, (strlen($comandoUpdate) - 1)), $campoId . " = '" . $id . "' ", true);
     }
     redirectProxMenu($con);
 }
 
-function redirectProxMenu($con){
-    if (isset($_SESSION["proxMenu"]) && $_SESSION["proxMenu"] != null){
+function redirectProxMenu($con) {
+    if (isset($_SESSION["proxMenu"]) && $_SESSION["proxMenu"] != null) {
         $proxMenu = $_SESSION["proxMenu"];
-        $rs = $con->prepare(str_replace("#db",Config::DBNAME,Constantes::QUERY_PROX_MENU));
+        $rs = $con->prepare(str_replace("#db", Config::DBNAME, Constantes::QUERY_PROX_MENU));
         $rs->bindParam(1, $proxMenu);
         $rs->execute();
         $a = $rs->fetch(PDO::FETCH_OBJ);

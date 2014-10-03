@@ -48,7 +48,7 @@ class Menu {
         $rs->execute();
         while ($i = $rs->fetch(PDO::FETCH_OBJ)) {
             $form = $form . "\n<div id='panel" . $i->id . "' class='st-menu' title='" . $i->descricao . "'>";
-            $this->panel = $this->panel . "\n$('#panel" . $i->id . "').puipanel({toggleable: true})";
+            $this->panel = $this->panel . "\n\t$('#panel" . $i->id . "').puipanel({toggleable: true})";
             $form = $form . $this->buttons($i->id);
             $form = $form . "\n</div>";
         }
@@ -74,14 +74,14 @@ class Menu {
             $valor = $j->tabela != null ? "value='" . $j->tabela . "'" : "onclick='window.location=\"" . $j->pagina . "\"'";
             $tipo = $j->tabela != null ? "submit" : "button";
             $form = $form . "\n<button id='btn" . $this->qtde . "' type='$tipo' name='nomeTabela' " . $valor . " class='st-menu-button'>" . $j->codigo . " - " . $j->titulo . "</button><br/>";
-            $this->button = $this->button . "\n$('#btn" . $this->qtde . "').puibutton({icon: 'ui-icon-newwin'});";
+            $this->button = $this->button . "\n\t$('#btn" . $this->qtde . "').puibutton({icon: 'ui-icon-newwin'});";
         }
         return $form;
     }
 
     private function menuBar() {
         return "\n<ul id='toolbar'>"
-                . "\n<li><a><img src='".Config::LOGO."' alt='" . Config::TITLE . "' class='st-img-logo'/></a></li>"
+                . "\n<li><a><img src='" . Config::LOGO . "' alt='" . Config::TITLE . "' class='st-img-logo'/></a></li>"
                 . "\n<li><a data-icon='ui-icon-person'>Bem vindo " . $this->nomeUsuario . "</a></li>"
                 . "\n<li><a data-icon='ui-icon-key' onclick='$(\"#dlgChangePass\").puidialog(\"show\");'>Alterar Senha</a></li>"
                 . "\n<li><a data-icon='ui-icon-close' href='logout.php'>Sair</a></li>"
@@ -91,26 +91,26 @@ class Menu {
     private function script() {
         return "\n<script type='text/javascript'>"
                 . "\n$(function() {"
-                . $this->button
-                . "\n$('#mensagens').puigrowl();"
-                . "\n$('#toolbar').puimenubar();"
-                . "\n$('#toolbar').parent().puisticky();"
+                . $this->button . "\n"
+                . "\n\t$('#mensagens').puigrowl();"
+                . "\n\t$('#toolbar').puimenubar();"
+                . "\n\t$('#toolbar').parent().puisticky();\n"
                 . $this->dialogJS()
-                . "\n$('#senha1').puipassword({inline:true,promptLabel:'Informe a nova senha', weakLabel:'fraca',mediumLabel:'media',goodLabel:'media',strongLabel:'forte'});"
-                . "\n$('#senha2').puipassword({inline:true,promptLabel:'Confirme a nova senha',weakLabel:'fraca',mediumLabel:'media',goodLabel:'media',strongLabel:'forte'});"
-                . "\n$('#btnConfSenha').puibutton({icon:'ui-icon-circle-check'});"
-                . "\n$('#btnCancSenha').puibutton({icon:'ui-icon-circle-close'});"
+                . "\n\t$('#senha1').puipassword({inline:true,promptLabel:'Informe a nova senha', weakLabel:'fraca',mediumLabel:'media',goodLabel:'media',strongLabel:'forte'});"
+                . "\n\t$('#senha2').puipassword({inline:true,promptLabel:'Confirme a nova senha',weakLabel:'fraca',mediumLabel:'media',goodLabel:'media',strongLabel:'forte'});"
+                . "\n\t$('#btnConfSenha').puibutton({icon:'ui-icon-circle-check'});"
+                . "\n\t$('#btnCancSenha').puibutton({icon:'ui-icon-circle-close'});\n"
                 . $this->panel
                 . "\n});"
                 . "\n</script>";
     }
 
     private function dialogJS() {
-        return "\n$('#dlgChangePass').puidialog({"
-                . "\nmodal: true,"
-                . "\nresizable: false,"
-                . "\nwidth: 220,"
-                . "\n});";
+        return "\n\t$('#dlgChangePass').puidialog({"
+             . "\n\t\tmodal: true,"
+             . "\n\t\tresizable: false,"
+             . "\n\t\twidth: 220,"
+             . "\n\t});\n";
     }
 
     private function dialog() {

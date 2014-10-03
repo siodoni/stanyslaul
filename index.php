@@ -20,17 +20,17 @@ $estrutura = new Estrutura();
 
                 <br/>
                 <button id="logar" type="submit" class="st-button-login">Entrar</button>
-                <button id="cancelar" type="reset" class="st-button-login" onclick="window.location='menu.php';">Limpar</button>
+                <button id="cancelar" type="reset" class="st-button-login" onclick="window.location = 'menu.php';">Limpar</button>
             </div>
             <?php
-            if (isset($_GET["return"]) && $_GET["return"] == "error"){
+            if (isset($_GET["return"]) && $_GET["return"] == "error") {
                 echo "<div class='ui-state-error st-panel-login-error'>"
-                    ."<p>"
-                    ."<span class='ui-icon ui-icon-alert' style='float:left;margin-left:30px;'>"
-                    ."</span>"
-                    ."<strong>Usuario ou senha invalidos.</strong>"
-                    ."</p>"
-                    ."</div>";
+                . "<p>"
+                . "<span class='ui-icon ui-icon-alert' style='float:left;margin-left:30px;'>"
+                . "</span>"
+                . "<strong>Usuario ou senha invalidos.</strong>"
+                . "</p>"
+                . "</div>";
             }
             ?>
         </form>
@@ -40,12 +40,12 @@ $estrutura = new Estrutura();
     </body>
     <script type="text/javascript">
         $(function() {
-            $('#panel').puipanel();  
+            $('#panel').puipanel();
             $('#usuario').puiinputtext();
             $('#senha').puiinputtext();
             $('#logar').puibutton({
                 icon: 'ui-icon-circle-check'
-            });  
+            });
             $('#cancelar').puibutton({
                 icon: 'ui-icon-circle-close'
             });
