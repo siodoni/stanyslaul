@@ -62,27 +62,26 @@ class DataTable {
     }
 
     private function script() {
-        return "\n<script type='text/javascript'>"
+        return    "\n<script type='text/javascript'>"
                 . "\n$(function() {"
-                . "\n// MENSAGENS"
-                . "\n$('#mensagens').puigrowl();"
-                . "\n//TOOLBAR"
-                . "\n$('#toolbar').puimenubar();"
-                . "\n$('#toolbar').parent().puisticky();"
-                . "\n// DATATABLE"
-                . "\n$('#tabela').puidatatable({"
+                . "\n\t// MENSAGENS"
+                . "\n\t$('#mensagens').puigrowl();\n"
+                . "\n\t//TOOLBAR"
+                . "\n\t$('#toolbar').puimenubar();"
+                . "\n\t$('#toolbar').parent().puisticky();\n"
+                . "\n\t// DATATABLE"
+                . "\n\t$('#tabela').puidatatable({"
                 . $this->captionDataSource(10)
-                . "\n" . $this->dataSource('json.php')
-                . "\n" . $this->json->columns()
-                . "\nselectionMode: 'single',"
-                . "\nrowSelect: function(event, data) {"
-                . "\nwindow.open('update.php?id='+data.id,'_self');"
-                . "\n},"
-                . "\nrowUnselect: function(event, data) {"
-                . "\n}"
+                . $this->dataSource('json.php')
+                . $this->json->columns()
+                . "\n\t\tselectionMode: 'single',"
+                . "\n\t\trowSelect: function(event, data) {"
+                . "\n\t\t\twindow.open('update.php?id='+data.id,'_self');"
+                . "\n\t\t},"
+                . "\n\t\trowUnselect: function(event, data) {"
+                . "\n\t\t}"
+                . "\n\t});"
                 . "\n});"
-                . "\n});"
-                . "\n"
                 . "\n</script>";
     }
 
@@ -103,24 +102,25 @@ class DataTable {
     }
 
     private function captionDataSource($qtdPaginas) {
-        return "\ncaption: '" . $this->titulo . "',"
-                . "\npaginator: {"
-                . "\nrows:" . $qtdPaginas
-                . "\n},";
+        return "\n\t\tcaption: '" . $this->titulo . "',"
+             . "\n\t\tpaginator: {"
+             . "\n\t\t\trows:" . $qtdPaginas
+             . "\n\t\t},";
     }
 
     private function dataSource($url) {
-        return "\ndatasource: function(callback) {"
-                . "\n$.ajax({"
-                . "\ntype: \"GET\","
-                . "\nurl: '" . $url . "',"
-                . "\ndataType: \"json\","
-                . "\ncontext: this,"
-                . "\nsuccess: function(response) {"
-                . "\ncallback.call(this, response);"
-                . "\n}"
-                . "\n});"
-                . "\n},";
+        return    "\n\t\tdatasource: function(callback) {"
+                . "\n\t\t\t$.ajax({"
+                . "\n\t\t\t\ttype: \"GET\","
+                . "\n\t\t\t\turl: '" . $url . "',"
+                . "\n\t\t\t\tdataType: \"json\","
+                . "\n\t\t\t\tcontext: this,"
+                . "\n\t\t\t\tsuccess: function(response) {"
+                . "\n\t\t\t\t\tcallback.call(this, response);"
+                . "\n\t\t\t\t\tatualizaDataTable();"
+                . "\n\t\t\t\t}"
+                . "\n\t\t\t});"
+                . "\n\t\t},";
     }
     
     public function getProxMenu(){

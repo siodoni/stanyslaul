@@ -112,23 +112,23 @@ class Update {
 
     function button($id, $tipo, $valor, $acao, $icone) {
         $ico = $icone != null || $icone != "" ? "{icon:'" . $icone . "'}" : "";
-        $this->montarJS("$('#$id').puibutton(" . $ico . ");\n");
+        $this->montarJS("\t\t$('#$id').puibutton(" . $ico . ");\n");
         return "<button id='$id' type='$tipo' $acao >$valor</button>\n";
     }
 
     function inputText($id, $name, $size, $maxLength, $value, $enable, $required) {
-        $this->montarJS("$('#" . $id . "').puiinputtext();\n");
+        $this->montarJS("\t\t$('#" . $id . "').puiinputtext();\n");
         return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable $required /></td>\n";
     }
 
     function inputNumber($id, $name, $size, $maxLength, $value, $enable, $required) {
         $size = $size + 2;
-        $this->montarJS("$('#" . $id . "').puispinner();\n");
+        $this->montarJS("\t\t$('#" . $id . "').puispinner();\n");
         return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable $required /></td>\n";
     }
 
     function inputPassword($id, $name, $size, $maxLength, $value, $enable, $required) {
-        $this->montarJS("$('#" . $id . "').puipassword({inline:true,promptLabel:'Informe a nova senha', weakLabel:'fraca',mediumLabel:'media',goodLabel:'media',strongLabel:'forte'});\n");
+        $this->montarJS("\t\t$('#" . $id . "').puipassword({inline:true,promptLabel:'Informe a nova senha', weakLabel:'fraca',mediumLabel:'media',goodLabel:'media',strongLabel:'forte'});\n");
         return "<td>"
              . "<input type='password' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable $required/>"
              . $this->inputHidden("_$id", "_$name", $value)
@@ -145,7 +145,7 @@ class Update {
         } else {
             $this->inputFile .= $this->inputFile . "," . $id;
         }
-        $this->montarJS("$('#" . $id . "').puiinputtext();\n");
+        $this->montarJS("\t\t$('#" . $id . "').puiinputtext();\n");
         return "<td><input type='file' id='$id' name='$name' value='$valor'/>".
                 //$this->button("up".$id, "button", "Escolher...", "onclick=\"\"", "ui-icon-circle-plus") .
                ($valor != null ? $this->button("btn".$id, "button", "Visualizar", "onclick=\"window.open('".Config::FILE_FOLDER.$valor."');\"", "ui-icon-search") : "") .
@@ -154,17 +154,17 @@ class Update {
     }
 
     function inputTextArea($id, $name, $valor, $required) {
-        $this->montarJS("$('#" . $id . "').puiinputtextarea();\n");
+        $this->montarJS("\t\t$('#" . $id . "').puiinputtextarea();\n");
         return "<td><textarea id='$id' rows=\"10\" cols=\"30\" name='$name' style=\"width:100%;height:440px\" $required>$valor</textarea></td>\n";
     }
 
     function inputDate($id, $name, $size, $maxLength, $value, $enable, $tipoDado, $required) {
         if ($tipoDado == "date") {
-            $this->montarJS("$('#" . $id . "').datepicker({dateFormat:'dd/mm/yy'}).puiinputtext();\n");
+            $this->montarJS("\t\t$('#" . $id . "').datepicker({dateFormat:'dd/mm/yy'}).puiinputtext();\n");
         } else if ($tipoDado == "datetime") {
-            $this->montarJS("$('#" . $id . "').datetimepicker({dateFormat:'dd/mm/yy',timeFormat:'HH:mm'}).puiinputtext();\n");
+            $this->montarJS("\t\t$('#" . $id . "').datetimepicker({dateFormat:'dd/mm/yy',timeFormat:'HH:mm'}).puiinputtext();\n");
         } else if ($tipoDado == "time") {
-            $this->montarJS("$('#" . $id . "').timepicker({timeFormat:'HH:mm'}).puiinputtext();\n");
+            $this->montarJS("\t\t$('#" . $id . "').timepicker({timeFormat:'HH:mm'}).puiinputtext();\n");
         }
         return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable $required/></td>\n";
     }
@@ -177,7 +177,7 @@ class Update {
             $selectMenu .= "\n<option value='$enum' $selected >" . ucfirst($enum) . "</option>";
         }
         $selectMenu .= "\n</select></td>\n";
-        $this->montarJS("$('#" . $id . "').puidropdown({filter: true});\n");
+        $this->montarJS("\t\t$('#" . $id . "').puidropdown({filter: true});\n");
         return $selectMenu;
     }
 
@@ -201,7 +201,7 @@ class Update {
         }
         $selectMenu .= trim($option);
         $selectMenu .= "\n</select></td>\n";
-        $this->montarJS("$('#" . $id . "').puidropdown({filter: true, filterMatchMode: 'contains'});\n");
+        $this->montarJS("\t\t$('#" . $id . "').puidropdown({filter: true, filterMatchMode: 'contains'});\n");
         return $selectMenu;
     }
 

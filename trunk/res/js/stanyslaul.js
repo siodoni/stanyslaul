@@ -7,16 +7,26 @@ function excluir() {
     }
 }
 
+function atualizaDataTable() {
+    $(".pui-datatable-data td").each(function() {
+        if ($(this).text().length > 80) {
+            $(this).text($(this).text().substr(0,77) + "...");
+        }
+    });
+}
+
 $(function() {
-    $('#dlgCarregando').puidialog({modal: true, resizable: false, width: 110, closable: false});
+    $('#dlgCarregando').puidialog({
+        modal: true,
+        resizable: false,
+        width: 110,
+        closable: false});
 });
 
 $(document).ready(function() {
-    //console.log("ready...");
     $('#dlgCarregando').puidialog('show');
 });
 
 $(window).load(function() {
-    //console.log("load...");
     $('#dlgCarregando').puidialog('hide');
 });
