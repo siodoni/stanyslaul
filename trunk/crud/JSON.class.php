@@ -29,7 +29,7 @@ class JSON {
             }
 
             $this->montarColunas();
-            $sql = "select " . $this->sqlTabela . " from " . Config::DBNAME . "." . $this->tabela . " order by 1";
+            $sql = "select " . $this->sqlTabela . " from " . Config::DBNAME . "." . $this->tabela . " order by 1";            
             $rs = $this->con->prepare($sql);
             $rs->execute();
             $linha = array();
@@ -57,17 +57,24 @@ class JSON {
         $rs = $this->con->prepare($this->sqlColumn);
         $rs->bindParam(1, $banco);
         $rs->bindParam(2, $tab);
+        $substr = "if (length(#)>80,concat(substr(#,1,77),'...'),#) as # ";
 
         if ($rs->execute() && $rs->rowCount() > 0) {
             while ($row = $rs->fetch(PDO::FETCH_OBJ)) {
                 $dataType = "";
-
+                
                 if ($row->data_type == 'date') {
                     $dataType = "date_format(" . $row->column_name . ",'" . Constantes::DATE_FORMAT . "') as " . $row->column_name;
                 } else if ($row->data_type == 'datetime') {
                     $dataType = "date_format(" . $row->column_name . ",'" . Constantes::DATETIME_FORMAT . "') as " . $row->column_name;
                 } else if ($row->data_type == 'time') {
                     $dataType = "date_format(" . $row->column_name . ",'" . Constantes::TIME_FORMAT . "') as " . $row->column_name;
+                } else if ($row->data_type == 'char'
+                        || $row->data_type == 'varchar'
+                        || $row->data_type == 'text'
+                        || $row->data_type == 'longtext'
+                        || $row->data_type == 'enum') {
+                    $dataType = str_replace("#", $row->column_name, $substr);
                 } else {
                     $dataType = $row->column_name;
                 }
