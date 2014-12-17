@@ -8,11 +8,13 @@ function excluir() {
 }
 
 function atualizaDataTable() {
+    /*
     $(".pui-datatable-data td").each(function() {
         if ($(this).text().length > 80) {
             $(this).text($(this).text().substr(0,77) + "...");
         }
     });
+    */
 }
 
 $(function() {
