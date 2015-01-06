@@ -1,8 +1,6 @@
 ===================
 ===  Pendentes  ===
 ===================
-- em caso de erro ao inserir ou atualizar, recuperar as informações e colocá-las nos campos
-- quebrar a pasta "lib" em outras pastas, para organizar melhor o projeto
 - melhorar o delete
 - desenvolver o esqueci minha senha
 - ao salvar perguntar ao usuário se deseja ir para o próximo cadastro

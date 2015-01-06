@@ -118,25 +118,25 @@ class Update {
 
     function inputText($id, $name, $size, $maxLength, $value, $enable, $required) {
         $this->montarJS("\t\t$('#" . $id . "').puiinputtext();\n");
-        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable $required /></td>\n";
+        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='". (isset($_POST[$name]) ? $_POST[$name] : $value) ."' $enable $required /></td>\n";
     }
 
     function inputNumber($id, $name, $size, $maxLength, $value, $enable, $required) {
         $size = $size + 2;
         $this->montarJS("\t\t$('#" . $id . "').puispinner();\n");
-        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable $required /></td>\n";
+        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='". (isset($_POST[$name]) ? $_POST[$name] : $value) ."' $enable $required /></td>\n";
     }
 
     function inputPassword($id, $name, $size, $maxLength, $value, $enable, $required) {
         $this->montarJS("\t\t$('#" . $id . "').puipassword({inline:true,promptLabel:'Informe a nova senha', weakLabel:'fraca',mediumLabel:'media',goodLabel:'media',strongLabel:'forte'});\n");
         return "<td>"
-             . "<input type='password' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable $required/>"
+             . "<input type='password' id='$id' name='$name' size='$size' maxlength='$maxLength' value='". (isset($_POST[$name]) ? $_POST[$name] : $value) ."' $enable $required/>"
              . $this->inputHidden("_$id", "_$name", $value)
              . "</td>\n";
     }
 
     function inputHidden($id, $name, $valor) {
-        return "<input id='$id' name='$name' type='hidden' value='$valor'/>\n";
+        return "<input id='$id' name='$name' type='hidden' value='". (isset($_POST[$name]) ? $_POST[$name] : $valor) ."'/>\n";
     }
 
     function inputFile($id, $name, $valor) {
@@ -146,7 +146,7 @@ class Update {
             $this->inputFile .= $this->inputFile . "," . $id;
         }
         $this->montarJS("\t\t$('#" . $id . "').puiinputtext();\n");
-        return "<td><input type='file' id='$id' name='$name' value='$valor'/>".
+        return "<td><input type='file' id='$id' name='$name' value='". (isset($_POST[$name]) ? $_POST[$name] : $valor) ."'/>".
                 //$this->button("up".$id, "button", "Escolher...", "onclick=\"\"", "ui-icon-circle-plus") .
                ($valor != null ? $this->button("btn".$id, "button", "Visualizar", "onclick=\"window.open('".Config::FILE_FOLDER.$valor."');\"", "ui-icon-search") : "") .
                $this->inputHidden("_".$id, "_".$name, $valor) .
@@ -155,7 +155,7 @@ class Update {
 
     function inputTextArea($id, $name, $valor, $required) {
         $this->montarJS("\t\t$('#" . $id . "').puiinputtextarea();\n");
-        return "<td><textarea id='$id' rows=\"10\" cols=\"30\" name='$name' style=\"width:100%;height:440px\" $required>$valor</textarea></td>\n";
+        return "<td><textarea id='$id' rows=\"10\" cols=\"30\" name='$name' style=\"width:100%;height:440px\" $required>".(isset($_POST[$name])?$_POST[$name]:$valor)."</textarea></td>\n";
     }
 
     function inputDate($id, $name, $size, $maxLength, $value, $enable, $tipoDado, $required) {
@@ -166,14 +166,14 @@ class Update {
         } else if ($tipoDado == "time") {
             $this->montarJS("\t\t$('#" . $id . "').timepicker({timeFormat:'HH:mm'}).puiinputtext();\n");
         }
-        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='$value' $enable $required/></td>\n";
+        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='". (isset($_POST[$name]) ? $_POST[$name] : $value) ."' $enable $required/></td>\n";
     }
 
     function selectMenuEnum($id, $valoresSelect, $valorSelecionado, $required) {
         $enum = explode(',', $valoresSelect);
         $selectMenu = "\n<td><select id='$id' name='$id' $required>";
         foreach ($enum as $enum) {
-            $selected = ($valorSelecionado == $enum) ? "selected" : "";
+            $selected = ((isset($_POST[$id]) ? $_POST[$id] : $valorSelecionado) == $enum) ? "selected" : "";
             $selectMenu .= "\n<option value='$enum' $selected >" . ucfirst($enum) . "</option>";
         }
         $selectMenu .= "\n</select></td>\n";
@@ -192,7 +192,7 @@ class Update {
 
         foreach ($array as $i => $value) {
             foreach ($value as $j => $valor) {
-                $selected = ($j == "id" && $valorSelecionado == $value[$j]) ? "selected" : "";
+                $selected = ($j == "id" && (isset($_POST[$name]) ? $_POST[$name] : $valorSelecionado) == $value[$j]) ? "selected" : "";
                 $this->i0 = $j == "id" ? utf8_decode($value[$j]) : "";
                 $valor = utf8_decode(strlen($value[$j])>50?substr($value[$j],0,30)."...":$value[$j]);
                 $option .= ($j == "id" ? "\n<option $selected value='".$value[$j]."'>" : "").$valor. " | ";
