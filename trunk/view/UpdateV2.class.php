@@ -139,7 +139,7 @@ class UpdateV2 {
     /* Campos */
 
     function label($arrayCampo) {
-        return "<tr><td>" . ucwords(str_replace("_", " ", str_replace("fi_", "", $arrayCampo['nome_coluna']))) . "</td>\n";
+        return "<tr><td>" . ucwords(str_replace("_", " ", str_replace("fi_", "", $arrayCampo['titulo_coluna']))) . "</td>\n";
     }
 
     function button($id, $tipo, $valor, $acao, $icone) {

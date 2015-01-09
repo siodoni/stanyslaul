@@ -76,7 +76,7 @@ class DataTable {
                 . $this->json->columns()
                 . "\n\t\tselectionMode: 'single',"
                 . "\n\t\trowSelect: function(event, data) {"
-                . "\n\t\t\twindow.open('update.php?id='+data.id,'_self');"
+                . "\n\t\t\twindow.open('updateV2.php?id='+data.id,'_self');"
                 . "\n\t\t},"
                 . "\n\t\trowUnselect: function(event, data) {"
                 . "\n\t\t}"
@@ -87,8 +87,8 @@ class DataTable {
 
     private function toolbar() {
         return "\n<ul id='toolbar'>"
-                . "\n<li><a data-icon='ui-icon-home'     onclick=\"window.location = 'menu.php';\"   title='Voltar ao menu'>Menu</a></li>"
-                . "\n<li><a data-icon='ui-icon-document' onclick=\"window.location = 'update.php';\" title='Novo'>Novo</a></li>"
+                . "\n<li><a data-icon='ui-icon-home'     onclick=\"window.location = 'menu.php';\"     title='Voltar ao menu'>Menu</a></li>"
+                . "\n<li><a data-icon='ui-icon-document' onclick=\"window.location = 'updateV2.php';\" title='Novo'>Novo</a></li>"
                 . "\n<li><a data-icon='ui-icon-close'    href='logout.php'>Sair</a></li>"
                 . "\n</ul>";
     }
