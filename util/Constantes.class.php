@@ -83,6 +83,7 @@ class Constantes {
                                   a.campo_id,
                                   a.campo_descricao,
                                   lower(b.nome_coluna) nome_coluna,
+                                  b.titulo_coluna,
                                   b.tipo_dado,
                                   b.fg_obrigatorio,
                                   b.ordem,

@@ -13,7 +13,7 @@ require_once 'crud/JSON.class.php';
 require_once 'view/UpdateV2.class.php';
 require_once 'util/Upload.class.php';
 
-$pdo = new ConexaoPDO("update.php");
+$pdo = new ConexaoPDO("updateV2.php");
 $con = $pdo->connect();
 $estrutura = new Estrutura();
 $update = new UpdateV2($con);
@@ -40,7 +40,7 @@ $dbName = Config::DBNAME;
                     </a>
                 </li>
                 <li>
-                    <a data-icon='ui-icon-document' onclick="window.location = 'update.php';">
+                    <a data-icon='ui-icon-document' onclick="window.location = 'updateV2.php';">
                         Novo
                     </a>
                 </li>
@@ -85,7 +85,7 @@ $dbName = Config::DBNAME;
             ?>
             <fieldset id="panel" class="pui-menu st-fieldset">
                 <legend><?php echo isset($_SESSION["tituloForm"]) ? $_SESSION["tituloForm"] : "Cadastro" ?></legend>
-                <form id="formInsert" action="update.php?comando=<?php echo $comando ?>" method="post" enctype="multipart/form-data">
+                <form id="formInsert" action="updateV2.php?comando=<?php echo $comando ?>" method="post" enctype="multipart/form-data">
                     <table id='hor-minimalist-a'>
                         <tbody>
                             <?php
@@ -285,7 +285,7 @@ function redirectProxMenu($con) {
         $_SESSION["tituloForm"] = $a->codigo . " - " . $a->titulo;
         $_SESSION["proxMenu"] = $a->prox_menu;
 
-        print "<script>location='update.php';</script>";
+        print "<script>location='updateV2.php';</script>";
     } else {
         print "<script>location='list.php';</script>";
     }
