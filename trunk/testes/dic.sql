@@ -70,4 +70,53 @@ select null id,
    and upper(a.table_type)  <> upper('view')
    and not exists (select 1
                      from snb_dicionario b
-                    where b.nome_tabela = upper(a.table_name))
+                    where b.nome_tabela = upper(a.table_name));
+
+					
+select c.id_dicionario,
+       c.nome_coluna,
+       c.titulo_coluna,
+       c.ordem,
+       if(c.id_dicionario_lov is not null,'LISTA VALOR',c.tipo_dado) tipo_dado,
+       c.tamanho_campo,
+       c.qtd_caracteres,
+       c.precisao_numero,
+       c.formato_data,
+       c.id_dicionario_lov,
+       c.valor_enum,
+       c.fg_obrigatorio,
+       c.fg_auto_incremento,
+       c.hint_campo
+  from (select (select t.id from stanyslaul.snb_dicionario t where upper(t.nome_tabela) = upper(b.table_name)) id_dicionario,
+               a.column_name nome_coluna,
+               lower(replace(a.column_name,'_',' ')) titulo_coluna,
+               a.ordinal_position ordem,
+               if(a.column_name = 'senha','SENHA',
+                  if(a.column_name like 'img_%','ARQUIVO',
+                     if(a.data_type in ('int','bigint','decimal','double','smallint','float'),'NUMÉRICO',
+                        if(a.data_type = 'longtext','TEXTO LONGO',
+                           if(a.data_type in ('date','datetime','time'),'DATA',
+                              if(a.data_type = 'enum','ENUM','TEXTO')
+                           )
+                        )
+                     )
+                  )
+               ) tipo_dado,
+               if(a.data_type='date',14,0) + if(a.data_type='time',10,0) + if(a.data_type='datetime',20,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,
+               if(a.data_type='date',14,0) + if(a.data_type='time',10,0) + if(a.data_type='datetime',20,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtd_caracteres,
+               a.numeric_scale precisao_numero,
+               '' formato_data,
+               (select t.id from stanyslaul.snb_dicionario t where upper(t.nome_tabela) = upper(b.referenced_table_name)) id_dicionario_lov,
+               replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum,
+               if(a.is_nullable='NO','NÃO','SIM') fg_obrigatorio,
+               if(a.extra='auto_increment','SIM','NÃO') fg_auto_incremento,
+               '' hint_campo
+          from information_schema.columns a 
+          left join information_schema.key_column_usage b 
+            on a.table_schema           = b.table_schema
+           and a.table_name             = b.table_name 
+           and a.column_name            = b.column_name
+           and b.referenced_table_name is not null
+         where upper(a.table_schema)    = upper('stanyslaul')
+           and upper(a.table_name)      = upper('snb_pessoa') 
+         order by a.ordinal_position) c
