@@ -77,6 +77,33 @@ class Constantes {
                           where a.table_schema           = ?
                             and a.table_name             = ? 
                           order by a.ordinal_position";
+    
+    const QUERY_TABLEV2 = "select a.id id_dicionario,
+                                  a.nome_tabela,
+                                  a.campo_id,
+                                  a.campo_descricao,
+                                  lower(b.nome_coluna) nome_coluna,
+                                  b.tipo_dado,
+                                  b.fg_obrigatorio,
+                                  b.ordem,
+                                  b.precisao_numero,
+                                  b.tamanho_campo,
+                                  b.qtd_caracteres,
+                                  b.valor_enum,
+                                  b.id_dicionario_lov,
+                                  c.nome_tabela tabela_ref,
+                                  c.campo_id id_tabela_ref,
+                                  c.campo_descricao desc_tabela_ref,
+                                  b.hint_campo,
+                                  b.fg_auto_incremento,
+                                  b.formato_data
+                             from #db.snb_dicionario              a
+                            inner join #db.snb_dicionario_detalhe b
+                               on b.id_dicionario                 = a.id
+                             left join #db.snb_dicionario         c
+                               on c.id                            = b.id_dicionario_lov
+                            where upper(a.nome_tabela)            = upper(?)
+                            order by b.ordem";
 
     const QUERY_PROX_MENU = "  select a.nm_view as view,
                                       a.nm_menu as titulo,
