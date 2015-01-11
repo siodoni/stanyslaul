@@ -30,11 +30,15 @@ class Estrutura {
                "\n<script type='text/javascript' src='".$this->nomeArquivo("res/jquery-ui.min.js")                    ."'></script>".
                "\n<script type='text/javascript' src='".$this->nomeArquivo("res/js/jquery.ui.timepicker.addon.min.js")."'></script>".
                "\n<script type='text/javascript' src='".$this->nomeArquivo("res/primeui-1.1-min.js")                  ."'></script>".
-             //"\n<script type='text/javascript' src='".$this->nomeArquivo("res/js/jquery.validation.js")             ."'></script>".
-             //"\n<script type='text/javascript' src='".$this->nomeArquivo("res/js/jquery.validation.ajax.js")        ."'></script>".
                "\n<script type='text/javascript' src='".$this->nomeArquivo("res/js/stanyslaul.js")                    ."'></script>";
     }
 
+    public function scriptV2() {
+        return "\n<script type='text/javascript' src='".$this->nomeArquivo("res/jq/jquery.min.js")        ."'></script>".
+               "\n<script type='text/javascript' src='".$this->nomeArquivo("res/jq/jquery.easyui.min.js") ."'></script>".
+               "\n<script type='text/javascript' src='".$this->nomeArquivo("res/js/stanyslaul.js")        ."'></script>";
+    }
+    
     public function css() {
         return "\n<link href='".$this->nomeArquivo("res/primeui-1.1-min.css")          . "' rel='stylesheet'>".
                "\n<link href='".$this->nomeArquivo("res/jquery-ui.min.css")            . "' rel='stylesheet'>".
@@ -45,6 +49,12 @@ class Estrutura {
                "\n<link href='".$this->nomeArquivo("res/css/themes/redmond/theme.css") . "' rel='stylesheet'>";
     }
 
+    public function cssV2() {
+        return "\n<link href='".$this->nomeArquivo("res/jq/themes/default/easyui.css") . "' rel='stylesheet'>".
+               "\n<link href='".$this->nomeArquivo("res/jq/themes/icon.css")           . "' rel='stylesheet'>".
+               "\n<link href='".$this->nomeArquivo("res/jq/themes/jqtheme.css")        . "' rel='stylesheet'>";
+    }
+    
     public function dialogAguarde(){
         return "\n<div id='dlgCarregando' title='Carregando...' class='st-dlg-carregando'>"
              . "\n<img src='res/images/ico-loading.gif'/>"
