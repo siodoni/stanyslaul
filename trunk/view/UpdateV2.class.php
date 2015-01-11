@@ -44,13 +44,6 @@ class UpdateV2 {
     }
 
     function montarCampo($arrayCampo, $valorCampo) {
-        $campoNumero   = 'NUMÉRICO';//array("int","bigint","decimal","double","smallint","float");
-        $campoSenha    = 'SENHA';//array("password");
-        $campoArquivo  = 'ARQUIVO';//array("file");
-        $campoTextArea = 'TEXTO LONGO';//array("longtext");
-        $campoData     = 'DATA';//array("date","datetime","time");
-        $campoEnum     = 'ENUM';//array("enum");
-        $campoLOV      = 'LISTA VALOR';
         $ai            = "";
         $required      = "";
 
@@ -72,67 +65,30 @@ class UpdateV2 {
             $required = "";
         }
 
-        if ($arrayCampo['tipo_dado'] == $campoSenha) {
-            echo $this->inputPassword($arrayCampo['nome_coluna'],
-                                      $arrayCampo['nome_coluna'],
-                                      $tamCampo,
-                                      $arrayCampo['qtd_caracteres'],
-                                      $valorCampo,
-                                      $ai,
-                                      $required);
+        if ($arrayCampo['tipo_dado'] == 'SENHA') {
+            echo $this->inputPassword($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$tamCampo,$arrayCampo['qtd_caracteres'],$valorCampo,$ai,$required);
 
-        } elseif ($arrayCampo['tipo_dado'] == $campoArquivo) {
-            echo $this->inputFile($arrayCampo['nome_coluna'],
-                                  $arrayCampo['nome_coluna'],
-                                  $valorCampo);
+        } elseif ($arrayCampo['tipo_dado'] == 'ARQUIVO') {
+            echo $this->inputFile($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$valorCampo);
 
-        } elseif ($arrayCampo['tipo_dado'] == $campoTextArea) {
-            echo $this->inputTextArea($arrayCampo['nome_coluna'],
-                                      $arrayCampo['nome_coluna'],
-                                      $valorCampo,
-                                      $required);
+        } elseif ($arrayCampo['tipo_dado'] == 'TEXTO LONGO') {
+            echo $this->inputTextArea($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$valorCampo,$required);
 
-        } elseif ($arrayCampo['tipo_dado'] == $campoData) {
-            $valorCampo = date(str_replace("%","",$arrayCampo["formato_data"], strtotime($valorCampo)));
-            echo $this->inputDate($arrayCampo['nome_coluna'],
-                                  $arrayCampo['nome_coluna'],
-                                  $tamCampo,
-                                  $arrayCampo['qtd_caracteres'],
-                                  $valorCampo,
-                                  $ai,
-                                  $arrayCampo['tipo_dado'],
-                                  $required);
+        } elseif ($arrayCampo['tipo_dado'] == 'DATA') {
+            $valorCampo = date(str_replace("%","",$arrayCampo["formato_data"]), strtotime($valorCampo));
+            echo $this->inputDate($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$tamCampo,$arrayCampo['qtd_caracteres'],$valorCampo,$ai,$arrayCampo['formato_data'],$required);
 
-        } elseif ($arrayCampo['tipo_dado'] == $campoEnum) {
-            echo $this->selectMenuEnum($arrayCampo['nome_coluna'],
-                                       $arrayCampo['valor_enum'],
-                                       $valorCampo,
-                                       $required);
+        } elseif ($arrayCampo['tipo_dado'] == 'ENUM') {
+            echo $this->selectMenuEnum($arrayCampo['nome_coluna'],$arrayCampo['valor_enum'],$valorCampo,$required);
 
-        } elseif ($arrayCampo['tipo_dado'] == $campoLOV) {
-            echo $this->selectMenu($arrayCampo['nome_coluna'],
-                                   $arrayCampo['nome_coluna'],
-                                   $arrayCampo['tabela_ref'],
-                                   $valorCampo,
-                                   $required);
+        } elseif ($arrayCampo['tipo_dado'] == 'LISTA VALOR') {
+            echo $this->selectMenu($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$arrayCampo['tabela_ref'],$valorCampo,$required);
 
-        } elseif ($arrayCampo['tipo_dado'] == $campoNumero) {
-            echo $this->inputNumber($arrayCampo['nome_coluna'],
-                                    $arrayCampo['nome_coluna'],
-                                    $tamCampo,
-                                    $arrayCampo['qtd_caracteres'],
-                                    $valorCampo,
-                                    $ai,
-                                    $required);
+        } elseif ($arrayCampo['tipo_dado'] == 'NUMÉRICO') {
+            echo $this->inputNumber($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$tamCampo,$arrayCampo['qtd_caracteres'],$valorCampo,$ai,$required);
 
         } else {
-            echo $this->inputText($arrayCampo['nome_coluna'],
-                                  $arrayCampo['nome_coluna'],
-                                  $tamCampo,
-                                  $arrayCampo['qtd_caracteres'],
-                                  $valorCampo,
-                                  $ai,
-                                  $required);
+            echo $this->inputText($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$tamCampo,$arrayCampo['qtd_caracteres'],$valorCampo,$ai,$required);
         }
     }
 
@@ -161,10 +117,7 @@ class UpdateV2 {
 
     function inputPassword($id, $name, $size, $maxLength, $value, $enable, $required) {
         $this->montarJS("\t\t$('#" . $id . "').puipassword({inline:true,promptLabel:'Informe a nova senha', weakLabel:'fraca',mediumLabel:'media',goodLabel:'media',strongLabel:'forte'});\n");
-        return "<td>"
-             . "<input type='password' id='$id' name='$name' size='$size' maxlength='$maxLength' value='". (isset($_POST[$name]) ? $_POST[$name] : $value) ."' $enable $required/>"
-             . $this->inputHidden("_$id", "_$name", $value)
-             . "</td>\n";
+        return "<td><input type='password' id='$id' name='$name' size='$size' maxlength='$maxLength' value='". (isset($_POST[$name]) ? $_POST[$name] : $value) ."' $enable $required/>" . $this->inputHidden("_$id", "_$name", $value) . "</td>\n";
     }
 
     function inputHidden($id, $name, $valor) {
@@ -181,8 +134,7 @@ class UpdateV2 {
         return "<td><input type='file' id='$id' name='$name' value='". (isset($_POST[$name]) ? $_POST[$name] : $valor) ."'/>".
                 //$this->button("up".$id, "button", "Escolher...", "onclick=\"\"", "ui-icon-circle-plus") .
                ($valor != null ? $this->button("btn".$id, "button", "Visualizar", "onclick=\"window.open('".Config::FILE_FOLDER.$valor."');\"", "ui-icon-search") : "") .
-               $this->inputHidden("_".$id, "_".$name, $valor) .
-               " </td>\n";
+               $this->inputHidden("_".$id, "_".$name, $valor) . " </td>\n";
     }
 
     function inputTextArea($id, $name, $valor, $required) {
@@ -190,12 +142,12 @@ class UpdateV2 {
         return "<td><textarea id='$id' rows=\"10\" cols=\"30\" name='$name' style=\"width:100%;height:440px\" $required>".(isset($_POST[$name])?$_POST[$name]:$valor)."</textarea></td>\n";
     }
 
-    function inputDate($id, $name, $size, $maxLength, $value, $enable, $tipoDado, $required) {
-        if ($tipoDado == "date") {
+    function inputDate($id, $name, $size, $maxLength, $value, $enable, $formato, $required) {
+        if ($formato == "%d/%m/%Y") {
             $this->montarJS("\t\t$('#" . $id . "').datepicker({dateFormat:'dd/mm/yy'}).puiinputtext();\n");
-        } else if ($tipoDado == "datetime") {
+        } else if ($formato == "%d/%m/%Y %H:%i") {
             $this->montarJS("\t\t$('#" . $id . "').datetimepicker({dateFormat:'dd/mm/yy',timeFormat:'HH:mm'}).puiinputtext();\n");
-        } else if ($tipoDado == "time") {
+        } else if ($formato == "%k:%i") {
             $this->montarJS("\t\t$('#" . $id . "').timepicker({timeFormat:'HH:mm'}).puiinputtext();\n");
         }
         return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='". (isset($_POST[$name]) ? $_POST[$name] : $value) ."' $enable $required/></td>\n";

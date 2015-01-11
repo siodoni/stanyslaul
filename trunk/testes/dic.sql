@@ -71,9 +71,10 @@ select null id,
    and not exists (select 1
                      from snb_dicionario b
                     where b.nome_tabela = upper(a.table_name));
-
 					
-select c.id_dicionario,
+insert into snb_dicionario_detalhe
+select null id,
+       c.id_dicionario,
        c.nome_coluna,
        c.titulo_coluna,
        c.ordem,
@@ -87,8 +88,9 @@ select c.id_dicionario,
        c.fg_obrigatorio,
        c.fg_auto_incremento,
        c.hint_campo
-  from (select (select t.id from stanyslaul.snb_dicionario t where upper(t.nome_tabela) = upper(b.table_name)) id_dicionario,
-               a.column_name nome_coluna,
+  from (select upper(a.table_name) nome_tabela,
+               (select t.id from stanyslaul.snb_dicionario t where upper(t.nome_tabela) = upper(a.table_name)) id_dicionario,
+               upper(a.column_name) nome_coluna,
                lower(replace(a.column_name,'_',' ')) titulo_coluna,
                a.ordinal_position ordem,
                if(a.column_name = 'senha','SENHA',
@@ -105,7 +107,7 @@ select c.id_dicionario,
                if(a.data_type='date',14,0) + if(a.data_type='time',10,0) + if(a.data_type='datetime',20,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) tamanho_campo,
                if(a.data_type='date',14,0) + if(a.data_type='time',10,0) + if(a.data_type='datetime',20,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtd_caracteres,
                a.numeric_scale precisao_numero,
-               '' formato_data,
+               if(a.data_type='date','%d/%m/%Y',if(a.data_type='time','%k:%i',if(a.data_type='datetime','%d/%m/%Y %H:%i',''))) formato_data,
                (select t.id from stanyslaul.snb_dicionario t where upper(t.nome_tabela) = upper(b.referenced_table_name)) id_dicionario_lov,
                replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum,
                if(a.is_nullable='NO','NÃO','SIM') fg_obrigatorio,
@@ -117,6 +119,13 @@ select c.id_dicionario,
            and a.table_name             = b.table_name 
            and a.column_name            = b.column_name
            and b.referenced_table_name is not null
-         where upper(a.table_schema)    = upper('stanyslaul')
-           and upper(a.table_name)      = upper('snb_pessoa') 
+         where exists (select 1
+                         from snb_dicionario bb
+                        where bb.nome_tabela = upper(a.table_name))
+           and upper(a.table_schema)    = upper('stanyslaul')
          order by a.ordinal_position) c
+ where not exists (select 1
+                     from snb_dicionario_detalhe bb
+                    where bb.id_dicionario = c.id_dicionario
+                      and bb.nome_coluna   = c.nome_coluna)
+ order by c.id_dicionario, c.ordem;
