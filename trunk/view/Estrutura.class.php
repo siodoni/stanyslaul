@@ -17,6 +17,15 @@ class Estrutura {
                "\n</head>\n";
     }
 
+    public function headV2() {
+        return "\n<head>" .
+               $this->title() .
+               $this->meta() .
+               $this->scriptV2() .
+               $this->cssV2() .
+               "\n</head>\n";
+    }
+    
     public function title() {
         return "\n<title>" . Config::TITLE . "</title>";
     }
