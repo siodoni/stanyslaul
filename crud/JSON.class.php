@@ -5,7 +5,7 @@ class JSON {
     private $tabela = "";
     private $columns = "";
     private $sqlTabela;
-    private $sqlColumn = "select column_name, lower(data_type) data_type from information_schema.columns where table_schema = ? and table_name = ? ";
+    private $sqlColumn = "select lower(b.nome_coluna) nome_coluna, b.titulo_coluna, b.formato_data, b.tipo_dado from #db.snb_dicionario_detalhe b, #db.snb_dicionario a where a.nome_tabela = upper(?) and b.id_dicionario = a.id";
     private $pdo;
     private $con;
 
@@ -25,7 +25,7 @@ class JSON {
             $var = "Acesso Negado!";
         } else {
             if ($alteraHeader) {
-                header('Content-type: application/json');
+                //header('Content-type: application/json');
             }
 
             $this->montarColunas();
@@ -33,7 +33,7 @@ class JSON {
             $rs = $this->con->prepare($sql);
             $rs->execute();
             $linha = array();
-
+            
             if ($rs->execute() && $rs->rowCount() > 0) {
                 while ($row = $rs->fetch(PDO::FETCH_ASSOC)) {
                     $linha[] = array_map('utf8_encode', $row);
@@ -52,39 +52,31 @@ class JSON {
     }
 
     private function montarColunas() {
-        $banco = Config::DBNAME;
         $tab = $this->tabela;
-        $rs = $this->con->prepare($this->sqlColumn);
-        $rs->bindParam(1, $banco);
-        $rs->bindParam(2, $tab);
+        $rs = $this->con->prepare(str_replace("#db",Config::DBNAME,$this->sqlColumn));
+        $rs->bindParam(1, $tab);
         $substr = "if (length(#)>80,concat(substr(#,1,77),'...'),#) as # ";
 
         if ($rs->execute() && $rs->rowCount() > 0) {
+            
             while ($row = $rs->fetch(PDO::FETCH_OBJ)) {
                 $dataType = "";
                 
-                if ($row->data_type == 'date') {
-                    $dataType = "date_format(" . $row->column_name . ",'" . Constantes::DATE_FORMAT . "') as " . $row->column_name;
-                } else if ($row->data_type == 'datetime') {
-                    $dataType = "date_format(" . $row->column_name . ",'" . Constantes::DATETIME_FORMAT . "') as " . $row->column_name;
-                } else if ($row->data_type == 'time') {
-                    $dataType = "date_format(" . $row->column_name . ",'" . Constantes::TIME_FORMAT . "') as " . $row->column_name;
-                } else if ($row->data_type == 'char'
-                        || $row->data_type == 'varchar'
-                        || $row->data_type == 'text'
-                        || $row->data_type == 'longtext'
-                        || $row->data_type == 'enum') {
-                    $dataType = str_replace("#", $row->column_name, $substr);
+                if ($row->formato_data != null) {
+                    $dataType = "date_format(" . $row->nome_coluna . ",'" . $row->formato_data . "') as " . $row->nome_coluna;
+                } else if ($row->tipo_dado == "TEXTO"
+                        || $row->tipo_dado == "TEXTO LONGO") {
+                    $dataType = str_replace("#", $row->nome_coluna, $substr);
                 } else {
-                    $dataType = $row->column_name;
+                    $dataType = $row->nome_coluna;
                 }
 
                 if ($this->sqlTabela == null) {
                     $this->sqlTabela = $dataType;
-                    $this->columns = "{field: '" . $row->column_name . "', headerText: '" . ucfirst(str_replace("_", " ", $row->column_name)) . "', sortable: true}";
+                    $this->columns = "{field: '" . $row->nome_coluna . "', headerText: '" . $row->titulo_coluna . "', sortable: true}";
                 } else {
                     $this->sqlTabela .= ", " . $dataType;
-                    $this->columns = $this->columns . "\n\t\t\t,{field: '" . $row->column_name . "', headerText: '" . ucfirst(str_replace("_", " ", $row->column_name)) . "', sortable: true}";
+                    $this->columns = $this->columns . "\n\t\t\t,{field: '" . $row->nome_coluna . "', headerText: '" . $row->titulo_coluna . "', sortable: true}";
                 }
             }
         }

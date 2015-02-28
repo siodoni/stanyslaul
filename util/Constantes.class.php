@@ -20,7 +20,7 @@ class Constantes {
     const QUERY_MODULE = "select distinct
                                  d.id,
                                  d.descricao,
-                                 d.icone
+                                 d.img_icone
                             from #db.snb_modulo d, 
                                  #db.snb_menu a 
                            where upper(a.fg_ativa) in ('S','SIM') 
