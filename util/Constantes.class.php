@@ -23,7 +23,7 @@ class Constantes {
                                  d.img_icone
                             from #db.snb_modulo d, 
                                  #db.snb_menu a 
-                           where upper(a.fg_ativa) in ('S','SIM') 
+                           where upper(a.fg_ativo) in ('S','SIM') 
                              and d.id               = a.id_modulo
                              and exists (select 1 
                                            from #db.snb_autorizacao b 
@@ -39,7 +39,7 @@ class Constantes {
                                a.nm_view view,
                                a.nm_pagina pagina
                           from #db.snb_menu a 
-                         where upper(a.fg_ativa) in ('S','SIM') 
+                         where upper(a.fg_ativo) in ('S','SIM') 
                            and a.id_modulo = ? 
                            and exists (select 1 
                                          from #db.snb_autorizacao b 

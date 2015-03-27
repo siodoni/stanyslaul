@@ -6,10 +6,12 @@ class JSON {
     private $columns = "";
     private $sqlTabela;
     private $sqlColumn = "select lower(b.nome_coluna) nome_coluna, b.titulo_coluna, b.formato_data, b.tipo_dado from #db.snb_dicionario_detalhe b, #db.snb_dicionario a where a.nome_tabela = upper(?) and b.id_dicionario = a.id";
+    private $sqlLOV    = "select a.campo_id, a.campo_descricao, a.condicao_filtro, a.ordem from #db.snb_dicionario a where a.nome_tabela = upper(?)";
     private $pdo;
     private $con;
+    private $selectLOV = false;
 
-    public function __construct($tabela,$con=null) {
+    public function __construct($tabela,$con=null,$selectLOV=false) {
         $this->pdo = new ConexaoPDO("JSON.class.php");
         if ($con != null) {
             $this->con = $con;
@@ -18,6 +20,7 @@ class JSON {
         }
         $this->tabela = $tabela;
         $this->sqlTabela = null;
+        $this->selectLOV = $selectLOV;
     }
 
     public function json($alteraHeader = true) {
@@ -52,8 +55,26 @@ class JSON {
     }
 
     private function montarColunas() {
+        $sql = "";
         $tab = $this->tabela;
-        $rs = $this->con->prepare(str_replace("#db",Config::DBNAME,$this->sqlColumn));
+
+        if ($this->selectLOV) {
+            /*
+            $rs = $this->con->prepare(str_replace("#db",Config::DBNAME,($this->sqlLOV)));
+            $rs->bindParam(1, $tab);
+            $rs->execute();
+            $row = $rs->fetch(PDO::FETCH_OBJ);
+            $sql = "select " . $row->campo_id . ($row->campo_descricao == null ? "" : ",".$row->campo_descricao)
+                . " from " . Config::DBNAME . "." . $tab
+                . ($row->condicao_filtro == null ? "" : $row->condicao_filtro)
+                . ($row->ordem           == null ? "" : $row->ordem);
+             */
+            $sql = $this->sqlColumn;
+        } else {
+            $sql = $this->sqlColumn;
+        }
+
+        $rs = $this->con->prepare(str_replace("#db",Config::DBNAME,($sql)));
         $rs->bindParam(1, $tab);
         $substr = "if (length(#)>80,concat(substr(#,1,77),'...'),#) as # ";
 
@@ -62,14 +83,16 @@ class JSON {
             while ($row = $rs->fetch(PDO::FETCH_OBJ)) {
                 $dataType = "";
                 
-                if ($row->formato_data != null) {
-                    $dataType = "date_format(" . $row->nome_coluna . ",'" . $row->formato_data . "') as " . $row->nome_coluna;
-                } else if ($row->tipo_dado == "TEXTO"
-                        || $row->tipo_dado == "TEXTO LONGO") {
-                    $dataType = str_replace("#", $row->nome_coluna, $substr);
-                } else {
-                    $dataType = $row->nome_coluna;
-                }
+                //if (!$this->selectLOV) {
+                    if ($row->formato_data != null) {
+                        $dataType = "date_format(" . $row->nome_coluna . ",'" . $row->formato_data . "') as " . $row->nome_coluna;
+                    } else if ($row->tipo_dado == "TEXTO"
+                            || $row->tipo_dado == "TEXTO LONGO") {
+                        $dataType = str_replace("#", $row->nome_coluna, $substr);
+                    } else {
+                        $dataType = $row->nome_coluna;
+                    }
+                //}
 
                 if ($this->sqlTabela == null) {
                     $this->sqlTabela = $dataType;
@@ -79,7 +102,7 @@ class JSON {
                     $this->columns = $this->columns . "\n\t\t\t,{field: '" . $row->nome_coluna . "', headerText: '" . $row->titulo_coluna . "', sortable: true}";
                 }
             }
-        }
+        }        
     }
 
     public function getTabela() {

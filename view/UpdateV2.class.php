@@ -170,7 +170,7 @@ class UpdateV2 {
         $selectMenu = "\n<td><select id='$id' name='$name' $required>\n";
         $selectMenu .= "\n<option value='' >Escolha...</option>\n";
 
-        $json = new JSON($this->retornaView($this->con,$tabelaRef));
+        $json = new JSON($this->retornaView($this->con,$tabelaRef),$this->con,true);
         $array = json_decode($json->json(false, false), true);
         $option = "";
 
