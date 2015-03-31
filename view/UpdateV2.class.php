@@ -171,7 +171,7 @@ class UpdateV2 {
         $selectMenu .= "\n<option value='' >Escolha...</option>\n";
 
         $json = new JSON($this->retornaView($this->con,$tabelaRef),$this->con,true);
-        $array = json_decode($json->json(false, false), true);
+        $array = json_decode($json->json(false), true);
         $option = "";
 
         foreach ($array as $i => $value) {

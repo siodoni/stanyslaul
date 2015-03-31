@@ -9,9 +9,9 @@ class JSON {
     private $sqlLOV    = "select a.campo_id, a.campo_descricao, a.condicao_filtro, a.ordem from #db.snb_dicionario a where a.nome_tabela = upper(?)";
     private $pdo;
     private $con;
-    private $selectLOV = false;
+    private $lov = false;
 
-    public function __construct($tabela,$con=null,$selectLOV=false) {
+    public function __construct($tabela,$con=null,$lov=false) {
         $this->pdo = new ConexaoPDO("JSON.class.php");
         if ($con != null) {
             $this->con = $con;
@@ -20,7 +20,7 @@ class JSON {
         }
         $this->tabela = $tabela;
         $this->sqlTabela = null;
-        $this->selectLOV = $selectLOV;
+        $this->lov = $lov;
     }
 
     public function json($alteraHeader = true) {
@@ -28,11 +28,11 @@ class JSON {
             $var = "Acesso Negado!";
         } else {
             if ($alteraHeader) {
-                //header('Content-type: application/json');
+                header('Content-type: application/json');
             }
 
             $this->montarColunas();
-            $sql = "select " . $this->sqlTabela . " from " . Config::DBNAME . "." . $this->tabela . " order by 1";            
+            $sql = $this->lov ? $this->sqlTabela : ("select " . $this->sqlTabela . " from " . Config::DBNAME . "." . $this->tabela . " order by 1");
             $rs = $this->con->prepare($sql);
             $rs->execute();
             $linha = array();
@@ -42,7 +42,7 @@ class JSON {
                     $linha[] = array_map('utf8_encode', $row);
                 }
             }
-            
+
             $var = json_encode($linha, JSON_NUMERIC_CHECK);
         }
         return $var;
@@ -57,9 +57,10 @@ class JSON {
     private function montarColunas() {
         $sql = "";
         $tab = $this->tabela;
+        $this->sqlTabela = null;
+        $this->columns = null;
 
-        if ($this->selectLOV) {
-            /*
+        if ($this->lov) {
             $rs = $this->con->prepare(str_replace("#db",Config::DBNAME,($this->sqlLOV)));
             $rs->bindParam(1, $tab);
             $rs->execute();
@@ -68,22 +69,18 @@ class JSON {
                 . " from " . Config::DBNAME . "." . $tab
                 . ($row->condicao_filtro == null ? "" : $row->condicao_filtro)
                 . ($row->ordem           == null ? "" : $row->ordem);
-             */
-            $sql = $this->sqlColumn;
+            $this->sqlTabela = $sql;
         } else {
             $sql = $this->sqlColumn;
-        }
+            $rs = $this->con->prepare(str_replace("#db",Config::DBNAME,($sql)));
+            $rs->bindParam(1, $tab);
+            $substr = "if (length(#)>80,concat(substr(#,1,77),'...'),#) as # ";
 
-        $rs = $this->con->prepare(str_replace("#db",Config::DBNAME,($sql)));
-        $rs->bindParam(1, $tab);
-        $substr = "if (length(#)>80,concat(substr(#,1,77),'...'),#) as # ";
-
-        if ($rs->execute() && $rs->rowCount() > 0) {
+            if ($rs->execute() && $rs->rowCount() > 0) {
             
-            while ($row = $rs->fetch(PDO::FETCH_OBJ)) {
-                $dataType = "";
-                
-                //if (!$this->selectLOV) {
+                while ($row = $rs->fetch(PDO::FETCH_OBJ)) {
+                    $dataType = "";
+
                     if ($row->formato_data != null) {
                         $dataType = "date_format(" . $row->nome_coluna . ",'" . $row->formato_data . "') as " . $row->nome_coluna;
                     } else if ($row->tipo_dado == "TEXTO"
@@ -92,17 +89,17 @@ class JSON {
                     } else {
                         $dataType = $row->nome_coluna;
                     }
-                //}
 
-                if ($this->sqlTabela == null) {
-                    $this->sqlTabela = $dataType;
-                    $this->columns = "{field: '" . $row->nome_coluna . "', headerText: '" . $row->titulo_coluna . "', sortable: true}";
-                } else {
-                    $this->sqlTabela .= ", " . $dataType;
-                    $this->columns = $this->columns . "\n\t\t\t,{field: '" . $row->nome_coluna . "', headerText: '" . $row->titulo_coluna . "', sortable: true}";
+                    if ($this->sqlTabela == null) {
+                        $this->sqlTabela = $dataType;
+                        $this->columns = "{field: '" . $row->nome_coluna . "', headerText: '" . $row->titulo_coluna . "', sortable: true}";
+                    } else {
+                        $this->sqlTabela .= ", " . $dataType;
+                        $this->columns = $this->columns . "\n\t\t\t,{field: '" . $row->nome_coluna . "', headerText: '" . $row->titulo_coluna . "', sortable: true}";
+                    }
                 }
-            }
-        }        
+            }        
+        }
     }
 
     public function getTabela() {
