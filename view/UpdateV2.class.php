@@ -176,10 +176,10 @@ class UpdateV2 {
 
         foreach ($array as $i => $value) {
             foreach ($value as $j => $valor) {
-                $selected = ($j == "id" && (isset($_POST[$name]) ? $_POST[$name] : $valorSelecionado) == $value[$j]) ? "selected" : "";
-                $this->i0 = $j == "id" ? utf8_decode($value[$j]) : "";
+                $selected = ($j == "id__tabela__lov" && (isset($_POST[$name]) ? $_POST[$name] : $valorSelecionado) == $value[$j]) ? "selected" : "";
+                $this->i0 = $j == "id__tabela__lov" ? utf8_decode($value[$j]) : "";
                 $valor = utf8_decode(strlen($value[$j])>50?substr($value[$j],0,30)."...":$value[$j]);
-                $option .= ($j == "id" ? "\n<option $selected value='".$value[$j]."'>" : "").$valor. " | ";
+                $option .= ($j == "id__tabela__lov" ? "\n<option $selected value='".$value[$j]."'>" : "").$valor. " | ";
             }
             $option = trim(substr($option, 0, (strlen($option) - 2))) . "</option>";
         }

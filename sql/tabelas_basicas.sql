@@ -463,6 +463,48 @@ INSERT INTO snb_autorizacao (id, id_menu, id_usuario) VALUES
 (14, 14, 1),
 (15, 15, 1);
 
+-- ============ --
+-- FOREIGN KEYS --
+-- ============ --
+
+ALTER TABLE snb_autorizacao
+  ADD CONSTRAINT fksnb_autorizacao_snb_menu FOREIGN KEY (id_menu) REFERENCES snb_menu (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT fksnb_autorizacao_snb_usuario FOREIGN KEY (id_usuario) REFERENCES snb_usuario (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE snb_cidade
+  ADD CONSTRAINT fksnb_cidade_snb_unid_fed FOREIGN KEY (id_unid_fed) REFERENCES snb_unid_fed (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE snb_endereco
+  ADD CONSTRAINT fksnb_endereco_snb_cidade FOREIGN KEY (id_cidade) REFERENCES snb_cidade (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT fksnb_endereco_snb_filial FOREIGN KEY (id_filial) REFERENCES snb_filial (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT fksnb_endereco_snb_tp_logradouro FOREIGN KEY (id_tp_logradouro) REFERENCES snb_tp_logradouro (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE snb_end_eletronico
+  ADD CONSTRAINT fksnb_end_eletronico_snb_filial FOREIGN KEY (id_filial) REFERENCES snb_filial (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE snb_filial
+  ADD CONSTRAINT fksnb_filial_snb_pessoa FOREIGN KEY (id_pessoa) REFERENCES snb_pessoa (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE snb_menu
+  ADD CONSTRAINT fksnb_menu_snb_menu FOREIGN KEY (id_menu_proximo) REFERENCES snb_menu (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT fksnb_menu_snb_modulo FOREIGN KEY (id_modulo) REFERENCES snb_modulo (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE snb_pessoa
+  ADD CONSTRAINT fksnb_pessoa_snb_tp_pessoa FOREIGN KEY (id_tp_pessoa) REFERENCES snb_tp_pessoa (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE snb_telefone
+  ADD CONSTRAINT fksnb_telefone_snb_filial FOREIGN KEY (id_filial) REFERENCES snb_filial (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE snb_usuario
+  ADD CONSTRAINT fksnb_usuario_snb_pessoa FOREIGN KEY (id_pessoa) REFERENCES snb_pessoa (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+ALTER TABLE snb_dicionario_detalhe
+  ADD CONSTRAINT fksnb_dicion_det_snb_dicion FOREIGN KEY (id_dicionario) REFERENCES snb_dicionario (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- ========== --
+-- DICIONARIO --
+-- ========== --
+
 insert into snb_dicionario
 (id,nome_tabela,campo_id,campo_descricao)
 values
@@ -872,41 +914,3 @@ select null id,
                     where bb.id_dicionario = c.id_dicionario
                       and bb.nome_coluna   = c.nome_coluna)
  order by c.id_dicionario, c.ordem;
-
--- ============ --
--- FOREIGN KEYS --
--- ============ --
-
-ALTER TABLE snb_autorizacao
-  ADD CONSTRAINT fksnb_autorizacao_snb_menu FOREIGN KEY (id_menu) REFERENCES snb_menu (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT fksnb_autorizacao_snb_usuario FOREIGN KEY (id_usuario) REFERENCES snb_usuario (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE snb_cidade
-  ADD CONSTRAINT fksnb_cidade_snb_unid_fed FOREIGN KEY (id_unid_fed) REFERENCES snb_unid_fed (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE snb_endereco
-  ADD CONSTRAINT fksnb_endereco_snb_cidade FOREIGN KEY (id_cidade) REFERENCES snb_cidade (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT fksnb_endereco_snb_filial FOREIGN KEY (id_filial) REFERENCES snb_filial (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT fksnb_endereco_snb_tp_logradouro FOREIGN KEY (id_tp_logradouro) REFERENCES snb_tp_logradouro (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE snb_end_eletronico
-  ADD CONSTRAINT fksnb_end_eletronico_snb_filial FOREIGN KEY (id_filial) REFERENCES snb_filial (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE snb_filial
-  ADD CONSTRAINT fksnb_filial_snb_pessoa FOREIGN KEY (id_pessoa) REFERENCES snb_pessoa (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE snb_menu
-  ADD CONSTRAINT fksnb_menu_snb_menu FOREIGN KEY (id_menu_proximo) REFERENCES snb_menu (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT fksnb_menu_snb_modulo FOREIGN KEY (id_modulo) REFERENCES snb_modulo (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE snb_pessoa
-  ADD CONSTRAINT fksnb_pessoa_snb_tp_pessoa FOREIGN KEY (id_tp_pessoa) REFERENCES snb_tp_pessoa (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE snb_telefone
-  ADD CONSTRAINT fksnb_telefone_snb_filial FOREIGN KEY (id_filial) REFERENCES snb_filial (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE snb_usuario
-  ADD CONSTRAINT fksnb_usuario_snb_pessoa FOREIGN KEY (id_pessoa) REFERENCES snb_pessoa (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
-ALTER TABLE snb_dicionario_detalhe
-  ADD CONSTRAINT fksnb_dicion_det_snb_dicion FOREIGN KEY (id_dicionario) REFERENCES snb_dicionario (id) ON DELETE NO ACTION ON UPDATE NO ACTION;

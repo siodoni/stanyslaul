@@ -65,11 +65,13 @@ class JSON {
             $rs->bindParam(1, $tab);
             $rs->execute();
             $row = $rs->fetch(PDO::FETCH_OBJ);
-            $sql = "select " . $row->campo_id . ($row->campo_descricao == null ? "" : ",".$row->campo_descricao)
+            $sql = "select " . $row->campo_id . " as id__tabela__lov " 
+                . ($row->campo_descricao == null ? ", 'Descricao ausente! Corrija o dicionario de dados!' as descricao " : ",".$row->campo_descricao)
                 . " from " . Config::DBNAME . "." . $tab
-                . ($row->condicao_filtro == null ? "" : $row->condicao_filtro)
-                . ($row->ordem           == null ? "" : $row->ordem);
-            $this->sqlTabela = $sql;
+                . ($row->condicao_filtro == null ? "" : " " . $row->condicao_filtro)
+                . ($row->ordem           == null ? "" : " " . $row->ordem);
+            //echo strtolower($sql);
+            $this->sqlTabela = strtolower($sql);
         } else {
             $sql = $this->sqlColumn;
             $rs = $this->con->prepare(str_replace("#db",Config::DBNAME,($sql)));
