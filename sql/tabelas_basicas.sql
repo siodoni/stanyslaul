@@ -153,8 +153,8 @@ CREATE TABLE IF NOT EXISTS snb_modulo (
 CREATE TABLE IF NOT EXISTS snb_menu (
   id int(11) NOT null AUTO_INCREMENT,
   cod_aplicacao varchar(45) NOT null,
-  nm_tabela varchar(100) DEFAULT null,
-  nm_view varchar(100) DEFAULT null,
+  id_dicionario_tabela int(11) DEFAULT null,
+  id_dicionario_view int(11) DEFAULT null,
   nm_menu varchar(100) NOT null,
   nm_pagina varchar(100) DEFAULT null,
   fg_ativo enum('SIM','NÃO') NOT null,
@@ -164,7 +164,9 @@ CREATE TABLE IF NOT EXISTS snb_menu (
   PRIMARY KEY (id),
   UNIQUE INDEX `UNIQUE` (nm_tabela,cod_aplicacao),
   KEY fksnb_menu_snb_menu (id_menu_proximo),
-  KEY fksnb_menu_snb_modulo (id_modulo)
+  KEY fksnb_menu_snb_modulo (id_modulo),
+  KEY fksnb_menu_snb_dicionario_tab (id_dicionario_tabela),
+  KEY fksnb_menu_snb_dicionario_view (id_dicionario_view)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
 
 CREATE TABLE IF NOT EXISTS snb_autorizacao (
@@ -192,7 +194,7 @@ create table if not exists snb_dicionario_detalhe (
   nome_coluna varchar(60) not null,
   titulo_coluna varchar(60) not null,
   ordem numeric(5,2) not null,
-  tipo_dado enum('SENHA','NUMÉRICO','DATA','ARQUIVO','TEXTO','TEXTO LONGO','LISTA VALOR','ENUM') not null,
+  tipo_dado enum('SENHA','NUMÉRICO','DATA','DATA HORA','HORA','ARQUIVO','TEXTO','TEXTO LONGO','LISTA VALOR','ENUM') not null,
   tamanho_campo int(3) not null default 10,
   qtd_caracteres int(3) not null default 10,
   precisao_numero int(1) default null,
@@ -299,8 +301,10 @@ select a.id,
 create or replace view vsnb_menu as
 select a.id,
        a.cod_aplicacao,
-       a.nm_tabela,
-       a.nm_view,
+       a.id_dicionario_tabela,
+       (select b.nome_tabela from snb_dicionario b where b.id = a.id_dicionario_tabela) nm_tabela,
+       a.id_dicionario_view,
+       (select b.nome_tabela from snb_dicionario b where b.id = a.id_dicionario_view) nm_view,
        a.nm_menu,
        a.nm_pagina,
        a.fg_ativo,
@@ -487,7 +491,9 @@ ALTER TABLE snb_filial
 
 ALTER TABLE snb_menu
   ADD CONSTRAINT fksnb_menu_snb_menu FOREIGN KEY (id_menu_proximo) REFERENCES snb_menu (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT fksnb_menu_snb_modulo FOREIGN KEY (id_modulo) REFERENCES snb_modulo (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT fksnb_menu_snb_modulo FOREIGN KEY (id_modulo) REFERENCES snb_modulo (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT fksnb_menu_snb_dicionario_tab FOREIGN KEY (id_dicionario_tabela) REFERENCES snb_dicionario (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT fksnb_menu_snb_dicionario_view FOREIGN KEY (id_dicionario_view) REFERENCES snb_dicionario (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 ALTER TABLE snb_pessoa
   ADD CONSTRAINT fksnb_pessoa_snb_tp_pessoa FOREIGN KEY (id_tp_pessoa) REFERENCES snb_tp_pessoa (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
@@ -854,7 +860,7 @@ select null id,
   from information_schema.tables a
  where upper(a.table_schema) = 'STANYSLAUL'
    and not exists (select 1
-                     from stanyslaul.snb_dicionario b
+                     from snb_dicionario b
                     where b.nome_tabela = upper(a.table_name));
 
 insert into snb_dicionario_detalhe
@@ -874,7 +880,7 @@ select null id,
        c.fg_auto_incremento,
        c.hint_campo
   from (select upper(a.table_name) nome_tabela,
-               (select t.id from stanyslaul.snb_dicionario t where upper(t.nome_tabela) = upper(a.table_name)) id_dicionario,
+               (select t.id from snb_dicionario t where upper(t.nome_tabela) = upper(a.table_name)) id_dicionario,
                upper(a.column_name) nome_coluna,
                lower(replace(a.column_name,'_',' ')) titulo_coluna,
                a.ordinal_position ordem,
@@ -893,7 +899,7 @@ select null id,
                if(a.data_type='date',14,0) + if(a.data_type='time',10,0) + if(a.data_type='datetime',20,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtd_caracteres,
                a.numeric_scale precisao_numero,
                if(a.data_type='date','%d/%m/%Y',if(a.data_type='time','%k:%i',if(a.data_type='datetime','%d/%m/%Y %H:%i',null))) formato_data,
-               (select t.id from stanyslaul.snb_dicionario t where upper(t.nome_tabela) = upper(b.referenced_table_name)) id_dicionario_lov,
+               (select t.id from snb_dicionario t where upper(t.nome_tabela) = upper(b.referenced_table_name)) id_dicionario_lov,
                replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum,
                if(a.is_nullable='NO','SIM','NÃO') fg_obrigatorio,
                if(a.extra='auto_increment','SIM','NÃO') fg_auto_incremento,
@@ -905,12 +911,20 @@ select null id,
            and a.column_name            = b.column_name
            and b.referenced_table_name is not null
          where exists (select 1
-                         from stanyslaul.snb_dicionario bb
+                         from snb_dicionario bb
                         where bb.nome_tabela = upper(a.table_name))
            and upper(a.table_schema)    = 'STANYSLAUL'
          order by a.ordinal_position) c
  where not exists (select 1
-                     from stanyslaul.snb_dicionario_detalhe bb
+                     from snb_dicionario_detalhe bb
                     where bb.id_dicionario = c.id_dicionario
                       and bb.nome_coluna   = c.nome_coluna)
  order by c.id_dicionario, c.ordem;
+
+update snb_menu a
+   set a.id_dicionario_tabela = (select b.id
+                                   from snb_dicionario b
+                                  where b.nome_tabela = upper(a.nm_tabela)),
+       a.id_dicionario_view   =  (select b.id
+                                   from snb_dicionario b
+                                  where b.nome_tabela = upper(a.nm_view));

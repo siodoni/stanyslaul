@@ -9,4 +9,5 @@ require_once 'conexao/ConexaoPDO.class.php';
 require_once 'crud/CrudPDO.class.php';
 require_once 'view/Menu.class.php';
 require_once 'util/Base64.class.php';
+
 new Menu($_SESSION["nomeUsuario"],$_SESSION["usuario"]); 

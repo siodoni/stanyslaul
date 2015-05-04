@@ -13,14 +13,18 @@ class Menu {
     private $con;
 
     public function __construct($nome = "", $usuario = "") {
-        $this->onLoad();
-        $this->setNomeUsuario($nome);
-        $this->setUsuario($usuario);
-        $this->pdo = new ConexaoPDO("Menu.class.php");
-        $this->con = $this->pdo->connect();
-        $this->estrutura = new Estrutura();
-        $this->buildMenu();
-        $this->alteraSenhaUsuario();
+        try {
+            $this->onLoad();
+            $this->setNomeUsuario($nome);
+            $this->setUsuario($usuario);
+            $this->pdo = new ConexaoPDO("Menu.class.php");
+            $this->con = $this->pdo->connect();
+            $this->estrutura = new Estrutura();
+            $this->buildMenu();
+            $this->alteraSenhaUsuario();
+        } catch (Exception $e) {
+            die("Problema no metodo Menu.__construct</p><p>".$e."</p>");            
+        }
     }
 
     public function __destruct() {
@@ -28,55 +32,69 @@ class Menu {
     }
 
     private function buildMenu() {
-        echo "<!DOCTYPE html>";
-        echo "\n<html>";
-        echo $this->estrutura->head();
-        echo "\n<body $this->onload>";
-        echo $this->dialog();
-        echo $this->form();
-        echo $this->estrutura->dialogAguarde();
-        echo "\n</body>";
-        echo "\n</html>";
+        try {
+            echo "<!DOCTYPE html>";
+            echo "\n<html>";
+            echo $this->estrutura->head();
+            echo "\n<body $this->onload>";
+            echo $this->form();
+            echo $this->dialog();
+            echo $this->estrutura->dialogAguarde();
+            echo "\n</body>";
+            echo "\n</html>";
+        } catch (Exception $e) {
+            die("Problema no metodo Menu.buildMenu</p><p>".$e."</p>");            
+        }
     }
 
     private function form() {
-        $form = "\n<div class='st-div-main'>"
-                . "\n<form name='form' method='post' action='list.php'>"
-                . $this->menuBar();
-        $rs = $this->con->prepare(str_replace("#db", Config::DBNAME, Constantes::QUERY_MODULE));
-        $rs->bindParam(1, $this->usuario);
-        $rs->execute();
-        while ($i = $rs->fetch(PDO::FETCH_OBJ)) {
-            $form = $form . "\n<div id='panel" . $i->id . "' class='st-menu' title='" . $i->descricao . "'>";
-            $this->panel = $this->panel . "\n\t$('#panel" . $i->id . "').puipanel({toggleable: true})";
-            $form = $form . $this->buttons($i->id);
-            $form = $form . "\n</div>";
+        $sql = str_replace("#db", Config::DBNAME, Constantes::QUERY_MODULE);
+        try {
+            $form = "\n<div class='st-div-main'>"
+                    . "\n<form name='form' method='post' action='list.php'>"
+                    . $this->menuBar();
+            $rs = $this->con->prepare($sql);
+            $rs->bindParam(1, $this->usuario);
+            $rs->execute();
+            while ($i = $rs->fetch(PDO::FETCH_OBJ)) {
+                $form = $form . "\n<div id='panel" . $i->id . "' class='st-menu' title='" . $i->descricao . "'>";
+                $this->panel = $this->panel . "\n\t$('#panel" . $i->id . "').puipanel({toggleable: true})";
+                $form = $form . $this->buttons($i->id);
+                $form = $form . "\n</div>";
+            }
+            $form = $form
+                    . "\n</form>"
+                    . "\n</div>"
+                    . "\n<div id='mensagens'></div>"
+                    . $this->script($this->button);
+            return $form;
+        } catch (Exception $e) {
+            die("Problema no metodo Menu.form</p><p>".$sql."</p><p>".$e."</p>");            
         }
-        $form = $form
-                . "\n</form>"
-                . "\n</div>"
-                . "\n<div id='mensagens'></div>"
-                . $this->script($this->button);
-        return $form;
     }
 
     private function buttons($idModulo = 0) {
-        $form = "";
-        $valor = "";
-        $tipo = "";
+        $sql = str_replace("#db", Config::DBNAME, Constantes::QUERY_MENU);
+        try {
+            $form = "";
+            $valor = "";
+            $tipo = "";
 
-        $rs = $this->con->prepare(str_replace("#db", Config::DBNAME, Constantes::QUERY_MENU));
-        $rs->bindParam(1, $idModulo);
-        $rs->bindParam(2, $this->usuario);
-        $rs->execute();
-        while ($j = $rs->fetch(PDO::FETCH_OBJ)) {
-            $this->qtde++;
-            $valor = $j->tabela != null ? "value='" . $j->tabela . "'" : "onclick='window.location=\"" . $j->pagina . "\"'";
-            $tipo = $j->tabela != null ? "submit" : "button";
-            $form = $form . "\n<button id='btn" . $this->qtde . "' type='$tipo' name='nomeTabela' " . $valor . " class='st-menu-button'>" . $j->codigo . " - " . $j->titulo . "</button><br/>";
-            $this->button = $this->button . "\n\t$('#btn" . $this->qtde . "').puibutton({icon: 'ui-icon-newwin'});";
+            $rs = $this->con->prepare($sql);
+            $rs->bindParam(1, $idModulo);
+            $rs->bindParam(2, $this->usuario);
+            $rs->execute();
+            while ($j = $rs->fetch(PDO::FETCH_OBJ)) {
+                $this->qtde++;
+                $valor = $j->tabela != null ? "value='" . $j->id_menu . "'" : "onclick='window.location=\"" . $j->pagina . "\"'";
+                $tipo = $j->tabela != null ? "submit" : "button";
+                $form = $form . "\n<button id='btn" . $this->qtde . "' type='$tipo' name='idMenu' " . $valor . " class='st-menu-button'>" . $j->codigo . " - " . $j->titulo . "</button><br/>";
+                $this->button = $this->button . "\n\t$('#btn" . $this->qtde . "').puibutton({icon: 'ui-icon-newwin'});";
+            }
+            return $form;
+        } catch (Exception $e) {
+            die("Problema no metodo Menu.buttons</p><p>".$sql."</p><p>".$e."</p>");            
         }
-        return $form;
     }
 
     private function menuBar() {

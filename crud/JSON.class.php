@@ -5,8 +5,9 @@ class JSON {
     private $tabela = "";
     private $columns = "";
     private $sqlTabela;
-    private $sqlColumn = "select lower(b.nome_coluna) nome_coluna, b.titulo_coluna, b.formato_data, b.tipo_dado from #db.snb_dicionario_detalhe b, #db.snb_dicionario a where a.nome_tabela = upper(?) and b.id_dicionario = a.id";
+    private $sqlColumn = "select lower(b.nome_coluna) nome_coluna, b.titulo_coluna, b.formato_data, b.tipo_dado from #db.snb_dicionario_detalhe b, #db.snb_dicionario a where a.id = ? and b.id_dicionario = a.id";
     private $sqlLOV    = "select a.campo_id, a.campo_descricao, a.condicao_filtro, a.ordem from #db.snb_dicionario a where a.nome_tabela = upper(?)";
+    private $sqlDic    = "select a.nome_tabela from #db.snb_dicionario a where id = ?";
     private $pdo;
     private $con;
     private $lov = false;
@@ -21,31 +22,44 @@ class JSON {
         $this->tabela = $tabela;
         $this->sqlTabela = null;
         $this->lov = $lov;
+        
+        //echo "this->tabela " . $this->tabela . "<br>";
+        //echo "this->sqlTabela " . $this->sqlTabela . "<br>";
+        //echo "this->lov " . $this->lov . "<br>";
     }
 
     public function json($alteraHeader = true) {
+        $sql="";
         if (empty($this->tabela)) {
             $var = "Acesso Negado!";
         } else {
-            if ($alteraHeader) {
-                header('Content-type: application/json');
-            }
-
-            $this->montarColunas();
-            $sql = $this->lov ? $this->sqlTabela : ("select " . $this->sqlTabela . " from " . Config::DBNAME . "." . $this->tabela . " order by 1");
-            $rs = $this->con->prepare($sql);
-            $rs->execute();
-            $linha = array();
-            
-            if ($rs->execute() && $rs->rowCount() > 0) {
-                while ($row = $rs->fetch(PDO::FETCH_ASSOC)) {
-                    $linha[] = array_map('utf8_encode', $row);
+            try {
+                if ($alteraHeader) {
+                    header('Content-type: application/json');
                 }
-            }
+                $rsT = $this->con->prepare(str_replace("#db",Config::DBNAME,$this->sqlDic));
+                $rsT->bindParam(1, $this->tabela);
+                $rsT->execute();
+                $tabelaDic = $rsT->fetch(PDO::FETCH_OBJ);
 
-            $var = json_encode($linha, JSON_NUMERIC_CHECK);
+                $this->montarColunas();
+                $sql = $this->lov ? $this->sqlTabela : ("select " . $this->sqlTabela . " from " . Config::DBNAME . "." . $tabelaDic->nome_tabela . " order by 1");
+                $rs = $this->con->prepare($sql);
+                $rs->execute();
+                $linha = array();
+
+                if ($rs->execute() && $rs->rowCount() > 0) {
+                    while ($row = $rs->fetch(PDO::FETCH_ASSOC)) {
+                        $linha[] = array_map('utf8_encode', $row);
+                    }
+                }
+
+                $var = json_encode($linha, JSON_NUMERIC_CHECK);
+                return $var;
+            } catch (Exception $e) {
+                die("Problema no metodo JSON.json</p><p>".$sql."</p><p>".$e."</p>");
+            }
         }
-        return $var;
     }
 
     public function columns() {

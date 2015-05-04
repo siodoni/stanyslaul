@@ -3,14 +3,14 @@
 class UpdateV2 {
 
     private $coluna;
-    private $tabela;
+    private $idMenu;
     private $schema;
     private $javaScript;
     private $inputFile;
     private $con;
 
     public function __construct($con) {
-        $this->tabela = isset($_SESSION["nomeTabela"]) ? $_SESSION["nomeTabela"] : $_REQUEST["nomeTabela"];
+        $this->idMenu = isset($_SESSION["idMenu"]) ? $_SESSION["idMenu"] : $_REQUEST["idMenu"];
         $this->schema = $_SESSION["schema"];
         $this->con = $con;
     }
@@ -74,9 +74,11 @@ class UpdateV2 {
         } elseif ($arrayCampo['tipo_dado'] == 'TEXTO LONGO') {
             echo $this->inputTextArea($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$valorCampo,$required);
 
-        } elseif ($arrayCampo['tipo_dado'] == 'DATA') {
+        } elseif ($arrayCampo['tipo_dado'] == 'DATA'
+               || $arrayCampo['tipo_dado'] == 'DATA HORA'
+               || $arrayCampo['tipo_dado'] == 'HORA') {
             $valorCampo = date(str_replace("%","",$arrayCampo["formato_data"]), strtotime($valorCampo));
-            echo $this->inputDate($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$tamCampo,$arrayCampo['qtd_caracteres'],$valorCampo,$ai,$arrayCampo['formato_data'],$required);
+            echo $this->inputDate($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$tamCampo,$arrayCampo['qtd_caracteres'],$valorCampo,$ai,$arrayCampo['tipo_dado'],$required);
 
         } elseif ($arrayCampo['tipo_dado'] == 'ENUM') {
             echo $this->selectMenuEnum($arrayCampo['nome_coluna'],$arrayCampo['valor_enum'],$valorCampo,$required);
@@ -143,11 +145,11 @@ class UpdateV2 {
     }
 
     function inputDate($id, $name, $size, $maxLength, $value, $enable, $formato, $required) {
-        if ($formato == "%d/%m/%Y") {
+        if ($formato == "DATA") {
             $this->montarJS("\t\t$('#" . $id . "').datepicker({dateFormat:'dd/mm/yy'}).puiinputtext();\n");
-        } else if ($formato == "%d/%m/%Y %H:%i") {
+        } else if ($formato == "DATA HORA") {
             $this->montarJS("\t\t$('#" . $id . "').datetimepicker({dateFormat:'dd/mm/yy',timeFormat:'HH:mm'}).puiinputtext();\n");
-        } else if ($formato == "%k:%i") {
+        } else if ($formato == "HORA") {
             $this->montarJS("\t\t$('#" . $id . "').timepicker({timeFormat:'HH:mm'}).puiinputtext();\n");
         }
         return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='". (isset($_POST[$name]) ? $_POST[$name] : $value) ."' $enable $required/></td>\n";

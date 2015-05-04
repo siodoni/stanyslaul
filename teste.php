@@ -28,7 +28,7 @@ echo "\n<body>";
             panelWidth: 500,
             idField: 'id',
             textField: 'nome',
-            url: 'json.php?nomeTabelaJSON=snb_pessoa',
+            url: 'json.php?idMenu=1',
             method: 'get',
             columns: [[
             {field:'id',title:'ID'},

@@ -4,18 +4,16 @@ class DataTable {
 
     private $estrutura;
     private $json;
-    private $tabela;
+    private $idMenu;
+    private $dicionarioJSON;
     private $titulo;
-    private $view;
-    private $tabelaJSON;
     private $mensagemRetorno;
     private $proximoMenu;
-    private $sqlParam = "select a.nm_view as view, a.nm_menu as titulo, a.cod_aplicacao codigo, a.id_menu_proximo prox_menu from #db.snb_menu a where a.nm_tabela = ? ";
     private $onload = "";
 
-    public function __construct($tabela) {
+    public function __construct($idMenu) {
         $this->onLoad();
-        $this->tabela = $tabela;
+        $this->idMenu = $idMenu;
         $this->estrutura = new Estrutura();
         $this->verificaParametro();
         $this->buildDataTable();
@@ -23,30 +21,40 @@ class DataTable {
     }
 
     private function verificaParametro() {
-        $pdo = new ConexaoPDO("DataTable.class.php");
-        $con = $pdo->connect();
-        $rs = $con->prepare(str_replace("#db",Config::DBNAME,$this->sqlParam));
-        $tabela = $this->tabela;
-        $rs->bindParam(1, $tabela);
-        $rs->execute();
-        $a = $rs->fetch(PDO::FETCH_OBJ);
-        
-        if (empty($a)) {
-            die("Parametro incorreto, nao sera possivel montar a lista.");
+        $sql = str_replace("#db",Config::DBNAME,Constantes::QUERY_DATA_TABLE);
+        try {
+            $pdo = new ConexaoPDO("DataTable.class.php");
+            $con = $pdo->connect();
+            $rs = $con->prepare($sql);
+            $idMenu = $this->idMenu;
+            $rs->bindParam(1, $idMenu);
+            $rs->execute();
+            $a = $rs->fetch(PDO::FETCH_OBJ);
+
+            if (empty($a)) {
+                die("<p>Parametro incorreto, nao sera possivel montar a lista.<p/><p>".$sql."</p><p>".$idMenu."</p>");
+            }
+
+            $this->titulo = $a->codigo . " - " . $a->titulo;
+            $this->proximoMenu = $a->prox_menu;
+            $this->dicionarioJSON = ($a->id_dicionario_view == "" || $a->id_dicionario_view == null ? $a->id_dicionario_tabela : $a->id_dicionario_view);
+            $this->json = new JSON($this->dicionarioJSON,$con);
+
+            $_SESSION["idMenu"] = $this->idMenu;
+            $_SESSION["dicionarioJSON"] = $this->dicionarioJSON;
+            $_SESSION["tituloForm"] = $this->titulo;
+            $_SESSION["proxMenu"] = $this->proximoMenu;
+
+            //echo "idMenu " . $_SESSION["idMenu"]."<br>";
+            //echo "dicionarioJSON " . $_SESSION["dicionarioJSON"]."<br>";
+            //echo "tituloForm " . $_SESSION["tituloForm"]."<br>";
+            //echo "proxMenu " . $_SESSION["proxMenu"]."<br>";
+            //echo "sql " . $sql . "<br>";
+            
+            $pdo->disconnect();
+        } catch (Exception $e){
+            die("<p>Problema no metodo DataTable.verificaParametro</p><p>".$sql."</p><p>".$e."</p>");
         }
-
-        $this->titulo = $a->codigo . " - " . $a->titulo;
-        $this->view = $a->view;
-        $this->proximoMenu = $a->prox_menu;
-        $this->tabelaJSON = ($this->view == "" || $this->view == null ? $this->tabela : $this->view);
-        $this->json = new JSON($this->tabelaJSON,$con);
-
-        $_SESSION["nomeTabela"] = $this->tabela;
-        $_SESSION["nomeTabelaJSON"] = $this->tabelaJSON;
-        $_SESSION["tituloForm"] = $this->titulo;
-        $_SESSION["proxMenu"] = $this->proximoMenu;
-        
-        $pdo->disconnect();
     }
 
     private function buildDataTable() {

@@ -57,11 +57,19 @@ $dbName = Config::DBNAME;
             </ul>
             <div id="tabela"></div>
             <?php
-            $nomeTabela = isset($_SESSION["nomeTabela"]) ? $_SESSION["nomeTabela"] : $_REQUEST["nomeTabela"];
+            $idMenu = isset($_SESSION["idMenu"]) ? $_SESSION["idMenu"] : $_REQUEST["idMenu"];
             
-            if ($nomeTabela == null || $nomeTabela == "") {
-                die("Informe o parametro nomeTabela.");
+            if ($idMenu == null || $idMenu == "") {
+                die("Informe o parametro idMenu.");
             }
+            
+            //echo $idMenu;
+            
+            $rsT = $con->prepare(str_replace("#db",$dbName,"select (select b.nome_tabela from #db.snb_dicionario b where b.id = a.id_dicionario_tabela) as tabela, a.id_dicionario_tabela from #db.snb_menu a where id = ?"));
+            $rsT->bindParam(1, $idMenu);
+            $rsT->execute();
+            $tabelaDic = $rsT->fetch(PDO::FETCH_OBJ);
+            $_SESSION["nomeTabela"] = $tabelaDic->tabela;
 
             $comando = "";
             if (isset($_REQUEST["id"])) {
@@ -70,7 +78,7 @@ $dbName = Config::DBNAME;
                 $campoId = "id";
 
                 $sql = "select * "
-                      . " from " . $dbName . "." . $nomeTabela
+                      . " from " . $dbName . "." . $tabelaDic->tabela
                      . " where " . $campoId . " = '" . $id . "'";
 
                 $rs = $con->prepare($sql);
@@ -94,8 +102,9 @@ $dbName = Config::DBNAME;
                             //echo str_replace("#db",$dbName,$update->retornaQueryTabela());
                             
                             $q = $con->prepare(str_replace("#db",$dbName,$update->retornaQueryTabela()));
-                            $q->bindParam(1, $nomeTabela);
+                            $q->bindParam(1, $tabelaDic->id_dicionario_tabela);
                             $q->execute();
+                            $nomeTabela = $tabelaDic->tabela;
 
                             while ($campo = $q->fetch(PDO::FETCH_ASSOC)) {
                                 $valor = "";
@@ -116,7 +125,7 @@ $dbName = Config::DBNAME;
                             //$onclickSalvar = (isset($_SESSION["proxMenu"]) && $_SESSION["proxMenu"] != null ? 'onclick="$(\'#dlgRedirect\').puidialog(\'show\');"' : "");
 
                             if ($contador == 0){
-                                echo "<tr><td>Tabela ($nomeTabela) n&atilde;o cadastrada no dicionario</td></tr>";
+                                echo "<tr><td>Tabela ($tabelaDic->tabela) n&atilde;o cadastrada no dicionario</td></tr>";
                             }
                             
                             echo "<tr><td>&nbsp;</td>";

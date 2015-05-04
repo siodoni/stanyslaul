@@ -33,11 +33,12 @@ class Constantes {
                                                                  where c.usuario = ?)) 
                            order by d.id ";
 
-    const QUERY_MENU = "select a.nm_tabela as tabela,
+    const QUERY_MENU = "select a.id_dicionario_tabela as tabela,
                                a.cod_aplicacao codigo, 
                                a.nm_menu titulo,
-                               a.nm_view view,
-                               a.nm_pagina pagina
+                               a.id_dicionario_view as view,
+                               a.nm_pagina pagina,
+                               a.id as id_menu
                           from #db.snb_menu a 
                          where upper(a.fg_ativo) in ('S','SIM') 
                            and a.id_modulo = ? 
@@ -103,14 +104,22 @@ class Constantes {
                                on b.id_dicionario                 = a.id
                              left join #db.snb_dicionario         c
                                on c.id                            = b.id_dicionario_lov
-                            where upper(a.nome_tabela)            = upper(?)
+                            where a.id                            = ?
                             order by b.ordem";
 
-    const QUERY_PROX_MENU = "  select a.nm_view as view,
-                                      a.nm_menu as titulo,
-                                      a.cod_aplicacao codigo,
-                                      a.id_menu_proximo prox_menu,
-                                      a.nm_tabela as tabela
-                                 from #db.snb_menu a
-                                 where a.id = ?";
+    const QUERY_PROX_MENU = "select (select b.nome_tabela from #db.snb_dicionario b where b.id = a.id_dicionario_view) as view,
+                                    a.nm_menu as titulo,
+                                    a.cod_aplicacao codigo,
+                                    a.id_menu_proximo prox_menu,
+                                    (select b.nome_tabela from #db.snb_dicionario b where b.id = a.id_dicionario_tabela) as tabela
+                               from #db.snb_menu a
+                              where a.id = ?";
+
+    const QUERY_DATA_TABLE = "select a.id_dicionario_view, 
+                                     a.id_dicionario_tabela,
+                                     a.nm_menu as titulo, 
+                                     a.cod_aplicacao codigo, 
+                                     a.id_menu_proximo prox_menu 
+                                from #db.snb_menu a 
+                               where a.id = ?";
 }
