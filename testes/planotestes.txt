@@ -1,5 +1,5 @@
 - Login
--- Usuário e senha
+-- UsuÃ¡rio e senha
 -- Cancelar
 
 - Menu
@@ -9,11 +9,11 @@
 
 - List
 -- Montagem tela
--- Navegação
+-- NavegaÃ§Ã£o
 -- Verificar toolbar
--- Verificar os tipos de campos (ordenação e listagem):
+-- Verificar os tipos de campos (ordenaÃ§Ã£o e listagem):
 --- SENHA
---- NUMÉRICO
+--- NUMÃ‰RICO
 --- DATA
 --- DATA HORA
 --- HORA
@@ -29,10 +29,10 @@
 -- Listar registro
 -- Alterar registro
 -- Inserir registro
--- Navegação próximo menu
+-- NavegaÃ§Ã£o prÃ³ximo menu
 -- Verificar os tipos de campos (montagem inputs):
 --- SENHA
---- NUMÉRICO
+--- NUMÃ‰RICO
 --- DATA
 --- DATA HORA
 --- HORA
@@ -44,4 +44,4 @@
 
 - Delete
 -- Excluir registro
--- Navegação para o List
+-- NavegaÃ§Ã£o para o List
