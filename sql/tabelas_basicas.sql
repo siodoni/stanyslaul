@@ -1,4 +1,4 @@
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+﻿SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 -- ==== --
@@ -16,6 +16,7 @@ drop view if exists vsnb_dicionario_detalhe;
 
 drop table if exists snb_autorizacao;
 drop table if exists snb_menu;
+drop table if exists snb_modulo;
 drop table if exists snb_dicionario_detalhe;
 drop table if exists snb_dicionario;
 drop table if exists snb_end_eletronico;
@@ -178,7 +179,7 @@ CREATE TABLE IF NOT EXISTS snb_dicionario_detalhe (
   hint_campo longtext,
   PRIMARY KEY (id),
   KEY fksnb_dicion_det_snb_dicion (id_dicionario)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=158 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=205 ;
 
 CREATE TABLE IF NOT EXISTS snb_menu (
   id int(11) NOT NULL AUTO_INCREMENT,
@@ -356,188 +357,213 @@ INSERT INTO snb_cidade (id, nome, ddd, id_unid_fed, cod_ibge) VALUES
 (2, 'RIBEIRÃO PRETO', 16, 'SP', NULL);
 
 INSERT INTO snb_dicionario (id, nome_tabela, campo_id, campo_descricao, condicao_filtro, ordem) VALUES
-(1, 'SNB_DICIONARIO', 'ID', 'NOME_TABELA', NULL, 'NOME_TABELA'),
-(2, 'SNB_DICIONARIO_DETALHE', 'ID', 'NOME_COLUNA', NULL, 'ORDEM'),
-(3, 'SNB_AUTORIZACAO', 'ID', 'ID_MENU,ID_USUARIO', NULL, 'ID_USUARIO,ID_MENU'),
-(4, 'SNB_CIDADE', 'ID', 'NOME,ID_UNID_FED', NULL, 'ID_UNID_FED,NOME'),
-(5, 'SNB_END_ELETRONICO', 'ID', 'ID_FILIAL,ENDERECO', NULL, 'ID_FILIAL,ENDERECO'),
-(6, 'SNB_ENDERECO', 'ID', 'ID_FILIAL,LOGRADOURO', NULL, 'ID_FILIAL,LOGRADOURO'),
-(7, 'SNB_FILIAL', 'ID', 'NOME_FILIAL', NULL, 'ID_PESSOA,NOME_FILIAL'),
-(8, 'SNB_MENU', 'ID', 'COD_APLICACAO,NM_MENU', NULL, 'COD_APLICACAO,NM_MENU'),
-(9, 'SNB_MODULO', 'ID', 'DESCRICAO', NULL, 'DESCRICAO'),
-(10, 'SNB_PESSOA', 'ID', 'NOME,CNPJ_CPF', NULL, 'NOME,CNPJ_CPF'),
-(11, 'SNB_TELEFONE', 'ID', 'ID_FILIAL,TELEFONE', NULL, 'ID_FILIAL,TELEFONE'),
-(12, 'SNB_TP_LOGRADOURO', 'ID', 'NOME', NULL, 'NOME'),
-(13, 'SNB_TP_PESSOA', 'ID', 'DESCRICAO', NULL, 'ID'),
-(14, 'SNB_UNID_FED', 'ID', 'NOME', NULL, 'ID,NOME'),
-(15, 'SNB_USUARIO', 'ID', 'USUARIO', NULL, 'USUARIO'),
-(16, 'VSNB_AUTORIZACAO', 'ID', 'COD_APLICACAO,NM_MENU,ID_USUARIO,USUARIO', NULL, 'COD_APLICACAO,NM_MENU,ID_USUARIO,USUARIO'),
-(17, 'VSNB_DICIONARIO_DETALHE', 'ID', 'NOME_TABELA,NOME_COLUNA', NULL, 'NOME_TABELA,ORDEM'),
-(18, 'VSNB_END_ELETRONICO', 'ID', 'NOME_PESSOA,ENDERECO', NULL, 'NOME_PESSOA,ENDERECO'),
-(19, 'VSNB_ENDERECO', 'ID', 'NOME_PESSOA,TP_LOGRADOURO,LOGRADOURO,NUMERO', NULL, 'NOME_PESSOA,TP_LOGRADOURO,LOGRADOURO,NUMERO'),
-(20, 'VSNB_FILIAL', 'ID', 'NOME,NOME_FILIAL', NULL, 'NOME,NOME_FILIAL'),
-(21, 'VSNB_MENU', 'ID', 'COD_APLICACAO,NM_MENU', NULL, 'COD_APLICACAO,NM_MENU'),
-(22, 'VSNB_TELEFONE', 'ID', 'NOME_PESSOA,DDD,TELEFONE', NULL, 'NOME_PESSOA,DDD,TELEFONE'),
-(23, 'VSNB_USUARIO', 'ID', 'USUARIO,NOME_USUARIO', NULL, 'USUARIO,NOME_USUARIO');
+(1, 'snb_dicionario', 'id', 'nome_tabela', null, 'nome_tabela'),
+(2, 'snb_dicionario_detalhe', 'id', 'nome_coluna', null, 'ordem'),
+(3, 'snb_autorizacao', 'id', 'id_menu,id_usuario', null, 'id_usuario,id_menu'),
+(4, 'snb_cidade', 'id', 'nome,id_unid_fed', null, 'id_unid_fed,nome'),
+(5, 'snb_end_eletronico', 'id', 'id_filial,endereco', null, 'id_filial,endereco'),
+(6, 'snb_endereco', 'id', 'id_filial,logradouro', null, 'id_filial,logradouro'),
+(7, 'snb_filial', 'id', 'nome_filial', null, 'id_pessoa,nome_filial'),
+(8, 'snb_menu', 'id', 'cod_aplicacao,nm_menu', null, 'cod_aplicacao,nm_menu'),
+(9, 'snb_modulo', 'id', 'descricao', null, 'descricao'),
+(10, 'snb_pessoa', 'id', 'nome,cnpj_cpf', null, 'nome,cnpj_cpf'),
+(11, 'snb_telefone', 'id', 'id_filial,telefone', null, 'id_filial,telefone'),
+(12, 'snb_tp_logradouro', 'id', 'nome', null, 'nome'),
+(13, 'snb_tp_pessoa', 'id', 'descricao', null, 'id'),
+(14, 'snb_unid_fed', 'id', 'nome', null, 'id,nome'),
+(15, 'snb_usuario', 'id', 'usuario', null, 'usuario'),
+(16, 'vsnb_autorizacao', 'id', 'cod_aplicacao,nm_menu,id_usuario,usuario', null, 'cod_aplicacao,nm_menu,id_usuario,usuario'),
+(17, 'vsnb_dicionario_detalhe', 'id', 'nome_tabela,nome_coluna', null, 'nome_tabela,ordem'),
+(18, 'vsnb_end_eletronico', 'id', 'nome_pessoa,endereco', null, 'nome_pessoa,endereco'),
+(19, 'vsnb_endereco', 'id', 'nome_pessoa,tp_logradouro,logradouro,numero', null, 'nome_pessoa,tp_logradouro,logradouro,numero'),
+(20, 'vsnb_filial', 'id', 'nome,nome_filial', null, 'nome,nome_filial'),
+(21, 'vsnb_menu', 'id', 'cod_aplicacao,nm_menu', null, 'cod_aplicacao,nm_menu'),
+(22, 'vsnb_telefone', 'id', 'nome_pessoa,ddd,telefone', null, 'nome_pessoa,ddd,telefone'),
+(23, 'vsnb_usuario', 'id', 'usuario,nome_usuario', null, 'usuario,nome_usuario');
 
 INSERT INTO snb_dicionario_detalhe (id, id_dicionario, nome_coluna, titulo_coluna, ordem, tipo_dado, tamanho_campo, qtd_caracteres, precisao_numero, formato_data, id_dicionario_lov, valor_enum, fg_obrigatorio, fg_auto_incremento, hint_campo) VALUES
-(1, 2, 'ID', 'Id', '1.00', 'NUMÉRICO', 5, 5, NULL, NULL, NULL, NULL, 'SIM', 'SIM', NULL),
-(2, 2, 'ID_DICIONARIO', 'Id Dicionário', '2.00', 'LISTA VALOR', 5, 5, NULL, NULL, 1, NULL, 'SIM', 'NÃO', NULL),
-(3, 2, 'NOME_COLUNA', 'Nome Coluna', '3.00', 'TEXTO', 30, 50, NULL, NULL, NULL, NULL, 'SIM', 'NÃO', NULL),
-(4, 2, 'TITULO_COLUNA', 'Título Coluna', '4.00', 'TEXTO', 30, 60, NULL, NULL, NULL, NULL, 'SIM', 'NÃO', NULL),
-(5, 2, 'ORDEM', 'Ordem', '5.00', 'NUMÉRICO', 5, 5, 2, NULL, NULL, NULL, 'SIM', 'NÃO', NULL),
-(6, 2, 'TIPO_DADO', 'Tipo Dado', '6.00', 'ENUM', 10, 10, NULL, NULL, NULL, 'SENHA,NUMÉRICO,DATA,DATA HORA,HORA,ARQUIVO,TEXTO,TEXTO LONGO,LISTA VALOR,ENUM', 'SIM', 'NÃO', NULL),
-(7, 2, 'TAMANHO_CAMPO', 'Tamanho Campo', '7.00', 'NUMÉRICO', 5, 5, 0, NULL, NULL, NULL, 'SIM', 'NÃO', NULL),
-(8, 2, 'QTD_CARACTERES', 'Qtd Caracteres', '8.00', 'NUMÉRICO', 5, 5, 0, NULL, NULL, NULL, 'SIM', 'NÃO', NULL),
-(9, 2, 'PRECISAO_NUMERO', 'Precisão Número', '9.00', 'NUMÉRICO', 5, 5, 0, NULL, NULL, NULL, 'NÃO', 'NÃO', NULL),
-(10, 2, 'FORMATO_DATA', 'Formato Data', '10.00', 'TEXTO', 30, 60, NULL, NULL, NULL, NULL, 'NÃO', 'NÃO', NULL),
-(11, 2, 'ID_DICIONARIO_LOV', 'Tabela Ref.', '11.00', 'LISTA VALOR', 10, 10, NULL, NULL, 1, NULL, 'SIM', 'NÃO', NULL),
-(12, 2, 'VALOR_ENUM', 'Valor Enum', '12.00', 'TEXTO LONGO', 100, 1000, NULL, NULL, NULL, NULL, 'NÃO', 'NÃO', NULL),
-(13, 2, 'FG_OBRIGATORIO', 'Obrigatório?', '13.00', 'ENUM', 10, 10, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
-(14, 2, 'FG_AUTO_INCREMENTO', 'Auto Incremento?', '14.00', 'ENUM', 10, 10, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
-(15, 2, 'HINT_CAMPO', 'Hint Campo', '15.00', 'TEXTO LONGO', 100, 1000, NULL, NULL, NULL, NULL, 'NÃO', 'NÃO', NULL),
-(16, 1, 'ID', 'Id', '1.00', 'NUMÉRICO', 4, 4, 0, NULL, NULL, NULL, 'SIM', 'SIM', NULL),
-(17, 1, 'NOME_TABELA', 'Nome Tabela', '2.00', 'TEXTO', 30, 60, NULL, NULL, NULL, NULL, 'SIM', 'NÃO', NULL),
-(18, 1, 'CAMPO_ID', 'Campo Id', '3.00', 'TEXTO', 30, 60, NULL, NULL, NULL, NULL, 'SIM', 'NÃO', NULL),
-(19, 1, 'CAMPO_DESCRICAO', 'Campo Descrição', '4.00', 'TEXTO', 30, 60, NULL, NULL, NULL, NULL, 'SIM', 'NÃO', NULL),
-(20, 1, 'CONDICAO_FILTRO', 'Condição', '5.00', 'TEXTO LONGO', 100, 4000, NULL, NULL, NULL, NULL, 'NÃO', 'NÃO', 'Condição para o filtro da LOV (Where)'),
-(21, 1, 'ORDEM', 'Ordem', '6.00', 'TEXTO LONGO', 100, 4000, NULL, NULL, NULL, NULL, 'NÃO', 'NÃO', 'Ordem de apresentação da LOV (Order by)'),
-(22, 3, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
-(23, 3, 'ID_MENU', 'id menu', '2.00', 'LISTA VALOR', 10, 10, 0, NULL, 8, '', 'SIM', 'NÃO', NULL),
-(24, 3, 'ID_USUARIO', 'id usuario', '3.00', 'LISTA VALOR', 10, 10, 0, NULL, 15, '', 'SIM', 'NÃO', NULL),
-(25, 4, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
-(26, 4, 'NOME', 'nome', '2.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(27, 4, 'DDD', 'ddd', '3.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(28, 4, 'ID_UNID_FED', 'id unid fed', '4.00', 'LISTA VALOR', 2, 2, NULL, NULL, 14, '', 'SIM', 'NÃO', NULL),
-(29, 4, 'COD_IBGE', 'cod ibge', '5.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(30, 5, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
-(31, 5, 'ID_FILIAL', 'id filial', '2.00', 'LISTA VALOR', 10, 10, 0, NULL, 7, '', 'SIM', 'NÃO', NULL),
-(32, 5, 'ENDERECO', 'endereco', '3.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(33, 5, 'FG_PRINCIPAL', 'fg principal', '4.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
-(34, 6, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
-(35, 6, 'ID_FILIAL', 'id filial', '2.00', 'LISTA VALOR', 10, 10, 0, NULL, 7, '', 'SIM', 'NÃO', NULL),
-(36, 6, 'ID_TP_LOGRADOURO', 'id tp logradouro', '3.00', 'LISTA VALOR', 10, 10, 0, NULL, 12, '', 'SIM', 'NÃO', NULL),
-(37, 6, 'LOGRADOURO', 'logradouro', '4.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(38, 6, 'NUMERO', 'numero', '5.00', 'TEXTO', 5, 5, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(39, 6, 'COMPLEMENTO', 'complemento', '6.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(40, 6, 'ID_CIDADE', 'id cidade', '7.00', 'LISTA VALOR', 10, 10, 0, NULL, 4, '', 'SIM', 'NÃO', NULL),
-(41, 6, 'BAIRRO', 'bairro', '8.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(42, 6, 'FG_PRINCIPAL', 'fg principal', '9.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
-(43, 6, 'CEP', 'cep', '10.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(44, 7, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
-(45, 7, 'ID_PESSOA', 'id pessoa', '2.00', 'LISTA VALOR', 10, 10, 0, NULL, 10, '', 'SIM', 'NÃO', NULL),
-(46, 7, 'FILIAL', 'filial', '3.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(47, 7, 'DIGITO', 'digito', '4.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(48, 7, 'NOME_FILIAL', 'nome filial', '5.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(49, 8, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
-(50, 8, 'COD_APLICACAO', 'cod aplicacao', '2.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(51, 8, 'NM_TABELA', 'nm tabela', '3.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(52, 8, 'NM_VIEW', 'nm view', '4.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(53, 8, 'NM_MENU', 'nm menu', '5.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(54, 8, 'NM_PAGINA', 'nm pagina', '6.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(55, 8, 'FG_ATIVO', 'fg ativo', '7.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
-(56, 8, 'SEQUENCIA', 'sequencia', '8.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(57, 8, 'ID_MENU_PROXIMO', 'id menu proximo', '9.00', 'LISTA VALOR', 10, 10, 0, NULL, 8, '', 'NÃO', 'NÃO', NULL),
-(58, 8, 'ID_MODULO', 'id modulo', '10.00', 'LISTA VALOR', 10, 10, 0, NULL, 9, '', 'NÃO', 'NÃO', NULL),
-(59, 9, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
-(60, 9, 'DESCRICAO', 'descricao', '2.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(61, 9, 'IMG_ICONE', 'img icone', '3.00', 'ARQUIVO', 1000, 1000, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(62, 10, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
-(63, 10, 'CNPJ_CPF', 'cnpj cpf', '2.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(64, 10, 'ID_TP_PESSOA', 'id tp pessoa', '3.00', 'LISTA VALOR', 1, 1, NULL, NULL, 13, 'J,F', 'SIM', 'NÃO', NULL),
-(65, 10, 'NOME', 'nome', '4.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(66, 10, 'DT_NASCIMENTO', 'dt nascimento', '5.00', 'DATA', 14, 14, NULL, '%d/%m/%Y', NULL, '', 'NÃO', 'NÃO', NULL),
-(67, 10, 'SEXO', 'sexo', '6.00', 'ENUM', 9, 9, NULL, NULL, NULL, 'Feminino,Masculino', 'NÃO', 'NÃO', NULL),
-(68, 10, 'IMG_FOTO', 'img foto', '7.00', 'ARQUIVO', 1000, 1000, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(69, 10, 'RG', 'rg', '8.00', 'TEXTO', 20, 20, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(70, 11, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
-(71, 11, 'ID_FILIAL', 'id filial', '2.00', 'LISTA VALOR', 10, 10, 0, NULL, 7, '', 'SIM', 'NÃO', NULL),
-(72, 11, 'DDD', 'ddd', '3.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(73, 11, 'TELEFONE', 'telefone', '4.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(74, 11, 'NM_CONTATO', 'nm contato', '5.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(75, 11, 'FG_PRINCIPAL', 'fg principal', '6.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
-(76, 12, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
-(77, 12, 'NOME', 'nome', '2.00', 'TEXTO', 30, 30, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(78, 12, 'SIGLA', 'sigla', '3.00', 'TEXTO', 5, 5, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(79, 13, 'ID', 'id', '1.00', 'ENUM', 1, 1, NULL, NULL, NULL, 'J,F', 'SIM', 'NÃO', NULL),
-(80, 13, 'DESCRICAO', 'descricao', '2.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(81, 14, 'ID', 'id', '1.00', 'TEXTO', 2, 2, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(82, 14, 'NOME', 'nome', '2.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(83, 15, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
-(84, 15, 'USUARIO', 'usuario', '2.00', 'TEXTO', 40, 40, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(85, 15, 'ID_PESSOA', 'id pessoa', '3.00', 'LISTA VALOR', 10, 10, 0, NULL, 10, '', 'SIM', 'NÃO', NULL),
-(86, 15, 'FG_ATIVO', 'fg ativo', '4.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
-(87, 15, 'SENHA', 'senha', '5.00', 'SENHA', 1000, 1000, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(88, 16, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(89, 16, 'ID_MENU', 'id menu', '2.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(90, 16, 'COD_APLICACAO', 'cod aplicacao', '3.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(91, 16, 'NM_MENU', 'nm menu', '4.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(92, 16, 'ID_USUARIO', 'id usuario', '5.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(93, 16, 'USUARIO', 'usuario', '6.00', 'TEXTO', 40, 40, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(94, 16, 'NOME_USUARIO', 'nome usuario', '7.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(95, 17, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(96, 17, 'ID_DICIONARIO', 'id dicionario', '2.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(97, 17, 'NOME_TABELA', 'nome tabela', '3.00', 'TEXTO', 60, 60, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(98, 17, 'NOME_COLUNA', 'nome coluna', '4.00', 'TEXTO', 60, 60, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(99, 17, 'ORDEM', 'ordem', '5.00', 'NUMÉRICO', 7, 7, 2, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(100, 17, 'TIPO_DADO', 'tipo dado', '6.00', 'ENUM', 11, 11, NULL, NULL, NULL, 'SENHA,NUMÉRICO,DATA,DATA HORA,HORA,ARQUIVO,TEXTO,TEXTO LONGO,LISTA VALOR,ENUM', 'SIM', 'NÃO', NULL),
-(101, 17, 'FG_OBRIGATORIO', 'fg obrigatorio', '7.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
-(102, 17, 'FG_AUTO_INCREMENTO', 'fg auto incremento', '8.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
-(103, 18, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(104, 18, 'ID_FILIAL', 'id filial', '2.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(105, 18, 'NOME_PESSOA', 'nome pessoa', '3.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(106, 18, 'NOME_FILIAL', 'nome filial', '4.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(107, 18, 'ENDERECO', 'endereco', '5.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(108, 18, 'FG_PRINCIPAL', 'fg principal', '6.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
-(109, 19, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(110, 19, 'ID_FILIAL', 'id filial', '2.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(111, 19, 'NOME_PESSOA', 'nome pessoa', '3.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(112, 19, 'NOME_FILIAL', 'nome filial', '4.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(113, 19, 'ID_TP_LOGRADOURO', 'id tp logradouro', '5.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(114, 19, 'TP_LOGRADOURO', 'tp logradouro', '6.00', 'TEXTO', 30, 30, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(115, 19, 'LOGRADOURO', 'logradouro', '7.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(116, 19, 'NUMERO', 'numero', '8.00', 'TEXTO', 5, 5, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(117, 19, 'COMPLEMENTO', 'complemento', '9.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(118, 19, 'ID_CIDADE', 'id cidade', '10.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(119, 19, 'NOME_CIDADE', 'nome cidade', '11.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(120, 19, 'BAIRRO', 'bairro', '12.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(121, 19, 'CEP', 'cep', '13.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(122, 19, 'FG_PRINCIPAL', 'fg principal', '14.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
-(123, 20, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(124, 20, 'ID_PESSOA', 'id pessoa', '2.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(125, 20, 'NOME', 'nome', '3.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(126, 20, 'ID_TP_PESSOA', 'id tp pessoa', '4.00', 'ENUM', 1, 1, NULL, NULL, NULL, 'J,F', 'SIM', 'NÃO', NULL),
-(127, 20, 'CNPJ_CPF', 'cnpj cpf', '5.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(128, 20, 'FILIAL', 'filial', '6.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(129, 20, 'DIGITO', 'digito', '7.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(130, 20, 'RG', 'rg', '8.00', 'TEXTO', 20, 20, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(131, 20, 'DT_NASCIMENTO', 'dt nascimento', '9.00', 'DATA', 14, 14, NULL, '%d/%m/%Y', NULL, '', 'NÃO', 'NÃO', NULL),
-(132, 20, 'SEXO', 'sexo', '10.00', 'ENUM', 9, 9, NULL, NULL, NULL, 'Feminino,Masculino', 'NÃO', 'NÃO', NULL),
-(133, 20, 'NOME_FILIAL', 'nome filial', '11.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(134, 21, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(135, 21, 'COD_APLICACAO', 'cod aplicacao', '2.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(136, 21, 'NM_TABELA', 'nm tabela', '3.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(137, 21, 'NM_VIEW', 'nm view', '4.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(138, 21, 'NM_MENU', 'nm menu', '5.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(139, 21, 'NM_PAGINA', 'nm pagina', '6.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(140, 21, 'FG_ATIVO', 'fg ativo', '7.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
-(141, 21, 'SEQUENCIA', 'sequencia', '8.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(142, 21, 'ID_MENU_PROXIMO', 'id menu proximo', '9.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(143, 21, 'ID_MODULO', 'id modulo', '10.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
-(144, 21, 'NOME_MODULO', 'nome modulo', '11.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(145, 22, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(146, 22, 'ID_FILIAL', 'id filial', '2.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(147, 22, 'NOME_PESSOA', 'nome pessoa', '3.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(148, 22, 'NOME_FILIAL', 'nome filial', '4.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(149, 22, 'DDD', 'ddd', '5.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(150, 22, 'TELEFONE', 'telefone', '6.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(151, 22, 'NM_CONTATO', 'nm contato', '7.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(152, 22, 'FG_PRINCIPAL', 'fg principal', '8.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
-(153, 23, 'ID', 'id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(154, 23, 'USUARIO', 'usuario', '2.00', 'TEXTO', 40, 40, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(155, 23, 'ID_PESSOA', 'id pessoa', '3.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(156, 23, 'NOME_USUARIO', 'nome usuario', '4.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
-(157, 23, 'FG_ATIVO', 'fg ativo', '5.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL);
+/*snb_dicionario_detalhe*/
+(1, 2, 'id',                    'Id', '1.00', 'NUMÉRICO', 5, 5, NULL, NULL, NULL, NULL, 'SIM', 'SIM', NULL),
+(2, 2, 'id_dicionario',         'Id Dicionário', '2.00', 'LISTA VALOR', 5, 5, NULL, NULL, 1, NULL, 'SIM', 'NÃO', NULL),
+(3, 2, 'nome_coluna',           'Nome Coluna', '3.00', 'TEXTO', 30, 50, NULL, NULL, NULL, NULL, 'SIM', 'NÃO', NULL),
+(4, 2, 'titulo_coluna',         'Título Coluna', '4.00', 'TEXTO', 30, 60, NULL, NULL, NULL, NULL, 'SIM', 'NÃO', NULL),
+(5, 2, 'ordem',                 'Ordem', '5.00', 'NUMÉRICO', 5, 5, 2, NULL, NULL, NULL, 'SIM', 'NÃO', NULL),
+(6, 2, 'tipo_dado',             'Tipo Dado', '6.00', 'ENUM', 10, 10, NULL, NULL, NULL, 'SENHA,NUMÉRICO,DATA,DATA HORA,HORA,ARQUIVO,TEXTO,TEXTO LONGO,LISTA VALOR,ENUM', 'SIM', 'NÃO', NULL),
+(7, 2, 'tamanho_campo',         'Tamanho Campo', '7.00', 'NUMÉRICO', 5, 5, 0, NULL, NULL, NULL, 'SIM', 'NÃO', NULL),
+(8, 2, 'qtd_caracteres',        'Qtd Caracteres', '8.00', 'NUMÉRICO', 5, 5, 0, NULL, NULL, NULL, 'SIM', 'NÃO', NULL),
+(9, 2, 'precisao_numero',       'Precisção Número', '9.00', 'NUMÉRICO', 5, 5, 0, NULL, NULL, NULL, 'NÃO', 'NÃO', NULL),
+(10, 2, 'formato_data',         'Formato Data', '10.00', 'TEXTO', 30, 60, NULL, NULL, NULL, NULL, 'NÃO', 'NÃO', NULL),
+(11, 2, 'id_dicionario_lov',    'Tabela Ref.', '11.00', 'LISTA VALOR', 10, 10, NULL, NULL, 1, NULL, 'SIM', 'NÃO', NULL),
+(12, 2, 'valor_enum',           'Valor Enum', '12.00', 'TEXTO LONGO', 100, 1000, NULL, NULL, NULL, NULL, 'NÃO', 'NÃO', NULL),
+(13, 2, 'fg_obrigatorio',       'Obrigatório?', '13.00', 'ENUM', 10, 10, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
+(14, 2, 'fg_auto_incremento',   'Auto Incremento?', '14.00', 'ENUM', 10, 10, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
+(15, 2, 'hint_campo',           'Hint Campo', '15.00', 'TEXTO LONGO', 100, 1000, NULL, NULL, NULL, NULL, 'NÃO', 'NÃO', NULL),
+/*snb_dicionario*/
+(16, 1, 'id',                   'Id', '1.00', 'NUMÉRICO', 4, 4, 0, NULL, NULL, NULL, 'SIM', 'SIM', NULL),
+(17, 1, 'nome_tabela',          'Nome Tabela', '2.00', 'TEXTO', 30, 60, NULL, NULL, NULL, NULL, 'SIM', 'NÃO', NULL),
+(18, 1, 'campo_id',             'Campo Id', '3.00', 'TEXTO', 30, 60, NULL, NULL, NULL, NULL, 'SIM', 'NÃO', NULL),
+(19, 1, 'campo_descricao',      'Campo Descrição', '4.00', 'TEXTO', 30, 60, NULL, NULL, NULL, NULL, 'SIM', 'NÃO', NULL),
+(20, 1, 'condicao_filtro',      'Condição', '5.00', 'TEXTO LONGO', 100, 4000, NULL, NULL, NULL, NULL, 'NÃO', 'NÃO', 'Condição para o filtro da LOV (Where)'),
+(21, 1, 'ordem',                'Ordem', '6.00', 'TEXTO LONGO', 100, 4000, NULL, NULL, NULL, NULL, 'NÃO', 'NÃO', 'Ordem de apresentação da LOV (Order by)'),
+/*snb_autorizacao*/
+(22, 3, 'id',                   'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
+(23, 3, 'id_menu',              'Id Menu', '2.00', 'LISTA VALOR', 10, 10, 0, NULL, 8, '', 'SIM', 'NÃO', NULL),
+(24, 3, 'id_usuario',           'Id Usuario', '3.00', 'LISTA VALOR', 10, 10, 0, NULL, 15, '', 'SIM', 'NÃO', NULL),
+/*snb_cidade*/
+(25, 4, 'id',                   'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
+(26, 4, 'nome',                 'Nome', '2.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(27, 4, 'ddd',                  'DDD', '3.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(28, 4, 'id_unid_fed',          'Unidade Fed', '4.00', 'LISTA VALOR', 2, 2, NULL, NULL, 14, '', 'SIM', 'NÃO', NULL),
+(29, 4, 'cod_ibge',             'Cod IBGE', '5.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+/*snb_end_eletronico*/
+(30, 5, 'id',                   'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
+(31, 5, 'id_filial',            'Filial', '2.00', 'LISTA VALOR', 10, 10, 0, NULL, 7, '', 'SIM', 'NÃO', NULL),
+(32, 5, 'endereco',             'Endereço', '3.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(33, 5, 'fg_principal',         'Endereço Principal?', '4.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
+/*snb_endereco*/
+(34, 6, 'id',                   'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
+(35, 6, 'id_filial',            'Filial', '2.00', 'LISTA VALOR', 10, 10, 0, NULL, 7, '', 'SIM', 'NÃO', NULL),
+(36, 6, 'id_tp_logradouro',     'Tipo Logradouro', '3.00', 'LISTA VALOR', 10, 10, 0, NULL, 12, '', 'SIM', 'NÃO', NULL),
+(37, 6, 'logradouro',           'Logradouro', '4.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(38, 6, 'numero',               'Número', '5.00', 'TEXTO', 5, 5, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(39, 6, 'complemento',          'Complemento', '6.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+(40, 6, 'id_cidade',            'Cidade', '7.00', 'LISTA VALOR', 10, 10, 0, NULL, 4, '', 'SIM', 'NÃO', NULL),
+(41, 6, 'bairro',               'Bairro', '8.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(43, 6, 'cep',                  'CEP', '9.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+(42, 6, 'fg_principal',         'Endereço Principal?', '10.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
+/*snb_filial*/
+(44, 7, 'id',                   'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
+(45, 7, 'id_pessoa',            'Pessoa', '2.00', 'LISTA VALOR', 10, 10, 0, NULL, 10, '', 'SIM', 'NÃO', NULL),
+(46, 7, 'filial',               'Filial', '3.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(47, 7, 'digito',               'Digito', '4.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(48, 7, 'nome_filial',          'Nome Filial', '5.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+/*snb_menu*/
+(173, 8, 'id',                  'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
+(174, 8, 'cod_aplicacao',       'Código Aplicação', '2.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(175, 8, 'id_dicionario_tabela','Dicionario Tabela', '3.00', 'LISTA VALOR', 10, 10, 0, NULL, 1, '', 'NÃO', 'NÃO', NULL),
+(176, 8, 'id_dicionario_view',  'Dicionário View', '4.00', 'LISTA VALOR', 10, 10, 0, NULL, 1, '', 'NÃO', 'NÃO', NULL),
+(177, 8, 'nm_menu',             'Nome Menu', '5.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(178, 8, 'nm_pagina',           'Nome Página PHP', '6.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+(179, 8, 'fg_ativo',            'Ativo', '7.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
+(180, 8, 'sequencia',           'Sequencia', '8.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(181, 8, 'id_menu_proximo',     'Próximo Menu', '9.00', 'LISTA VALOR', 10, 10, 0, NULL, 8, '', 'NÃO', 'NÃO', NULL),
+(182, 8, 'id_modulo',           'Módulo', '10.00', 'LISTA VALOR', 10, 10, 0, NULL, 9, '', 'NÃO', 'NÃO', NULL),
+/*snb_modulo*/
+(59, 9, 'id',                   'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
+(60, 9, 'descricao',            'Descrição', '2.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(61, 9, 'img_icone',            'Ícone', '3.00', 'ARQUIVO', 1000, 1000, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+/*snb_pessoa*/
+(62, 10, 'id',                  'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
+(63, 10, 'cnpj_cpf',            'CNPJ/CPF', '2.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(64, 10, 'id_tp_pessoa',        'Tipo Pessoa', '3.00', 'LISTA VALOR', 1, 1, NULL, NULL, 13, 'J,F', 'SIM', 'NÃO', NULL),
+(65, 10, 'nome',                'Nome', '4.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(66, 10, 'dt_nascimento',       'Data Nascimento', '5.00', 'DATA', 14, 14, NULL, '%d/%m/%Y', NULL, '', 'NÃO', 'NÃO', NULL),
+(67, 10, 'sexo',                'Sexo', '6.00', 'ENUM', 9, 9, NULL, NULL, NULL, 'Feminino,Masculino', 'NÃO', 'NÃO', NULL),
+(68, 10, 'img_foto',            'Foto', '7.00', 'ARQUIVO', 1000, 1000, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+(69, 10, 'rg',                  'RG', '8.00', 'TEXTO', 20, 20, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+/*snb_telefone*/
+(70, 11, 'id',                  'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
+(71, 11, 'id_filial',           'Filial', '2.00', 'LISTA VALOR', 10, 10, 0, NULL, 7, '', 'SIM', 'NÃO', NULL),
+(72, 11, 'ddd',                 'DDD', '3.00', 'NUMÉRICO', 2, 2, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(73, 11, 'telefone',            'Telefone', '4.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(74, 11, 'nm_contato',          'Nome Contato', '5.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(75, 11, 'fg_principal',        'Telefone Principal?', '6.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
+/*snb_tp_logradouro*/
+(76, 12, 'id',                  'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
+(77, 12, 'nome',                'Nome', '2.00', 'TEXTO', 30, 30, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(78, 12, 'sigla',               'Sigla', '3.00', 'TEXTO', 5, 5, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+/*snb_tp_pessoa*/
+(79, 13, 'id',                  'Id', '1.00', 'ENUM', 1, 1, NULL, NULL, NULL, 'J,F', 'SIM', 'NÃO', NULL),
+(80, 13, 'descricao',           'Descrição', '2.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+/*snb_unid_fed*/
+(81, 14, 'id',                  'Id', '1.00', 'TEXTO', 2, 2, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(82, 14, 'nome',                'Nome', '2.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+/*snb_usuario*/
+(83, 15, 'id',                  'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'SIM', NULL),
+(84, 15, 'usuario',             'Usuário', '2.00', 'TEXTO', 40, 40, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(85, 15, 'id_pessoa',           'Pessoa', '3.00', 'LISTA VALOR', 10, 10, 0, NULL, 10, '', 'SIM', 'NÃO', NULL),
+(87, 15, 'senha',               'Senha', '4.00', 'SENHA', 1000, 1000, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(86, 15, 'fg_ativo',            'Ativo?', '5.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
+/*vsnb_autorizacao*/
+(88, 16, 'id',                  'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(89, 16, 'id_menu',             'Menu', '2.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(90, 16, 'cod_aplicacao',       'Código Aplicação', '3.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(91, 16, 'nm_menu',             'Nome Menu', '4.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(92, 16, 'id_usuario',          'Id Usuário', '5.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(93, 16, 'usuario',             'Usuário', '6.00', 'TEXTO', 40, 40, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(94, 16, 'nome_usuario',        'Nome Usuário', '7.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+/*vsnb_dicionario_detalhe*/
+(95, 17, 'id',                  'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(96, 17, 'id_dicionario',       'Dicionário', '2.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(97, 17, 'nome_tabela',         'Nome Tabela', '3.00', 'TEXTO', 60, 60, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(98, 17, 'nome_coluna',         'Nome Coluna', '4.00', 'TEXTO', 60, 60, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(99, 17, 'ordem',               'Ordem', '5.00', 'NUMÉRICO', 7, 7, 2, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(100, 17, 'tipo_dado',          'Tipo Dado', '6.00', 'ENUM', 11, 11, NULL, NULL, NULL, 'SENHA,NUMÉRICO,DATA,DATA HORA,HORA,ARQUIVO,TEXTO,TEXTO LONGO,LISTA VALOR,ENUM', 'SIM', 'NÃO', NULL),
+(101, 17, 'fg_obrigatorio',     'Obrigatório?', '7.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
+(102, 17, 'fg_auto_incremento', 'Auto Incremento?', '8.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
+/*vsnb_end_eletronico*/
+(103, 18, 'id',                 'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(104, 18, 'id_filial',          'Filial', '2.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(105, 18, 'nome_pessoa',        'Nome Pessoa', '3.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(106, 18, 'nome_filial',        'Nome Filial', '4.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(107, 18, 'endereco',           'Endereço', '5.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(108, 18, 'fg_principal',       'Endereço Principal?', '6.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
+/*vsnb_endereco*/
+(109, 19, 'id',                 'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(110, 19, 'id_filial',          'Filial', '2.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(111, 19, 'nome_pessoa',        'Nome Pessoa', '3.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(112, 19, 'nome_filial',        'Nome Filial', '4.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(113, 19, 'id_tp_logradouro',   'Id Tipo Logradouro', '5.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(114, 19, 'tp_logradouro',      'Tp Logradouro', '6.00', 'TEXTO', 30, 30, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(115, 19, 'logradouro',         'Logradouro', '7.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(116, 19, 'numero',             'Número', '8.00', 'TEXTO', 5, 5, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(117, 19, 'complemento',        'Complemento', '9.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+(118, 19, 'id_cidade',          'Id Cidade', '10.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(119, 19, 'nome_cidade',        'Nome Cidade', '11.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(120, 19, 'bairro',             'Bairro', '12.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(121, 19, 'cep',                'CEP', '13.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+(122, 19, 'fg_principal',       'Endereço Principal?', '14.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
+/*vsnb_filial*/
+(123, 20, 'id',                 'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(124, 20, 'id_pessoa',          'Id Pessoa', '2.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(125, 20, 'nome',               'Nome', '3.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(126, 20, 'id_tp_pessoa',       'Tipo Pessoa', '4.00', 'ENUM', 1, 1, NULL, NULL, NULL, 'J,F', 'SIM', 'NÃO', NULL),
+(127, 20, 'cnpj_cpf',           'CNPJ/CPF', '5.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(128, 20, 'filial',             'Filial', '6.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(129, 20, 'digito',             'Dígito', '7.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(130, 20, 'rg',                 'RG', '8.00', 'TEXTO', 20, 20, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+(131, 20, 'dt_nascimento',      'Data Nascimento', '9.00', 'DATA', 14, 14, NULL, '%d/%m/%Y', NULL, '', 'NÃO', 'NÃO', NULL),
+(132, 20, 'sexo',               'Sexo', '10.00', 'ENUM', 9, 9, NULL, NULL, NULL, 'Feminino,Masculino', 'NÃO', 'NÃO', NULL),
+(133, 20, 'nome_filial',        'Nome Filial', '11.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+/*vsnb_menu*/
+(183, 21, 'id',                  'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(184, 21, 'cod_aplicacao',       'Código Aplicação', '2.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(185, 21, 'id_dicionario_tabela','Dicionário tabela', '3.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+(186, 21, 'nm_tabela',           'Nome Tabela', '4.00', 'TEXTO', 60, 60, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+(187, 21, 'id_dicionario_view',  'Dicionário View', '5.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+(188, 21, 'nm_view',             'Nome view', '6.00', 'TEXTO', 60, 60, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+(189, 21, 'nm_menu',             'Nome Aplicação', '7.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(190, 21, 'nm_pagina',           'Nome Página', '8.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+(191, 21, 'fg_ativo',            'Ativo?', '9.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
+(192, 21, 'sequencia',           'Sequencia', '10.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(193, 21, 'id_menu_proximo',     'Próximo Menu', '11.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+(194, 21, 'id_modulo',           'Módulo', '12.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'NÃO', 'NÃO', NULL),
+(195, 21, 'nome_modulo',         'Nome Módulo', '13.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+/*vsnb_telefone*/
+(145, 22, 'id',                 'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(146, 22, 'id_filial',          'Filial', '2.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(147, 22, 'nome_pessoa',        'Nome Pessoa', '3.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(148, 22, 'nome_filial',        'Nome Filial', '4.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(149, 22, 'ddd',                'DDD', '5.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(150, 22, 'telefone',           'Telefone', '6.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(151, 22, 'nm_contato',         'Nome Contato', '7.00', 'TEXTO', 45, 45, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(152, 22, 'fg_principal',       'Telefone Principal?', '8.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL),
+/*vsnb_usuario*/
+(153, 23, 'id',                 'Id', '1.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(154, 23, 'usuario',            'Usuário', '2.00', 'TEXTO', 40, 40, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(155, 23, 'id_pessoa',          'Pessoa', '3.00', 'NUMÉRICO', 10, 10, 0, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(156, 23, 'nome_usuario',       'Nome Usuário', '4.00', 'TEXTO', 100, 100, NULL, NULL, NULL, '', 'SIM', 'NÃO', NULL),
+(157, 23, 'fg_ativo',           'Ativo?', '5.00', 'ENUM', 3, 3, NULL, NULL, NULL, 'SIM,NÃO', 'SIM', 'NÃO', NULL);
 
 INSERT INTO snb_menu (id, cod_aplicacao, id_dicionario_tabela, id_dicionario_view, nm_menu, nm_pagina, fg_ativo, sequencia, id_menu_proximo, id_modulo) VALUES
 (1, 'BAS001', 14, NULL, 'UF', NULL, 'SIM', 1, NULL, 1),
@@ -656,41 +682,41 @@ INSERT INTO snb_usuario (id, usuario, id_pessoa, fg_ativo, senha) VALUES
 -- FOREIGN KEYS --
 -- ============ --
 
-ALTER TABLE snb_autorizacao
-  ADD CONSTRAINT fksnb_autorizacao_snb_menu FOREIGN KEY (id_menu) REFERENCES snb_menu (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT fksnb_autorizacao_snb_usuario FOREIGN KEY (id_usuario) REFERENCES snb_usuario (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+alter table snb_autorizacao
+  add constraint fksnb_autorizacao_snb_menu foreign key (id_menu) references snb_menu (id) on delete no action on update no action,
+  add constraint fksnb_autorizacao_snb_usuario foreign key (id_usuario) references snb_usuario (id) on delete no action on update no action;
 
-ALTER TABLE snb_cidade
-  ADD CONSTRAINT fksnb_cidade_snb_unid_fed FOREIGN KEY (id_unid_fed) REFERENCES snb_unid_fed (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+alter table snb_cidade
+  add constraint fksnb_cidade_snb_unid_fed foreign key (id_unid_fed) references snb_unid_fed (id) on delete no action on update no action;
 
-ALTER TABLE snb_dicionario_detalhe
-  ADD CONSTRAINT fksnb_dicion_det_snb_dicion FOREIGN KEY (id_dicionario) REFERENCES snb_dicionario (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+alter table snb_dicionario_detalhe
+  add constraint fksnb_dicion_det_snb_dicion foreign key (id_dicionario) references snb_dicionario (id) on delete no action on update no action;
 
-ALTER TABLE snb_endereco
-  ADD CONSTRAINT fksnb_endereco_snb_cidade FOREIGN KEY (id_cidade) REFERENCES snb_cidade (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT fksnb_endereco_snb_filial FOREIGN KEY (id_filial) REFERENCES snb_filial (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT fksnb_endereco_snb_tp_logradouro FOREIGN KEY (id_tp_logradouro) REFERENCES snb_tp_logradouro (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+alter table snb_endereco
+  add constraint fksnb_endereco_snb_cidade foreign key (id_cidade) references snb_cidade (id) on delete no action on update no action,
+  add constraint fksnb_endereco_snb_filial foreign key (id_filial) references snb_filial (id) on delete no action on update no action,
+  add constraint fksnb_endereco_snb_tp_logradouro foreign key (id_tp_logradouro) references snb_tp_logradouro (id) on delete no action on update no action;
 
-ALTER TABLE snb_end_eletronico
-  ADD CONSTRAINT fksnb_end_eletronico_snb_filial FOREIGN KEY (id_filial) REFERENCES snb_filial (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+alter table snb_end_eletronico
+  add constraint fksnb_end_eletronico_snb_filial foreign key (id_filial) references snb_filial (id) on delete no action on update no action;
 
-ALTER TABLE snb_filial
-  ADD CONSTRAINT fksnb_filial_snb_pessoa FOREIGN KEY (id_pessoa) REFERENCES snb_pessoa (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+alter table snb_filial
+  add constraint fksnb_filial_snb_pessoa foreign key (id_pessoa) references snb_pessoa (id) on delete no action on update no action;
 
-ALTER TABLE snb_menu
-  ADD CONSTRAINT fksnb_menu_snb_dicionario_view FOREIGN KEY (id_dicionario_view) REFERENCES snb_dicionario (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT fksnb_menu_snb_dicionario_tab FOREIGN KEY (id_dicionario_tabela) REFERENCES snb_dicionario (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT fksnb_menu_snb_menu FOREIGN KEY (id_menu_proximo) REFERENCES snb_menu (id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT fksnb_menu_snb_modulo FOREIGN KEY (id_modulo) REFERENCES snb_modulo (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+alter table snb_menu
+  add constraint fksnb_menu_snb_dicionario_view foreign key (id_dicionario_view) references snb_dicionario (id) on delete no action on update no action,
+  add constraint fksnb_menu_snb_dicionario_tab foreign key (id_dicionario_tabela) references snb_dicionario (id) on delete no action on update no action,
+  add constraint fksnb_menu_snb_menu foreign key (id_menu_proximo) references snb_menu (id) on delete no action on update no action,
+  add constraint fksnb_menu_snb_modulo foreign key (id_modulo) references snb_modulo (id) on delete no action on update no action;
 
-ALTER TABLE snb_pessoa
-  ADD CONSTRAINT fksnb_pessoa_snb_tp_pessoa FOREIGN KEY (id_tp_pessoa) REFERENCES snb_tp_pessoa (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+alter table snb_pessoa
+  add constraint fksnb_pessoa_snb_tp_pessoa foreign key (id_tp_pessoa) references snb_tp_pessoa (id) on delete no action on update no action;
 
-ALTER TABLE snb_telefone
-  ADD CONSTRAINT fksnb_telefone_snb_filial FOREIGN KEY (id_filial) REFERENCES snb_filial (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+alter table snb_telefone
+  add constraint fksnb_telefone_snb_filial foreign key (id_filial) references snb_filial (id) on delete no action on update no action;
 
-ALTER TABLE snb_usuario
-  ADD CONSTRAINT fksnb_usuario_snb_pessoa FOREIGN KEY (id_pessoa) REFERENCES snb_pessoa (id) ON DELETE NO ACTION ON UPDATE NO ACTION;
+alter table snb_usuario
+  add constraint fksnb_usuario_snb_pessoa foreign key (id_pessoa) references snb_pessoa (id) on delete no action on update no action;
 
 -- ==================================== --
 -- INSERT DICIONARIO DE OUTRAS TABELAS. --
@@ -698,16 +724,16 @@ ALTER TABLE snb_usuario
 
 insert into snb_dicionario
 select null id,
-       upper(a.table_name) nome_tabela,
-       'ID' campo_id,
+       lower(a.table_name) nome_tabela,
+       'id' campo_id,
        '' campo_descricao,
        '' condicao_filtro,
        '' ordem
   from information_schema.tables a
- where upper(a.table_schema) = 'STANYSLAUL'
+ where lower(a.table_schema) = 'stanyslaul'
    and not exists (select 1
                      from snb_dicionario b
-                    where b.nome_tabela = upper(a.table_name));
+                    where b.nome_tabela = lower(a.table_name));
 
 insert into snb_dicionario_detalhe
 select null id,
@@ -725,9 +751,9 @@ select null id,
        c.fg_obrigatorio,
        c.fg_auto_incremento,
        c.hint_campo
-  from (select upper(a.table_name) nome_tabela,
-               (select t.id from snb_dicionario t where upper(t.nome_tabela) = upper(a.table_name)) id_dicionario,
-               upper(a.column_name) nome_coluna,
+  from (select lower(a.table_name) nome_tabela,
+               (select t.id from snb_dicionario t where lower(t.nome_tabela) = lower(a.table_name)) id_dicionario,
+               lower(a.column_name) nome_coluna,
                lower(replace(a.column_name,'_',' ')) titulo_coluna,
                a.ordinal_position ordem,
                if(a.column_name = 'senha','SENHA',
@@ -745,7 +771,7 @@ select null id,
                if(a.data_type='date',14,0) + if(a.data_type='time',10,0) + if(a.data_type='datetime',20,0) + ifnull(a.character_maximum_length,0) + ifnull(a.numeric_precision,0) + ifnull(a.numeric_scale,0) qtd_caracteres,
                a.numeric_scale precisao_numero,
                if(a.data_type='date','%d/%m/%Y',if(a.data_type='time','%k:%i',if(a.data_type='datetime','%d/%m/%Y %H:%i',null))) formato_data,
-               (select t.id from snb_dicionario t where upper(t.nome_tabela) = upper(b.referenced_table_name)) id_dicionario_lov,
+               (select t.id from snb_dicionario t where lower(t.nome_tabela) = lower(b.referenced_table_name)) id_dicionario_lov,
                replace(replace(replace(if(a.data_type='enum',a.column_type,''),'enum(',''),')',''),'''','') valor_enum,
                if(a.is_nullable='NO','SIM','NÃO') fg_obrigatorio,
                if(a.extra='auto_increment','SIM','NÃO') fg_auto_incremento,
@@ -758,8 +784,8 @@ select null id,
            and b.referenced_table_name is not null
          where exists (select 1
                          from snb_dicionario bb
-                        where bb.nome_tabela = upper(a.table_name))
-           and upper(a.table_schema)    = 'STANYSLAUL'
+                        where bb.nome_tabela = lower(a.table_name))
+           and lower(a.table_schema)    = 'stanyslaul'
          order by a.ordinal_position) c
  where not exists (select 1
                      from snb_dicionario_detalhe bb
@@ -771,8 +797,8 @@ select null id,
 update snb_menu a
    set a.id_dicionario_tabela = (select b.id
                                    from snb_dicionario b
-                                  where b.nome_tabela = upper(a.nm_tabela)),
+                                  where b.nome_tabela = lower(a.nm_tabela)),
        a.id_dicionario_view   =  (select b.id
                                    from snb_dicionario b
-                                  where b.nome_tabela = upper(a.nm_view));
+                                  where b.nome_tabela = lower(a.nm_view));
 */
