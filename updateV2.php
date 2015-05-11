@@ -169,7 +169,16 @@ $dbName = Config::DBNAME;
             echo "\n\t\t//INPUTS\n";
             echo $update->retornaJS();
             ?>
+
+            $( "#formInsert" ).submit(function( event ) {
+                $(".input-required").each(function(index) {
+                    console.log(index + ": " + $(this).val());
+                });
+                event.preventDefault(); //mantém na página
+                return; //faz submit do form
+            });
         });
+
     </script>
 </html>
 <?php

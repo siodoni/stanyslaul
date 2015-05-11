@@ -41,6 +41,7 @@ class CrudPDO {
             $this->sql_ins = "insert into " . Config::DBNAME . "." . $this->tabela . " ($campos) values ($valores)";
             $rs = $this->con->prepare($this->sql_ins);
             $rs->execute();
+            die($this->sql_ins);
             $_SESSION['mensagemRetorno'] = Constantes::GRAVAR;
             $_SESSION["returnCrud"] = "info";
             print ($this->redireciona ? "<script>location='list.php';</script>" : "");

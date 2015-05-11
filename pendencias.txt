@@ -10,3 +10,4 @@
 - implantar o hint do campo
 - implantar a opção de campo desativado
 - testar as novas alterações feitas para atender ao dicionário de dados
+-- plano de testes em: /testes/planotestes.txt
