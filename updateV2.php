@@ -116,7 +116,7 @@ $dbName = Config::DBNAME;
                                     $valor = $valorCampo[$contador];
                                 }
 
-                                echo $update->label($campo);
+                                echo $update->label($campo,$campo["fg_obrigatorio"]);
                                 $update->montarCampo($campo, $valor);
 
                                 //echo "<td><label class='error' generated='true' for='" . $campo['coluna'] . "'></label></td></tr>";
@@ -169,16 +169,35 @@ $dbName = Config::DBNAME;
             echo "\n\t\t//INPUTS\n";
             echo $update->retornaJS();
             ?>
-
-            $( "#formInsert" ).submit(function( event ) {
-                $(".input-required").each(function(index) {
-                    console.log(index + ": " + $(this).val());
+            $( "#formInsert" ).submit(function(event) {
+                var qtde = 0;
+                $(".input-required").each(function(i) {
+                    if ($(this).val() === "") {
+                        qtde += 1;
+                        $(this).addClass("msg-error");
+                        $(".span-msg-error").each(function(j) {
+                            if (i===j){
+                                $(this).text("Campo obrigatorio");
+                            }
+                        });
+                    } else {
+                        $(this).removeClass("msg-error");
+                        $(".span-msg-error").each(function(j) {
+                            if (i===j){
+                                $(this).text("");
+                            }
+                        });
+                    }
                 });
-                event.preventDefault(); //mantém na página
-                return; //faz submit do form
+
+                if (qtde > 0){
+                    $('#mensagens').puigrowl('show',[{severity:'error',summary:'Erro',detail:'Existem campos obrigat&oacute;rios n&atilde;o informados.'}]);
+                    event.preventDefault(); //mantém na página
+                } else {
+                    return; //faz submit do form
+                }
             });
         });
-
     </script>
 </html>
 <?php

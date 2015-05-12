@@ -46,6 +46,7 @@ class UpdateV2 {
     function montarCampo($arrayCampo, $valorCampo) {
         $ai            = "";
         $required      = "";
+        $msgErro       = "<span class='span-msg-error'></span>";
 
         if ($arrayCampo['tamanho_campo'] > 100) {
             $tamCampo = 80;
@@ -67,38 +68,38 @@ class UpdateV2 {
         }
         
         if ($arrayCampo['tipo_dado'] == 'SENHA') {
-            echo $this->inputPassword($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$tamCampo,$arrayCampo['qtd_caracteres'],$valorCampo,$ai,$required);
+            echo $this->inputPassword($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$tamCampo,$arrayCampo['qtd_caracteres'],$valorCampo,$ai,$required,$msgErro);
 
         } elseif ($arrayCampo['tipo_dado'] == 'ARQUIVO') {
-            echo $this->inputFile($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$valorCampo);
+            echo $this->inputFile($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$valorCampo,$msgErro);
 
         } elseif ($arrayCampo['tipo_dado'] == 'TEXTO LONGO') {
-            echo $this->inputTextArea($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$valorCampo,$required);
+            echo $this->inputTextArea($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$valorCampo,$required,$msgErro);
 
         } elseif ($arrayCampo['tipo_dado'] == 'DATA'
                || $arrayCampo['tipo_dado'] == 'DATA HORA'
                || $arrayCampo['tipo_dado'] == 'HORA') {
             $valorCampo = date(str_replace("%","",$arrayCampo["formato_data"]), strtotime($valorCampo));
-            echo $this->inputDate($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$tamCampo,$arrayCampo['qtd_caracteres'],$valorCampo,$ai,$arrayCampo['tipo_dado'],$required);
+            echo $this->inputDate($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$tamCampo,$arrayCampo['qtd_caracteres'],$valorCampo,$ai,$arrayCampo['tipo_dado'],$required,$msgErro);
 
         } elseif ($arrayCampo['tipo_dado'] == 'ENUM') {
-            echo $this->selectMenuEnum($arrayCampo['nome_coluna'],$arrayCampo['valor_enum'],$valorCampo,$required);
+            echo $this->selectMenuEnum($arrayCampo['nome_coluna'],$arrayCampo['valor_enum'],$valorCampo,$required,$msgErro);
 
         } elseif ($arrayCampo['tipo_dado'] == 'LISTA VALOR') {
-            echo $this->selectMenu($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$arrayCampo['tabela_ref'],$valorCampo,$required);
+            echo $this->selectMenu($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$arrayCampo['tabela_ref'],$valorCampo,$required,$msgErro);
 
         } elseif ($arrayCampo['tipo_dado'] == 'NUMÉRICO') {
-            echo $this->inputNumber($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$tamCampo,$arrayCampo['qtd_caracteres'],$valorCampo,$ai,$required);
+            echo $this->inputNumber($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$tamCampo,$arrayCampo['qtd_caracteres'],$valorCampo,$ai,$required,$msgErro);
 
         } else {
-            echo $this->inputText($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$tamCampo,$arrayCampo['qtd_caracteres'],$valorCampo,$ai,$required);
+            echo $this->inputText($arrayCampo['nome_coluna'],$arrayCampo['nome_coluna'],$tamCampo,$arrayCampo['qtd_caracteres'],$valorCampo,$ai,$required,$msgErro);
         }
     }
 
     /* Campos */
 
-    function label($arrayCampo) {
-        return "<tr><td>" . $arrayCampo['titulo_coluna'] . "</td>\n";
+    function label($arrayCampo,$required) {
+        return "<tr><td>" . $arrayCampo['titulo_coluna'] . ($required == "SIM" ? " (*)" : "") . "</td>\n";
     }
 
     function button($id, $tipo, $valor, $acao, $icone) {
@@ -107,27 +108,27 @@ class UpdateV2 {
         return "<button id='$id' type='$tipo' $acao >$valor</button>\n";
     }
 
-    function inputText($id, $name, $size, $maxLength, $value, $enable, $required) {
+    function inputText($id, $name, $size, $maxLength, $value, $enable, $required, $msgErro) {
         $this->montarJS("\t\t$('#" . $id . "').puiinputtext();\n");
-        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='". (isset($_POST[$name]) ? $_POST[$name] : $value) ."' $enable $required /></td><td><span class='msg-error'></span></td>\n";
+        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='". (isset($_POST[$name]) ? $_POST[$name] : $value) ."' $enable $required /></td><td>".$msgErro."</td>\n";
     }
 
-    function inputNumber($id, $name, $size, $maxLength, $value, $enable, $required) {
+    function inputNumber($id, $name, $size, $maxLength, $value, $enable, $required, $msgErro) {
         $size = $size + 2;
         $this->montarJS("\t\t$('#" . $id . "').puispinner();\n");
-        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='". (isset($_POST[$name]) ? $_POST[$name] : $value) ."' $enable $required /></td><td><span class='msg-error'></span></td>\n";
+        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='". (isset($_POST[$name]) ? $_POST[$name] : $value) ."' $enable $required /></td><td>".$msgErro."</td>\n";
     }
 
-    function inputPassword($id, $name, $size, $maxLength, $value, $enable, $required) {
+    function inputPassword($id, $name, $size, $maxLength, $value, $enable, $required, $msgErro) {
         $this->montarJS("\t\t$('#" . $id . "').puipassword({inline:true,promptLabel:'Informe a nova senha', weakLabel:'fraca',mediumLabel:'media',goodLabel:'media',strongLabel:'forte'});\n");
-        return "<td><input type='password' id='$id' name='$name' size='$size' maxlength='$maxLength' value='". (isset($_POST[$name]) ? $_POST[$name] : $value) ."' $enable $required/>" . $this->inputHidden("_$id", "_$name", $value) . "</td><td><span class='msg-error'></span></td>\n";
+        return "<td><input type='password' id='$id' name='$name' size='$size' maxlength='$maxLength' value='". (isset($_POST[$name]) ? $_POST[$name] : $value) ."' $enable $required/>" . $this->inputHidden("_$id", "_$name", $value) . "</td><td>".$msgErro."</td>\n";
     }
 
     function inputHidden($id, $name, $valor) {
         return "<input id='$id' name='$name' type='hidden' value='". (isset($_POST[$name]) ? $_POST[$name] : $valor) ."'/>\n";
     }
 
-    function inputFile($id, $name, $valor) {
+    function inputFile($id, $name, $valor, $msgErro) {
         if ($this->inputFile == null) {
             $this->inputFile = $id;
         } else {
@@ -137,15 +138,15 @@ class UpdateV2 {
         return "<td><input type='file' id='$id' name='$name' value='". (isset($_POST[$name]) ? $_POST[$name] : $valor) ."'/>".
                 //$this->button("up".$id, "button", "Escolher...", "onclick=\"\"", "ui-icon-circle-plus") .
                ($valor != null ? $this->button("btn".$id, "button", "Visualizar", "onclick=\"window.open('".Config::FILE_FOLDER.$valor."');\"", "ui-icon-search") : "") .
-               $this->inputHidden("_".$id, "_".$name, $valor) . " </td><td><span class='msg-error'></span></td>\n";
+               $this->inputHidden("_".$id, "_".$name, $valor) . " </td><td>".$msgErro."</td>\n";
     }
 
-    function inputTextArea($id, $name, $valor, $required) {
+    function inputTextArea($id, $name, $valor, $required, $msgErro) {
         $this->montarJS("\t\t$('#" . $id . "').puiinputtextarea();\n");
-        return "<td><textarea id='$id' rows=\"10\" cols=\"30\" name='$name' style=\"width:100%;height:440px\" $required>".(isset($_POST[$name])?$_POST[$name]:$valor)."</textarea></td><td><span class='msg-error'></span></td>\n";
+        return "<td><textarea id='$id' rows=\"10\" cols=\"30\" name='$name' style=\"width:100%;height:440px\" $required>".(isset($_POST[$name])?$_POST[$name]:$valor)."</textarea></td><td>".$msgErro."</td>\n";
     }
 
-    function inputDate($id, $name, $size, $maxLength, $value, $enable, $formato, $required) {
+    function inputDate($id, $name, $size, $maxLength, $value, $enable, $formato, $required, $msgErro) {
         if ($formato == "DATA") {
             $this->montarJS("\t\t$('#" . $id . "').datepicker({dateFormat:'dd/mm/yy'}).puiinputtext();\n");
         } else if ($formato == "DATA HORA") {
@@ -153,22 +154,22 @@ class UpdateV2 {
         } else if ($formato == "HORA") {
             $this->montarJS("\t\t$('#" . $id . "').timepicker({timeFormat:'HH:mm'}).puiinputtext();\n");
         }
-        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='". (isset($_POST[$name]) ? $_POST[$name] : $value) ."' $enable $required/></td><td><span class='msg-error'></span></td>\n";
+        return "<td><input type='text' id='$id' name='$name' size='$size' maxlength='$maxLength' value='". (isset($_POST[$name]) ? $_POST[$name] : $value) ."' $enable $required/></td><td>".$msgErro."</td>\n";
     }
 
-    function selectMenuEnum($id, $valoresSelect, $valorSelecionado, $required) {
+    function selectMenuEnum($id, $valoresSelect, $valorSelecionado, $required, $msgErro) {
         $enum = explode(',', $valoresSelect);
         $selectMenu = "\n<td><select id='$id' name='$id' $required>";
         foreach ($enum as $enum) {
             $selected = ((isset($_POST[$id]) ? $_POST[$id] : $valorSelecionado) == $enum) ? "selected" : "";
             $selectMenu .= "\n<option value='$enum' $selected >" . ucfirst($enum) . "</option>";
         }
-        $selectMenu .= "\n</select></td><td><span class='msg-error'></span></td>\n";
+        $selectMenu .= "\n</select></td><td>".$msgErro."</td>\n";
         $this->montarJS("\t\t$('#" . $id . "').puidropdown({filter: true});\n");
         return $selectMenu;
     }
 
-    function selectMenu($id, $name, $tabelaRef, $valorSelecionado, $required) {
+    function selectMenu($id, $name, $tabelaRef, $valorSelecionado, $required, $msgErro) {
 
         $selectMenu = "\n<td><select id='$id' name='$name' $required>\n";
         $selectMenu .= "\n<option value='' >Escolha...</option>\n";
@@ -187,7 +188,7 @@ class UpdateV2 {
             $option = trim(substr($option, 0, (strlen($option) - 2))) . "</option>";
         }
         $selectMenu .= trim($option);
-        $selectMenu .= "\n</select></td><td><span class='msg-error'></span></td>\n";
+        $selectMenu .= "\n</select></td><td>".$msgErro."</td>\n";
         $this->montarJS("\t\t$('#" . $id . "').puidropdown({filter: true, filterMatchMode: 'contains'});\n");
         return $selectMenu;
     }

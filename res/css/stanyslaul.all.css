@@ -92,3 +92,11 @@
 .pui-datatable tbody td {
     white-space: normal;
 }
+
+.msg-error {
+}
+
+.span-msg-error {
+    color: #cd0a0a !important;
+    font-weight: bold !important;
+}
