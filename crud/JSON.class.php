@@ -11,8 +11,9 @@ class JSON {
     private $pdo;
     private $con;
     private $lov = false;
+    private $dataTable = false;
 
-    public function __construct($tabela,$con=null,$lov=false) {
+    public function __construct($tabela,$con=null,$lov=false,$dataTable=false) {
         $this->pdo = new ConexaoPDO("JSON.class.php");
         if ($con != null) {
             $this->con = $con;
@@ -22,6 +23,7 @@ class JSON {
         $this->tabela = $tabela;
         $this->sqlTabela = null;
         $this->lov = $lov;
+        $this->dataTable = $dataTable;
     }
 
     public function json($alteraHeader = true) {
@@ -51,7 +53,7 @@ class JSON {
                 }
 
                 $var = json_encode($linha, JSON_NUMERIC_CHECK);
-                return $var;
+                return ($this->dataTable ? "{\"data\":" : "") . $var . ($this->dataTable ? "}" : "");
             } catch (Exception $e) {
                 die("Problema no metodo JSON.json</p><p>".$sql."</p><p>".$e."</p>");
             }
