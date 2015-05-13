@@ -122,4 +122,23 @@ class Constantes {
                                      a.id_menu_proximo prox_menu 
                                 from #db.snb_menu a 
                                where a.id = ?";
+    
+    const QUERY_NM_TAB_DICIONARIO = "select lower(a.nome_tabela) as nome_tabela
+                                       from #db.snb_dicionario a where id = ?";
+
+    const QUERY_DICIONARIO_LOV = "select lower(a.campo_id) as campo_id, 
+                                         lower(a.campo_descricao) as campo_descricao, 
+                                         a.condicao_filtro, 
+                                         lower(a.ordem) as ordem 
+                                         from #db.snb_dicionario a 
+                                   where a.nome_tabela = upper(?)";
+
+    const QUERY_DICIONARIO_COL = "select lower(b.nome_coluna) nome_coluna, 
+                                         b.titulo_coluna, 
+                                         b.formato_data, 
+                                         b.tipo_dado 
+                                    from #db.snb_dicionario_detalhe b, 
+                                         #db.snb_dicionario a 
+                                   where a.id = ? 
+                                     and b.id_dicionario = a.id";
 }

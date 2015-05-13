@@ -65,6 +65,7 @@ $dbName = Config::DBNAME;
             
             //echo $idMenu;
             
+            //TODO passar select para a classe de Constantes
             $rsT = $con->prepare(str_replace("#db",$dbName,"select (select b.nome_tabela from #db.snb_dicionario b where b.id = a.id_dicionario_tabela) as tabela, a.id_dicionario_tabela from #db.snb_menu a where id = ?"));
             $rsT->bindParam(1, $idMenu);
             $rsT->execute();
@@ -77,6 +78,7 @@ $dbName = Config::DBNAME;
                 $_SESSION["id"] = $id;
                 $campoId = "id";
 
+                //TODO passar select para a classe de Constantes
                 $sql = "select * "
                       . " from " . $dbName . "." . $tabelaDic->tabela
                      . " where " . $campoId . " = '" . $id . "'";
@@ -207,8 +209,10 @@ $dbName = Config::DBNAME;
  * OBS: As informações de nome de tabela e schema devem ser recuperados da sessão */
 
 function verificaCampoDeData($con, $nomeTabela, $campo) {
+    //TODO Verificar forma de remover esse método (updateV2.verificaCampoDeData)
     $schema = Config::DBNAME;
     $rs = $con->prepare(
+            //TODO passar select para a classe de Constantes
             " select a.data_type tipo_dado "
             . " from information_schema.columns a "
             . " where a.table_schema = ? "

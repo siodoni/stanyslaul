@@ -5,9 +5,9 @@ class JSON {
     private $tabela = "";
     private $columns = "";
     private $sqlTabela;
-    private $sqlColumn = "select lower(b.nome_coluna) nome_coluna, b.titulo_coluna, b.formato_data, b.tipo_dado from #db.snb_dicionario_detalhe b, #db.snb_dicionario a where a.id = ? and b.id_dicionario = a.id";
-    private $sqlLOV    = "select lower(a.campo_id) as campo_id, lower(a.campo_descricao) as campo_descricao, a.condicao_filtro, lower(a.ordem) as ordem from #db.snb_dicionario a where a.nome_tabela = upper(?)";
-    private $sqlDic    = "select lower(a.nome_tabela) as nome_tabela from #db.snb_dicionario a where id = ?";
+    private $sqlColumn = Constantes::QUERY_DICIONARIO_COL;
+    private $sqlLOV    = Constantes::QUERY_DICIONARIO_LOV;
+    private $sqlDic    = Constantes::QUERY_NM_TAB_DICIONARIO;
     private $pdo;
     private $con;
     private $lov = false;
@@ -37,7 +37,7 @@ class JSON {
                 $rsT->bindParam(1, $this->tabela);
                 $rsT->execute();
                 $tabelaDic = $rsT->fetch(PDO::FETCH_OBJ);
-
+                
                 $this->montarColunas();
                 $sql = $this->lov ? $this->sqlTabela : ("select " . $this->sqlTabela . " from " . Config::DBNAME . "." . $tabelaDic->nome_tabela . " order by 1");
                 $rs = $this->con->prepare($sql);

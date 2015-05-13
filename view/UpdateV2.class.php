@@ -46,7 +46,6 @@ class UpdateV2 {
     function montarCampo($arrayCampo, $valorCampo) {
         $ai            = "";
         $required      = "";
-        $msgErro       = "<span class='span-msg-error'></span>";
 
         if ($arrayCampo['tamanho_campo'] > 100) {
             $tamCampo = 80;
@@ -60,11 +59,13 @@ class UpdateV2 {
             $this->adicionarColuna($arrayCampo['nome_coluna']);
         }
         
-        if ($arrayCampo['fg_obrigatorio'] == "SIM"){
-            //$required = "required".($arrayCampo['tipo_dado'] == 'ENUM' || $arrayCampo['tipo_dado'] == 'LISTA VALOR' ? " aria-required='true'" : "");
+        if ($arrayCampo['fg_obrigatorio']     == "SIM"
+        &&  $arrayCampo['fg_auto_incremento'] != "SIM"){
             $required = "class='input-required'";
+            $msgErro  = "<span class='span-msg-error'></span>";
         } else {
-            $required = "";
+            $required = "class='input-normal'";
+            $msgErro  = "<span class='span-msg-normal'></span>";
         }
         
         if ($arrayCampo['tipo_dado'] == 'SENHA') {
@@ -136,7 +137,6 @@ class UpdateV2 {
         }
         $this->montarJS("\t\t$('#" . $id . "').puiinputtext();\n");
         return "<td><input type='file' id='$id' name='$name' value='". (isset($_POST[$name]) ? $_POST[$name] : $valor) ."'/>".
-                //$this->button("up".$id, "button", "Escolher...", "onclick=\"\"", "ui-icon-circle-plus") .
                ($valor != null ? $this->button("btn".$id, "button", "Visualizar", "onclick=\"window.open('".Config::FILE_FOLDER.$valor."');\"", "ui-icon-search") : "") .
                $this->inputHidden("_".$id, "_".$name, $valor) . " </td><td>".$msgErro."</td>\n";
     }
@@ -194,7 +194,9 @@ class UpdateV2 {
     }
 
     private function retornaView($con, $tabelaRef) {
+        //TODO verificar esse método (UpdateV2.retornaView)
         $view = "v".$tabelaRef;
+        //TODO passar select para a classe de Constantes
         $rs = $con->prepare(
                 "  select 1 ret "
                 . "  from information_schema.views a "
