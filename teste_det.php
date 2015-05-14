@@ -6,40 +6,46 @@ if (!isset($_SESSION["usuario"])) {
 ?>
 <script type='text/javascript' src='res/js/jquery.dataTables.min.js'></script>
 <script type='text/javascript' src='res/js/dataTables.jqueryui.js'></script>
+<script type='text/javascript' src='res/plugins/date-uk.js'></script>
 
 <link rel='stylesheet' href='res/css/dataTables.jqueryui.css'>
 <link rel='stylesheet' href='res/css/themes/redmond/theme.css'>
 <script>
     $(document).ready(function() {
-        $('#example').DataTable({
+        $('#dataTable').DataTable({
             ajax: "jsonV2.php",
-            processing: true,
             columns: [
                 {data: "id"},
-                {data: "nome"}
+                {data: "nome"},
+                {data: "data_cad"}
             ],
             deferRender: true,
             stateSave: true,
             language: {
                 url: "res/portuguese-brasil.json"
-            }
+            },
+            columnDefs: [
+                {type: 'de_date', targets: 2}
+            ]
         });
-        $('#example tbody').on('click', 'tr', function() {
-            window.open('updateV2.php?id='+$('td', this).eq(0).text(),'_self');
+        $('#dataTable tbody').on('click', 'tr', function() {
+            window.open('updateV2.php?id=' + $('td', this).eq(0).text(), '_self');
         });
     });
 </script>
-<table id="example" class="cell-border hover order-column" cellspacing="0" width="100%">
+<table id="dataTable" class="cell-border hover order-column" cellspacing="0" width="100%">
     <thead>
         <tr>
             <th>Id</th>
             <th>Nome</th>
+            <th>Data</th>
         </tr>
     </thead>
     <tfoot>
         <tr>
             <th>Id</th>
             <th>Nome</th>
+            <th>Data</th>
         </tr>
     </tfoot>
 </table>

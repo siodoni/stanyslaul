@@ -39,6 +39,7 @@
             <?php require_once 'teste_det.php'; ?>
         </div>
         <div id='dlgCarregando' title='Carregando...' class='st-dlg-carregando'>
-            <img src='res/images/ico-loading.gif'/></div>
+            <img src='res/images/ico-loading.gif'/>
+        </div>
     </body>
 </html>
