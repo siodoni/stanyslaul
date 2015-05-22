@@ -171,6 +171,7 @@ $dbName = Config::DBNAME;
             echo "\n\t\t//INPUTS\n";
             echo $update->retornaJS();
             ?>
+            $(document).puitooltip();
             $( "#formInsert" ).submit(function(event) {
                 var qtde = 0;
                 $(".input-required").each(function(i) {
