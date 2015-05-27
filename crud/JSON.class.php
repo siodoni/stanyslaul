@@ -12,6 +12,9 @@ class JSON {
     private $con;
     private $lov = false;
     private $dataTable = false;
+    private $columnsV2 = "";
+    private $columnsTableV2 = "";
+    private $columnDateV2 = "";
 
     public function __construct($tabela,$con=null,$lov=false,$dataTable=false) {
         $this->pdo = new ConexaoPDO("JSON.class.php");
@@ -66,11 +69,37 @@ class JSON {
         return $this->columns;
     }
 
+    public function columnsV2(){
+        $this->montarColunas();
+        return 
+        "\n$(document).ready(function() {".
+        "\n  $('#dataTable').DataTable({".
+        "\n    ajax: \"jsonV2.php\",".
+        "\n    columns: [".$this->columnsV2."],".
+        "\n    deferRender: true,".
+        "\n    stateSave: true,".
+        "\n    language: {url: \"res/portuguese-brasil.json\"},".
+        "\n    columnDefs: [".$this->columnDateV2."]".
+        "\n  });".
+        "\n  $('#dataTable tbody').on('click', 'tr', function() {".
+        "\n    window.open('updateV2.php?id=' + $('td', this).eq(0).text(), '_self');".
+        "\n  });".
+        "\n});";
+    }
+
+    public function getColumnsTableV2(){
+        return $this->columnsTableV2;
+    }
+
     private function montarColunas() {
         $sql = "";
         $tab = $this->tabela;
         $this->sqlTabela = null;
         $this->columns = null;
+        $this->columnsV2 = null;
+        $this->columnDateV2 = null;
+        $this->columnsTableV2 = null;
+        $qtde = -1;
 
         if ($this->lov) {
             $rs = $this->con->prepare(str_replace("#db",Config::DBNAME,($this->sqlLOV)));
@@ -94,9 +123,16 @@ class JSON {
             
                 while ($row = $rs->fetch(PDO::FETCH_OBJ)) {
                     $dataType = "";
+                    $qtde++;
 
                     if ($row->formato_data != null) {
                         $dataType = "date_format(" . $row->nome_coluna . ",'" . $row->formato_data . "') as " . $row->nome_coluna;
+                        
+                        if ($this->columnDateV2 == null) {
+                            $this->columnDateV2 .=  "{type: 'de_date', targets: $qtde}";
+                        } else {
+                            $this->columnDateV2 .= ",{type: 'de_date', targets: $qtde}";
+                        }
                     } else if ($row->tipo_dado == "TEXTO"
                             || $row->tipo_dado == "TEXTO LONGO") {
                         $dataType = str_replace("#", $row->nome_coluna, $substr);
@@ -107,9 +143,13 @@ class JSON {
                     if ($this->sqlTabela == null) {
                         $this->sqlTabela = $dataType;
                         $this->columns = "{field: '" . $row->nome_coluna . "', headerText: '" . $row->titulo_coluna . "', sortable: true}";
+                        $this->columnsV2 .= "{data: \"" . $row->nome_coluna . "\"}";
+                        $this->columnsTableV2 .= "<th>".$row->titulo_coluna."</th>";
                     } else {
                         $this->sqlTabela .= ", " . $dataType;
                         $this->columns = $this->columns . "\n\t\t\t,{field: '" . $row->nome_coluna . "', headerText: '" . $row->titulo_coluna . "', sortable: true}";
+                        $this->columnsV2 .= ",{data: \"" . $row->nome_coluna . "\"}";
+                        $this->columnsTableV2 .= "<th>".$row->titulo_coluna."</th>";
                     }
                 }
             }        

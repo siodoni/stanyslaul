@@ -8,24 +8,17 @@ class Estrutura {
         $this->diretorio = $dir;
     }
 
-    public function head() {
+    public function head($dataTable=false) {
         return "\n<head>" .
                $this->title() .
                $this->meta() .
                $this->script() .
                $this->css() .
+              ($dataTable ? $this->scriptDT() : "") .
+              ($dataTable ? $this->cssDT()    : "") .
                "\n</head>\n";
     }
 
-    public function headV2() {
-        return "\n<head>" .
-               $this->title() .
-               $this->meta() .
-               $this->scriptV2() .
-               $this->cssV2() .
-               "\n</head>\n";
-    }
-    
     public function title() {
         return "\n<title>" . Config::TITLE . "</title>";
     }
@@ -42,32 +35,31 @@ class Estrutura {
                "\n<script type='text/javascript' src='".$this->nomeArquivo("res/js/stanyslaul.js")                    ."'></script>";
     }
 
-    public function scriptV2() {
-        return "\n<script type='text/javascript' src='".$this->nomeArquivo("res/jq/jquery.min.js")        ."'></script>".
-               "\n<script type='text/javascript' src='".$this->nomeArquivo("res/jq/jquery.easyui.min.js") ."'></script>".
-               "\n<script type='text/javascript' src='".$this->nomeArquivo("res/js/stanyslaul.js")        ."'></script>";
-    }
-    
-    public function css() {
-        return "\n<link href='".$this->nomeArquivo("res/primeui-1.1-min.css")          . "' rel='stylesheet'>".
-               "\n<link href='".$this->nomeArquivo("res/jquery-ui.min.css")            . "' rel='stylesheet'>".
-               "\n<link href='".$this->nomeArquivo("res/css/primeui.all.css")          . "' rel='stylesheet'>".
-               "\n<link href='".$this->nomeArquivo("res/css/stanyslaul.css")           . "' rel='stylesheet'>".
-               "\n<link href='".$this->nomeArquivo("res/css/stanyslaul.table.css")     . "' rel='stylesheet'>".
-               "\n<link href='".$this->nomeArquivo("res/css/stanyslaul.all.css")       . "' rel='stylesheet'>".
-               "\n<link href='".$this->nomeArquivo("res/css/themes/redmond/theme.css") . "' rel='stylesheet'>";
+    public function scriptDT() {
+        return "\n<script type='text/javascript' src='".$this->nomeArquivo("res/js/jquery.dataTables.min.js")."'></script>".
+               "\n<script type='text/javascript' src='".$this->nomeArquivo("res/js/dataTables.jqueryui.js")  ."'></script>".
+               "\n<script type='text/javascript' src='".$this->nomeArquivo("res/plugins/date-uk.js")         ."'></script>";
     }
 
-    public function cssV2() {
-        return "\n<link href='".$this->nomeArquivo("res/jq/themes/default/easyui.css") . "' rel='stylesheet'>".
-               "\n<link href='".$this->nomeArquivo("res/jq/themes/icon.css")           . "' rel='stylesheet'>".
-               "\n<link href='".$this->nomeArquivo("res/jq/themes/jqtheme.css")        . "' rel='stylesheet'>";
+    public function css() {
+        return "\n<link rel='stylesheet' href='".$this->nomeArquivo("res/primeui-1.1-min.css")         ."'>".
+               "\n<link rel='stylesheet' href='".$this->nomeArquivo("res/jquery-ui.min.css")           ."'>".
+               "\n<link rel='stylesheet' href='".$this->nomeArquivo("res/css/primeui.all.css")         ."'>".
+               "\n<link rel='stylesheet' href='".$this->nomeArquivo("res/css/stanyslaul.css")          ."'>".
+               "\n<link rel='stylesheet' href='".$this->nomeArquivo("res/css/stanyslaul.table.css")    ."'>".
+               "\n<link rel='stylesheet' href='".$this->nomeArquivo("res/css/stanyslaul.all.css")      ."'>".
+               "\n<link rel='stylesheet' href='".$this->nomeArquivo("res/css/themes/redmond/theme.css")."'>";
+    }
+
+    public function cssDT() {
+        return "\n<link rel='stylesheet' href='".$this->nomeArquivo("res/css/dataTables.jqueryui.css") ."'>".
+               "\n<link rel='stylesheet' href='".$this->nomeArquivo("res/css/themes/redmond/theme.css")."'>";
     }
     
     public function dialogAguarde(){
         return "\n<div id='dlgCarregando' title='Carregando...' class='st-dlg-carregando'>"
              . "\n<img src='res/images/ico-loading.gif'/>"
-             . "</div>";
+             . "\n</div>";
     }
 
     public function nomeArquivo($file){

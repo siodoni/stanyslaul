@@ -124,7 +124,8 @@ class Constantes {
                                where a.id = ?";
     
     const QUERY_NM_TAB_DICIONARIO = "select lower(a.nome_tabela) as nome_tabela
-                                       from #db.snb_dicionario a where id = ?";
+                                       from #db.snb_dicionario a 
+                                      where a.id = ?";
 
     const QUERY_DICIONARIO_LOV = "select lower(a.campo_id) as campo_id, 
                                          lower(a.campo_descricao) as campo_descricao, 
