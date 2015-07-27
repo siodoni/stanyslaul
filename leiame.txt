@@ -1,8 +1,0 @@
-* Ao copiar o stanyslaul para o site verifique se a versão do PHP é a 5.3, em versões anteriores o sistema não funciona.
-* Altere e/ou crie o arquivo .htaccess com o conteudo abaixo
-
-#Habilitar o PHP 5.3
-AddType application/x-httpd-php53 .php
-
-* Altere o arquivo "config/Config.class.php" com as informações do banco de dados
-* Inclua o logo na pasta "config" e altere o arquivo "config/Config.class.php" com o nome do logo
