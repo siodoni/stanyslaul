@@ -67,6 +67,7 @@ $dbName = Config::DBNAME;
             
             //TODO passar select para a classe de Constantes
             $rsT = $con->prepare(str_replace("#db",$dbName,"select (select b.nome_tabela from #db.snb_dicionario b where b.id = a.id_dicionario_tabela) as tabela, a.id_dicionario_tabela from #db.snb_menu a where id = ?"));
+            //echo str_replace("#db",$dbName,"select (select b.nome_tabela from #db.snb_dicionario b where b.id = a.id_dicionario_tabela) as tabela, a.id_dicionario_tabela from #db.snb_menu a where id = $idMenu");
             $rsT->bindParam(1, $idMenu);
             $rsT->execute();
             $tabelaDic = $rsT->fetch(PDO::FETCH_OBJ);
@@ -78,11 +79,26 @@ $dbName = Config::DBNAME;
                 $_SESSION["id"] = $id;
                 $campoId = "id";
 
+                $cl = $con->prepare(str_replace("#db",$dbName,$update->retornaQueryTabelaColuna()));
+                $cl->bindParam(1, $tabelaDic->id_dicionario_tabela);
+                $cl->execute();
+                $colunas = "";
+                
+                while ($campo = $cl->fetch(PDO::FETCH_ASSOC)) {
+                    if ($colunas == "") {
+                        $colunas = $campo["nome_coluna"];
+                    } else {
+                        $colunas .= ",".$campo["nome_coluna"];
+                    }
+                }
+
                 //TODO passar select para a classe de Constantes
-                $sql = "select * "
+                $sql = "select " . $colunas
                       . " from " . $dbName . "." . $tabelaDic->tabela
                      . " where " . $campoId . " = '" . $id . "'";
-
+                
+                //echo "<br>" . $sql;
+                
                 $rs = $con->prepare($sql);
                 $rs->execute();
                 $valorCampo = $rs->fetch(PDO::FETCH_NUM);
@@ -101,7 +117,8 @@ $dbName = Config::DBNAME;
                             <?php
                             $contador = 0;
 
-                            //echo str_replace("#db",$dbName,$update->retornaQueryTabela());
+                            //echo "<br>" . str_replace("#db",$dbName,$update->retornaQueryTabela());
+                            //echo "<br>id " . $tabelaDic->id_dicionario_tabela;
                             
                             $q = $con->prepare(str_replace("#db",$dbName,$update->retornaQueryTabela()));
                             $q->bindParam(1, $tabelaDic->id_dicionario_tabela);

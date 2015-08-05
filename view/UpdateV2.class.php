@@ -43,6 +43,10 @@ class UpdateV2 {
         return Constantes::QUERY_TABLEV2;
     }
 
+    public function retornaQueryTabelaColuna() {
+        return Constantes::QUERY_TABLE_COLUMN;
+    }
+    
     function montarCampo($arrayCampo, $valorCampo) {
         $ai            = "";
         $required      = "";
@@ -190,6 +194,9 @@ class UpdateV2 {
         $selectMenu .= trim($option);
         $selectMenu .= "\n</select></td><td>".$msgErro."</td>\n";
         $this->montarJS("\t\t$('#" . $id . "').puidropdown({filter: true, filterMatchMode: 'contains'});\n");
+
+        //echo "$id, $name, $tabelaRef, $valorSelecionado, $required, $msgErro, $hint <br>";
+        
         return $selectMenu;
     }
 
