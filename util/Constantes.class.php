@@ -106,15 +106,6 @@ class Constantes {
                                on c.id                            = b.id_dicionario_lov
                             where a.id                            = ?
                             order by b.ordem";
-    
-    const QUERY_TABLE_COLUMN = "select lower(b.nome_coluna) nome_coluna
-                                  from #db.snb_dicionario              a
-                                 inner join #db.snb_dicionario_detalhe b
-                                    on b.id_dicionario                 = a.id
-                                  left join #db.snb_dicionario         c
-                                    on c.id                            = b.id_dicionario_lov
-                                 where a.id                            = ?
-                                 order by b.ordem";
 
     const QUERY_PROX_MENU = "select (select b.nome_tabela from #db.snb_dicionario b where b.id = a.id_dicionario_view) as view,
                                     a.nm_menu as titulo,

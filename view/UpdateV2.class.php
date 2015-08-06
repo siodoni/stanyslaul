@@ -43,10 +43,6 @@ class UpdateV2 {
         return Constantes::QUERY_TABLEV2;
     }
 
-    public function retornaQueryTabelaColuna() {
-        return Constantes::QUERY_TABLE_COLUMN;
-    }
-    
     function montarCampo($arrayCampo, $valorCampo) {
         $ai            = "";
         $required      = "";

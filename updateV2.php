@@ -79,12 +79,12 @@ $dbName = Config::DBNAME;
                 $_SESSION["id"] = $id;
                 $campoId = "id";
 
-                $cl = $con->prepare(str_replace("#db",$dbName,$update->retornaQueryTabelaColuna()));
-                $cl->bindParam(1, $tabelaDic->id_dicionario_tabela);
-                $cl->execute();
+                $q = $con->prepare(str_replace("#db",$dbName,$update->retornaQueryTabela()));
+                $q->bindParam(1, $tabelaDic->id_dicionario_tabela);
+                $q->execute();
                 $colunas = "";
                 
-                while ($campo = $cl->fetch(PDO::FETCH_ASSOC)) {
+                while ($campo = $q->fetch(PDO::FETCH_ASSOC)) {
                     if ($colunas == "") {
                         $colunas = $campo["nome_coluna"];
                     } else {
@@ -120,10 +120,14 @@ $dbName = Config::DBNAME;
                             //echo "<br>" . str_replace("#db",$dbName,$update->retornaQueryTabela());
                             //echo "<br>id " . $tabelaDic->id_dicionario_tabela;
                             
+                            //$q = $con->prepare(str_replace("#db",$dbName,$update->retornaQueryTabela()));
+                            //$q->bindParam(1, $tabelaDic->id_dicionario_tabela);
+                            //$q->execute();
+                            $nomeTabela = $tabelaDic->tabela;
+
                             $q = $con->prepare(str_replace("#db",$dbName,$update->retornaQueryTabela()));
                             $q->bindParam(1, $tabelaDic->id_dicionario_tabela);
                             $q->execute();
-                            $nomeTabela = $tabelaDic->tabela;
 
                             while ($campo = $q->fetch(PDO::FETCH_ASSOC)) {
                                 $valor = "";
